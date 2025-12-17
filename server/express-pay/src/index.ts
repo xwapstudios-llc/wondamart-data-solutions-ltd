@@ -35,25 +35,6 @@ function handleTxFailed(tx: Tx) {
 }
 
 async function handleTxProcessing(tx: Tx) {
-    console.log("handleTxProcessing", tx);
-    const data = tx.data as TxDepositPaystackData;
-    console.log("Starting to handle transaction... > ", data);
-    try {
-        const res = await test_paystack({
-            amount: currency_to_paystack_amount(tx.amount) + (currency_to_paystack_amount(tx.amount) * 0.02),
-            // callback_url: "",
-            currency: "GHS",
-            email: data.email,
-            mobile_money: {
-                phone: data.phoneNumber,
-                provider: networkID_to_paystack_provider(data.network)
-            },
-            reference: tx.id
-        });
-        console.log(res);
-    } catch (e: {status: string, reference?: string, message: string} | any) {
-        console.error(e);
-    }
 }
 
 

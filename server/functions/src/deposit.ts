@@ -1,13 +1,11 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
-import {
-    TxDepositMoMoRequest,
-    TxDepositPaystackRequest,
-    TxDepositSendRequest
-} from "@common/types/account-deposit.js";
+import {HttpsError, onCall} from "firebase-functions/v2/https";
+import {TxDepositMoMoRequest, TxDepositPaystackRequest, TxDepositSendRequest} from "@common/types/account-deposit.js";
 import {ThrowCheck} from "./internals/throw-check-fn.js";
 import {CommonSettingsFn} from "@common-server/fn/common-settings-fn.js";
 import {TxAccountDepositFn} from "@common-server/fn/tx/tx-account-deposit-fn.js";
 import {ServerFn} from "@common-server/fn/server/server-fn.js";
+
+import axios from "axios";
 
 export const requestDepositPaystack = onCall(async (event) => {
     // Check if the user is authenticated.
@@ -50,6 +48,27 @@ export const requestDepositPaystack = onCall(async (event) => {
     await TxAccountDepositFn.createAndCommit.paystack(d);
     // Tell server to continue processing the deposit
     await ServerFn.notify("tx_dp_paystack");
+
+    const client = axios.create({
+        baseURL: "https://api.wondamartgh.com",
+        timeout: 15000,
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+    });
+
+    const response = await client.post(
+        "/deposti/paystack",
+        d
+    );
+    if (response.status === 500) {
+        return response;
+    } else {
+        return {
+            statusCode: response.status,
+        };
+    }
 });
 
 export const requestDepositSend = onCall(async (event) => {
