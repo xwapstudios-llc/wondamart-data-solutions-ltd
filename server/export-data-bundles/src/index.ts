@@ -1,8 +1,8 @@
 import admin from "firebase-admin";
 import fs from "fs/promises";
 import path from "path";
-import {DataBundle} from "../../../common/types/data-bundle";
-import {AdminDataBundles} from "../../../common/admin-api/db-data-bundle";
+import {DataBundle} from "@common/types/data-bundle";
+import {AdminDataBundles} from "@common/admin-api/db-data-bundle";
 
 // ---------- CONFIG ----------
 const COLLECTION_NAME = "data-bundles";
@@ -52,6 +52,7 @@ async function publish() {
 
     for (const bundle of dataBundles) {
         await AdminDataBundles.create(bundle);
+        console.log("Saving data bundle", bundle.id);
     }
 }
 

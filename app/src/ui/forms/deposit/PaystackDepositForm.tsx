@@ -66,11 +66,6 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
         }
     }
 
-    function getPayingAmount() {
-        const amount = form.watch("amount");
-        return amount + (amount * 0.02);
-    }
-
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleOnSubmit)} className={cn("space-y-4", className)} {...props}>
@@ -146,7 +141,7 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
                         type={"number"}
                         placeholder={"5.5"}
                         disabled={true}
-                        value={getPayingAmount()}
+                        value={Number(form.watch("amount")) + Number(form.watch("amount") * 0.02)}
                     />
                     <FormDescription>Amount of money in cedis to confirm on your phone.</FormDescription>
                     <FormMessage/>
@@ -168,7 +163,7 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
                 {children}
             </form>
         </Form>
-    )
-}
+    );
+};
 
 export default PaystackDepositForm;
