@@ -3,7 +3,6 @@ import config from "@common-server/config";
 import {TxDepositPaystackData} from "@common/types/account-deposit";
 import {test_paystack} from "@/paystack";
 import {currency_to_paystack_amount, networkID_to_paystack_provider} from "@/paystack/charge";
-import {Tx} from "@common/types/tx";
 import {TxFn} from "@common-server/fn/tx/tx-fn";
 import {UserFn} from "@common-server/fn/user-fn";
 import crypto from "crypto";
