@@ -11,7 +11,7 @@ if [ ! -d "$WONDAMART_ROOT" ]; then
     exit 1
 fi
 
-export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/wondamart/wondamart-data-solutions-ltd-firebase-adminsdk-fbsvc-cd38c56ffa.json
+export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/wondamart/wondamart-data-solutions-ltd-firebase-adminsdk-fbsvc-d418aa8130.json
 # shellcheck disable=SC2164
 cd $WONDAMART_ROOT
 echo "Starting app"

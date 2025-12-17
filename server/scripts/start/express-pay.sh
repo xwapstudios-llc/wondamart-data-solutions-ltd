@@ -14,7 +14,7 @@ fi
 # This was ment to run on the cloud where GOOGLE_APPLICATION_CREDENTIALS is available
 # For the rest, we export it.
 if [ "$USER" == "nketsiah000" ] || [ "$USER" == "wondamart-server" ]; then
-    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/wondamart/wondamart-data-solutions-ltd-firebase-adminsdk-fbsvc-cd38c56ffa.json
+    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/wondamart/wondamart-data-solutions-ltd-firebase-adminsdk-fbsvc-d418aa8130.json
 fi
 # shellcheck disable=SC2164
 cd $WONDAMART_ROOT
