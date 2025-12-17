@@ -1,0 +1,15 @@
+# Ignore environment variable files
+.env
+.env.development.local
+.env.production.local
+wondamart-data-solutions-firebase-adminsdk-fbsvc-cd38c56ffa.json
+
+# Ignore node modules
+node_modules/
+
+# Ignore build output
+dist/
+
+# Ignore logs
+logs/
+*.log

@@ -1,0 +1,25 @@
+// path resolution for TypeScript
+{
+    "compilerOptions": {
+        "target": "es2020",
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "ES2022",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "typeRoots": [
+            "node"
+        ],
+        "paths": {
+            "@common/*": [
+                "./common/*"
+            ]
+        }
+    }
+}

@@ -1,0 +1,59 @@
+{
+    "indexes": [
+        {
+            "collectionGroup": "data-bundles",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "id",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "network",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "updatedAt",
+                    "order": "ASCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "data-bundles",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "network",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "validityPeriod",
+                    "order": "ASCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "transactions",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "status",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "type",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "uid",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "date",
+                    "order": "ASCENDING"
+                }
+            ]
+        }
+    ],
+    "fieldOverrides": []
+}

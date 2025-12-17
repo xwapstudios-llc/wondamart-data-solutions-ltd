@@ -1,0 +1,19 @@
+{
+    "name": "server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {},
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "packageManager": "pnpm@10.25.0",
+    "dependencies": {
+        "dotenv": "^17.2.3",
+        "firebase-admin": "^13.6.0"
+    },
+    "devDependencies": {
+        "tsup": "^8.5.1",
+        "typescript": "^5.9.3"
+    }
+}

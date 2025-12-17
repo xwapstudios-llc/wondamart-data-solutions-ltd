@@ -1,0 +1,124 @@
+rules_version = '2';
+service cloud.firestore {
+    match /databases/{database}/documents {
+
+        // USERS
+        match /users/{uid} {
+            // Readers: owner, admin, Admin SDK
+            allow read: if request.auth != null && request.auth.uid == uid;
+            allow read: if isAdmin();
+
+            // Writers
+            allow update: if request.auth != null && request.auth.uid == uid && validUserUpdate(uid);
+            allow write: if isAdmin(); // Admin + Admin SDK only
+
+            // Create/Delete: backend only (no client writes)
+            allow create, delete: if false;
+        }
+
+        // WALLETS
+        match /wallets/{uid} {
+            allow read: if request.auth != null && request.auth.uid == uid;
+            allow read: if isAdmin();
+            allow write: if isAdmin(); // Admin + Admin SDK only
+        }
+
+        // TRANSACTIONS
+        match /transactions/{txId} {
+            allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+            allow read: if isAdmin();
+            // Writers: Admin SDK only → omit allow write
+        }
+
+        // COMMISSIONS
+        match /commissions/{year_month_uid} {
+            allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+            allow read: if isAdmin();
+            allow create: if isAdmin();
+            // Deny writes if month is closed and commissions are payed
+            allow write: if isCommissionsMonthClosed(resource) == false && isCommissionsPayed(resource) == false && isAdmin();
+            // Writers: Admin SDK only → omit allow write
+        }
+
+        // ADMINS
+        match /admins/{adminId} {
+            allow read: if isAdmin();
+            // Writers: Admin SDK only → omit allow write
+        }
+
+        // DATA BUNDLES
+        match /data-bundles/{bundleId} {
+            allow read: if request.auth != null; // public
+            allow write: if isAdmin(); // Admin + Admin SDK only
+        }
+
+        // DELETED DATA BUNDLES
+        match /deleted-data-bundles/{bundleId} {
+            allow read: if isAdmin(); // Admin and sdk
+            allow write: if isAdmin(); // Admin + Admin SDK only
+        }
+
+        // COMMON SETTINGS
+        match /common-settings/{settingId} {
+            allow read: if request.auth != null; // public
+            allow write: if isAdmin(); // Admin + Admin SDK only
+        }
+
+        // SERVERS
+        match /servers/{serverId} {
+            allow read: if isAdmin(); // private
+            // allow write: if false; // Admin SDK only
+        }
+
+        // SERVER HEARTBEATS
+        match /server-heartbeats/{serverId} {
+            allow read: if isAdmin(); // Admin and SDK
+            // allow write: if false; // Admin SDK only
+        }
+
+        // Fallback: deny everything else
+        match /{document=**} {
+            allow read, write, create, update: if false;
+        }
+    }
+
+    // -------------------------
+    // Helper functions
+    // -------------------------
+
+    function isAdmin() {
+        return request.auth != null && request.auth.token.isAdmin == true;
+    }
+
+    function isCommissionsMonthClosed(commissionDoc) {
+        return commissionDoc.data.endOfMonth <= timestamp.now().toMillis();
+    }
+
+    function isCommissionsPayed(commissionDoc) {
+        return commissionDoc.data.payed == true;
+    }
+
+    function validUserUpdate(uid) {
+        let isOwner = request.auth.uid == uid;
+
+        // Immutable fields
+        let emailUnchanged = request.resource.data.email == resource.data.email;
+        let referalUnchanged = request.resource.data.referalCode == resource.data.referalCode;
+        let referedUnchanged = request.resource.data.referedCode == resource.data.referedCode;
+
+        // Name change cooldown
+        let namesChanged = (
+            request.resource.data.firstName != resource.data.firstName ||
+                request.resource.data.lastName != resource.data.lastName
+        );
+        let updatedAt = resource.data.namesUpdatedAt;
+        let cooldown = duration.value(91, 'd');
+        let cooldownExpired = updatedAt == null || request.time >= updatedAt + cooldown;
+
+        return isOwner &&
+                emailUnchanged &&
+                referalUnchanged &&
+                referedUnchanged &&
+                (!namesChanged || cooldownExpired);
+    }
+}

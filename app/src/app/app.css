@@ -1,0 +1,16 @@
+.bundles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    gap: 1rem;
+}
+
+.packages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+    gap: .5rem;
+}
+
+.firebase-emulator-warning {
+    top: calc(100vh - 20px);
+    opacity: 0.75;
+}

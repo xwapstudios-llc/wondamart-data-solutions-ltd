@@ -1,0 +1,1212 @@
+[
+    {
+        "id": "airteltigo-30-days-10gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089928,
+            "_nanoseconds": 910000000
+        },
+        "price": 39,
+        "dataPackage": {
+            "data": 10,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.39,
+        "network": "airteltigo",
+        "enabled": true,
+        "updatedAt": {
+            "_seconds": 1764362404,
+            "_nanoseconds": 511000000
+        }
+    },
+    {
+        "id": "airteltigo-30-days-12gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089930,
+            "_nanoseconds": 98000000
+        },
+        "price": 46.5,
+        "dataPackage": {
+            "data": 12,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.45,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089930,
+            "_nanoseconds": 98000000
+        }
+    },
+    {
+        "id": "airteltigo-30-days-15gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089931,
+            "_nanoseconds": 95000000
+        },
+        "price": 58,
+        "dataPackage": {
+            "data": 15,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.55,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089931,
+            "_nanoseconds": 95000000
+        }
+    },
+    {
+        "id": "airteltigo-30-days-1gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089932,
+            "_nanoseconds": 720000000
+        },
+        "dataPackage": {
+            "data": 1,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.04,
+        "enabled": true,
+        "network": "airteltigo",
+        "price": 3.99,
+        "updatedAt": {
+            "_seconds": 1765242438,
+            "_nanoseconds": 990000000
+        }
+    },
+    {
+        "id": "airteltigo-30-days-2gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089935,
+            "_nanoseconds": 476000000
+        },
+        "price": 8,
+        "dataPackage": {
+            "data": 2,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.08,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089935,
+            "_nanoseconds": 475000000
+        }
+    },
+    {
+        "id": "airteltigo-30-days-3gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089937,
+            "_nanoseconds": 205000000
+        },
+        "price": 12,
+        "dataPackage": {
+            "data": 3,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.12,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089937,
+            "_nanoseconds": 205000000
+        }
+    },
+    {
+        "id": "airteltigo-30-days-4gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089938,
+            "_nanoseconds": 871000000
+        },
+        "price": 16,
+        "dataPackage": {
+            "data": 4,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.16,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089938,
+            "_nanoseconds": 871000000
+        }
+    },
+    {
+        "id": "airteltigo-30-days-5gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089943,
+            "_nanoseconds": 25000000
+        },
+        "price": 20,
+        "dataPackage": {
+            "data": 5,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.2,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089943,
+            "_nanoseconds": 25000000
+        }
+    },
+    {
+        "id": "airteltigo-30-days-6gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089945,
+            "_nanoseconds": 677000000
+        },
+        "price": 24,
+        "dataPackage": {
+            "data": 6,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.24,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089945,
+            "_nanoseconds": 677000000
+        }
+    },
+    {
+        "id": "airteltigo-30-days-7gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089946,
+            "_nanoseconds": 659000000
+        },
+        "price": 28,
+        "dataPackage": {
+            "data": 7,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.28,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089946,
+            "_nanoseconds": 659000000
+        }
+    },
+    {
+        "id": "airteltigo-30-days-8gb",
+        "validityPeriod": 30,
+        "createdAt": {
+            "_seconds": 1764089948,
+            "_nanoseconds": 277000000
+        },
+        "price": 32,
+        "dataPackage": {
+            "data": 8,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "iSHARE",
+        "commission": 0.32,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089948,
+            "_nanoseconds": 277000000
+        }
+    },
+    {
+        "id": "airteltigo-non-expiry-100gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089950,
+            "_nanoseconds": 723000000
+        },
+        "price": 175,
+        "dataPackage": {
+            "data": 100,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "BiG TiMe",
+        "commission": 1,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089950,
+            "_nanoseconds": 723000000
+        }
+    },
+    {
+        "id": "airteltigo-non-expiry-200gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089954,
+            "_nanoseconds": 30000000
+        },
+        "price": 340,
+        "dataPackage": {
+            "data": 200,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "BiG TiMe",
+        "commission": 1.5,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089954,
+            "_nanoseconds": 30000000
+        }
+    },
+    {
+        "id": "airteltigo-non-expiry-30gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089956,
+            "_nanoseconds": 651000000
+        },
+        "price": 75,
+        "dataPackage": {
+            "data": 30,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "BiG TiMe",
+        "commission": 0.6,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089956,
+            "_nanoseconds": 651000000
+        }
+    },
+    {
+        "id": "airteltigo-non-expiry-40gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089958,
+            "_nanoseconds": 783000000
+        },
+        "price": 89,
+        "dataPackage": {
+            "data": 40,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "BiG TiMe",
+        "commission": 0.65,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089958,
+            "_nanoseconds": 783000000
+        }
+    },
+    {
+        "id": "airteltigo-non-expiry-50gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089963,
+            "_nanoseconds": 972000000
+        },
+        "price": 99,
+        "dataPackage": {
+            "data": 50,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "BiG TiMe",
+        "commission": 0.7,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089963,
+            "_nanoseconds": 972000000
+        }
+    },
+    {
+        "id": "airteltigo-non-expiry-60gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089967,
+            "_nanoseconds": 712000000
+        },
+        "price": 125,
+        "dataPackage": {
+            "data": 60,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "BiG TiMe",
+        "commission": 0.75,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089967,
+            "_nanoseconds": 712000000
+        }
+    },
+    {
+        "id": "airteltigo-non-expiry-70gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089969,
+            "_nanoseconds": 601000000
+        },
+        "price": 140,
+        "dataPackage": {
+            "data": 70,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "BiG TiMe",
+        "commission": 0.8,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089969,
+            "_nanoseconds": 601000000
+        }
+    },
+    {
+        "id": "airteltigo-non-expiry-80gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089972,
+            "_nanoseconds": 589000000
+        },
+        "price": 155,
+        "dataPackage": {
+            "data": 80,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "BiG TiMe",
+        "commission": 0.85,
+        "enabled": true,
+        "network": "airteltigo",
+        "updatedAt": {
+            "_seconds": 1764089972,
+            "_nanoseconds": 589000000
+        }
+    },
+    {
+        "id": "mtn-1-days-10gb-500min-500sms",
+        "validityPeriod": 1,
+        "createdAt": {
+            "_seconds": 1764089974,
+            "_nanoseconds": 637000000
+        },
+        "price": 19,
+        "dataPackage": {
+            "data": 10,
+            "minutes": 500,
+            "sms": 500
+        },
+        "name": "JaMBo",
+        "commission": 0.1,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089974,
+            "_nanoseconds": 637000000
+        }
+    },
+    {
+        "id": "mtn-1-days-2gb-80min-100sms",
+        "validityPeriod": 1,
+        "createdAt": {
+            "_seconds": 1764089976,
+            "_nanoseconds": 917000000
+        },
+        "price": 3.8,
+        "dataPackage": {
+            "data": 2,
+            "minutes": 80,
+            "sms": 100
+        },
+        "name": "JaMBo",
+        "commission": 0.02,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089976,
+            "_nanoseconds": 917000000
+        }
+    },
+    {
+        "id": "mtn-1-days-4gb-160min-200sms",
+        "validityPeriod": 1,
+        "createdAt": {
+            "_seconds": 1764089977,
+            "_nanoseconds": 916000000
+        },
+        "price": 7.6,
+        "dataPackage": {
+            "data": 4,
+            "minutes": 160,
+            "sms": 200
+        },
+        "name": "JaMBo",
+        "commission": 0.04,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089977,
+            "_nanoseconds": 916000000
+        }
+    },
+    {
+        "id": "mtn-1-days-6gb-250min-310sms",
+        "validityPeriod": 1,
+        "createdAt": {
+            "_seconds": 1764089980,
+            "_nanoseconds": 713000000
+        },
+        "price": 11.5,
+        "dataPackage": {
+            "data": 6,
+            "minutes": 250,
+            "sms": 310
+        },
+        "name": "JaMBo",
+        "commission": 0.06,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089980,
+            "_nanoseconds": 713000000
+        }
+    },
+    {
+        "id": "mtn-1-days-8gb-340min-390sms",
+        "validityPeriod": 1,
+        "createdAt": {
+            "_seconds": 1764089983,
+            "_nanoseconds": 85000000
+        },
+        "price": 15,
+        "dataPackage": {
+            "data": 8,
+            "minutes": 340,
+            "sms": 390
+        },
+        "name": "JaMBo",
+        "commission": 0.08,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089983,
+            "_nanoseconds": 85000000
+        }
+    },
+    {
+        "id": "mtn-7-days-10gb-1000min-1000sms",
+        "validityPeriod": 7,
+        "createdAt": {
+            "_seconds": 1764089985,
+            "_nanoseconds": 131000000
+        },
+        "price": 25,
+        "dataPackage": {
+            "data": 10,
+            "minutes": 1000,
+            "sms": 1000
+        },
+        "name": "JaMBo",
+        "commission": 0.15,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089985,
+            "_nanoseconds": 131000000
+        }
+    },
+    {
+        "id": "mtn-7-days-15gb-1500min-1500sms",
+        "validityPeriod": 7,
+        "createdAt": {
+            "_seconds": 1764089987,
+            "_nanoseconds": 520000000
+        },
+        "price": 38,
+        "dataPackage": {
+            "data": 15,
+            "minutes": 1500,
+            "sms": 1500
+        },
+        "name": "JaMBo",
+        "commission": 0.2,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089987,
+            "_nanoseconds": 520000000
+        }
+    },
+    {
+        "id": "mtn-7-days-20gb-2000min-2000sms",
+        "validityPeriod": 7,
+        "createdAt": {
+            "_seconds": 1764089989,
+            "_nanoseconds": 271000000
+        },
+        "price": 50,
+        "dataPackage": {
+            "data": 20,
+            "minutes": 2000,
+            "sms": 2000
+        },
+        "name": "JaMBo",
+        "commission": 0.25,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089989,
+            "_nanoseconds": 271000000
+        }
+    },
+    {
+        "id": "mtn-7-days-25gb-2500min-2500sms",
+        "validityPeriod": 7,
+        "createdAt": {
+            "_seconds": 1764089990,
+            "_nanoseconds": 252000000
+        },
+        "price": 60,
+        "dataPackage": {
+            "data": 25,
+            "minutes": 2500,
+            "sms": 2500
+        },
+        "name": "JaMBo",
+        "commission": 0.3,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089990,
+            "_nanoseconds": 252000000
+        }
+    },
+    {
+        "id": "mtn-7-days-30gb-3000min-3000sms",
+        "validityPeriod": 7,
+        "createdAt": {
+            "_seconds": 1764089991,
+            "_nanoseconds": 296000000
+        },
+        "price": 75,
+        "dataPackage": {
+            "data": 30,
+            "minutes": 3000,
+            "sms": 3000
+        },
+        "name": "JaMBo",
+        "commission": 0.35,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089991,
+            "_nanoseconds": 296000000
+        }
+    },
+    {
+        "id": "mtn-7-days-5gb-500min-500sms",
+        "validityPeriod": 7,
+        "createdAt": {
+            "_seconds": 1764089992,
+            "_nanoseconds": 321000000
+        },
+        "price": 15,
+        "dataPackage": {
+            "data": 5,
+            "minutes": 500,
+            "sms": 500
+        },
+        "name": "JaMBo",
+        "commission": 0.1,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089992,
+            "_nanoseconds": 321000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-100gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089995,
+            "_nanoseconds": 150000000
+        },
+        "price": 367,
+        "dataPackage": {
+            "data": 100,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 1.2,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089995,
+            "_nanoseconds": 150000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-10gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089996,
+            "_nanoseconds": 389000000
+        },
+        "price": 42,
+        "dataPackage": {
+            "data": 10,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.5,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089996,
+            "_nanoseconds": 389000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-15gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089997,
+            "_nanoseconds": 397000000
+        },
+        "price": 62,
+        "dataPackage": {
+            "data": 15,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.55,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089997,
+            "_nanoseconds": 397000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-1gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764089999,
+            "_nanoseconds": 400000000
+        },
+        "price": 4.5,
+        "dataPackage": {
+            "data": 1,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.05,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764089999,
+            "_nanoseconds": 400000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-20gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090001,
+            "_nanoseconds": 64000000
+        },
+        "price": 80.5,
+        "dataPackage": {
+            "data": 20,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.6,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090001,
+            "_nanoseconds": 64000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-25gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090003,
+            "_nanoseconds": 125000000
+        },
+        "price": 101,
+        "dataPackage": {
+            "data": 25,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.7,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090003,
+            "_nanoseconds": 125000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-2gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090004,
+            "_nanoseconds": 118000000
+        },
+        "price": 9,
+        "dataPackage": {
+            "data": 2,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.1,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090004,
+            "_nanoseconds": 118000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-30gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090007,
+            "_nanoseconds": 51000000
+        },
+        "price": 120,
+        "dataPackage": {
+            "data": 30,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.75,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090007,
+            "_nanoseconds": 51000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-3gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090009,
+            "_nanoseconds": 262000000
+        },
+        "price": 13.5,
+        "dataPackage": {
+            "data": 3,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.15,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090009,
+            "_nanoseconds": 262000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-40gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090010,
+            "_nanoseconds": 332000000
+        },
+        "price": 160,
+        "dataPackage": {
+            "data": 40,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.8,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090010,
+            "_nanoseconds": 332000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-4gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090011,
+            "_nanoseconds": 275000000
+        },
+        "price": 18,
+        "dataPackage": {
+            "data": 4,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.2,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090011,
+            "_nanoseconds": 275000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-50gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090013,
+            "_nanoseconds": 362000000
+        },
+        "price": 190,
+        "dataPackage": {
+            "data": 50,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.85,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090013,
+            "_nanoseconds": 362000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-5gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090015,
+            "_nanoseconds": 292000000
+        },
+        "price": 22.5,
+        "dataPackage": {
+            "data": 5,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.25,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090015,
+            "_nanoseconds": 292000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-6gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090017,
+            "_nanoseconds": 351000000
+        },
+        "price": 27,
+        "dataPackage": {
+            "data": 6,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.3,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090017,
+            "_nanoseconds": 351000000
+        }
+    },
+    {
+        "id": "mtn-non-expiry-8gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090019,
+            "_nanoseconds": 678000000
+        },
+        "price": 35,
+        "dataPackage": {
+            "data": 8,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "MTNUP2U ",
+        "commission": 0.4,
+        "enabled": true,
+        "network": "mtn",
+        "updatedAt": {
+            "_seconds": 1764090019,
+            "_nanoseconds": 678000000
+        }
+    },
+    {
+        "id": "telecel-non-expiry-100gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090021,
+            "_nanoseconds": 542000000
+        },
+        "price": 370,
+        "dataPackage": {
+            "data": 100,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "TELECEL BUNDLE",
+        "commission": 1,
+        "network": "telecel",
+        "enabled": true,
+        "updatedAt": {
+            "_seconds": 1764362426,
+            "_nanoseconds": 304000000
+        }
+    },
+    {
+        "id": "telecel-non-expiry-10gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090023,
+            "_nanoseconds": 530000000
+        },
+        "price": 38.5,
+        "dataPackage": {
+            "data": 10,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "TELECEL BUNDLE",
+        "commission": 0.4,
+        "enabled": true,
+        "network": "telecel",
+        "updatedAt": {
+            "_seconds": 1764090023,
+            "_nanoseconds": 530000000
+        }
+    },
+    {
+        "id": "telecel-non-expiry-15gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090024,
+            "_nanoseconds": 518000000
+        },
+        "price": 57.5,
+        "dataPackage": {
+            "data": 15,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "TELECEL BUNDLE",
+        "commission": 0.45,
+        "enabled": true,
+        "network": "telecel",
+        "updatedAt": {
+            "_seconds": 1764090024,
+            "_nanoseconds": 518000000
+        }
+    },
+    {
+        "id": "telecel-non-expiry-20gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090025,
+            "_nanoseconds": 814000000
+        },
+        "price": 75.5,
+        "dataPackage": {
+            "data": 20,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "TELECEL BUNDLE",
+        "commission": 0.5,
+        "enabled": true,
+        "network": "telecel",
+        "updatedAt": {
+            "_seconds": 1764090025,
+            "_nanoseconds": 814000000
+        }
+    },
+    {
+        "id": "telecel-non-expiry-25gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090027,
+            "_nanoseconds": 976000000
+        },
+        "price": 95,
+        "dataPackage": {
+            "data": 25,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "TELECEL BUNDLE",
+        "commission": 0.55,
+        "enabled": true,
+        "network": "telecel",
+        "updatedAt": {
+            "_seconds": 1764090027,
+            "_nanoseconds": 976000000
+        }
+    },
+    {
+        "id": "telecel-non-expiry-30gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090030,
+            "_nanoseconds": 437000000
+        },
+        "price": 114,
+        "dataPackage": {
+            "data": 30,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "TELECEL BUNDLE",
+        "commission": 0.6,
+        "enabled": true,
+        "network": "telecel",
+        "updatedAt": {
+            "_seconds": 1764090030,
+            "_nanoseconds": 437000000
+        }
+    },
+    {
+        "id": "telecel-non-expiry-35gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090033,
+            "_nanoseconds": 31000000
+        },
+        "price": 130,
+        "dataPackage": {
+            "data": 35,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "TELECEL BUNDLE",
+        "commission": 0.65,
+        "enabled": true,
+        "network": "telecel",
+        "updatedAt": {
+            "_seconds": 1764090033,
+            "_nanoseconds": 31000000
+        }
+    },
+    {
+        "id": "telecel-non-expiry-40gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090036,
+            "_nanoseconds": 155000000
+        },
+        "price": 150,
+        "dataPackage": {
+            "data": 40,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "TELECEL BUNDLE",
+        "commission": 0.7,
+        "enabled": true,
+        "network": "telecel",
+        "updatedAt": {
+            "_seconds": 1764090036,
+            "_nanoseconds": 155000000
+        }
+    },
+    {
+        "id": "telecel-non-expiry-50gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090038,
+            "_nanoseconds": 837000000
+        },
+        "price": 182,
+        "dataPackage": {
+            "data": 50,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "TELECEL BUNDLE",
+        "commission": 0.8,
+        "enabled": true,
+        "network": "telecel",
+        "updatedAt": {
+            "_seconds": 1764090038,
+            "_nanoseconds": 837000000
+        }
+    },
+    {
+        "id": "telecel-non-expiry-5gb",
+        "validityPeriod": 0,
+        "createdAt": {
+            "_seconds": 1764090040,
+            "_nanoseconds": 612000000
+        },
+        "dataPackage": {
+            "data": 5,
+            "minutes": null,
+            "sms": null
+        },
+        "name": "TELECEL BUNDLE",
+        "commission": 0.2,
+        "enabled": true,
+        "network": "telecel",
+        "price": 21,
+        "updatedAt": {
+            "_seconds": 1764266403,
+            "_nanoseconds": 201000000
+        }
+    }
+]

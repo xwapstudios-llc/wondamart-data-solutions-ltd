@@ -1,0 +1,23 @@
+{
+    "name": "wondamartgh-deposit-server",
+    "version": "1.0.2",
+    "description": "This is the server responsible for deposits in wondamartgh.",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc -b",
+        "dev": "tsc --watch",
+        "start": "node dist/index.js"
+    },
+    "author": "XWap Studios LLC",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^1.13.2",
+        "dotenv": "^17.2.3",
+        "express": "^5.1.0",
+        "firebase-admin": "^13.5.0"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.5",
+        "@types/node": "^24.9.2"
+    }
+}
