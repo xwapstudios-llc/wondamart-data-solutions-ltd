@@ -28,7 +28,7 @@ app.post("/deposit/paystack", async (req, res) => {
     console.log("Received tx for Paystack:", tx);
 
     try {
-        await TxFn.update_status_processing(tx.id);
+        // await TxFn.update_status_processing(tx.id);
 
         const data = tx.data as TxDepositPaystackData;
 
@@ -48,7 +48,7 @@ app.post("/deposit/paystack", async (req, res) => {
 
     } catch (err) {
         console.error("Paystack init failed:", err);
-        await TxFn.update_status_failed(tx.id);
+        // await TxFn.update_status_failed(tx.id);
         return res.status(500).json({ error: "Paystack initialization failed" });
     }
 });
