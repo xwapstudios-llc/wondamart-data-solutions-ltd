@@ -44,18 +44,18 @@ const CommonSettingsFn = {
     init: async () => {
         // Initialize the settings documents
         const afa: CommonAFA = {
-            unitPrice: 20,
-            commission: 1,
+            unitPrice: 17,
+            commission: 0.5,
             enabled: true,
         }
         const resultChecker: CommonResultChecker = {
-            unitPrice: 40,
-            commission: 2,
+            unitPrice: 18,
+            commission: 0.2,
             enabled: true,
         }
         const userReg: CommonUserRegistration = {
             unitPrice: 20,
-            commission: 1,
+            commission: 2,
             enabled: true,
         }
         const paymentMethods: CommonPaymentMethods = {
@@ -71,7 +71,7 @@ const CommonSettingsFn = {
             },
             momo: {
                 name: "MoMo",
-                enabled: true,
+                enabled: false,
                 details: "This payment method allows user to deposit by allowing cash out and confirming the transaction."
             }
         }

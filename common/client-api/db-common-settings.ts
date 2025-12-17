@@ -1,11 +1,11 @@
 import {
-    CommonAFA,
-    CommonDataBundles,
+    type CommonAFA,
+    type CommonDataBundles,
     commonDoc,
-    CommonDocs,
-    CommonPaymentMethods,
-    CommonResultChecker, CommonSettings,
-    CommonUserRegistration
+    type CommonDocs,
+    type CommonPaymentMethods,
+    type CommonResultChecker, type CommonSettings,
+    type CommonUserRegistration
 } from "@common/types/common-settings";
 import {collections, db} from "@common/lib/db"
 import {getDoc, doc} from "firebase/firestore";

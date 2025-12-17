@@ -1,4 +1,4 @@
-import { Tx } from "./tx";
+import { type Tx } from "./tx";
 
 //
 // Database Type

@@ -1,4 +1,4 @@
-import { TxDataBundle, TxDataBundleQuery, TxDataBundleRequest } from "@common/types/data-bundle";
+import { type TxDataBundle, type TxDataBundleQuery, type TxDataBundleRequest } from "@common/types/data-bundle";
 import { collections, db } from "@common/lib/db";
 import { Functions } from "@common/lib/fn";
 import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";

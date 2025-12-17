@@ -1,9 +1,9 @@
-import {Timestamp, WhereFilterOp} from "firebase/firestore";
-import {TxDataBundleData} from "@common/types/data-bundle";
-import {TxAfaBundleData} from "@common/types/afa-bundle";
-import {TxResultCheckerData} from "@common/types/result-checker";
-import {TxDepositData} from "@common/types/account-deposit";
-import {TxUserRegistrationData} from "@common/types/user-registration";
+import {Timestamp, type WhereFilterOp} from "firebase/firestore";
+import {type TxDataBundleData} from "@common/types/data-bundle";
+import {type TxAfaBundleData} from "@common/types/afa-bundle";
+import {type TxResultCheckerData} from "@common/types/result-checker";
+import {type TxDepositData} from "@common/types/account-deposit";
+import {type TxUserRegistrationData} from "@common/types/user-registration";
 
 //
 // SubType

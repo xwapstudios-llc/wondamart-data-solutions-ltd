@@ -1,4 +1,4 @@
-import { DataBundle, NetworkId, DataBundleQuery } from "@common/types/data-bundle";
+import { type DataBundle, type NetworkId, type DataBundleQuery } from "@common/types/data-bundle";
 import { collections, db } from "@common/lib/db";
 import {
     collection,

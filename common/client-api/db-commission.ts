@@ -1,7 +1,7 @@
 import {doc, getDoc, getDocs} from "firebase/firestore";
 import {db} from "@common/lib/db";
 import {collections} from "@common/lib/collections";
-import {buildCommissionQuery, CommissionDoc, CommissionQuery} from "@common/types/commissions";
+import {buildCommissionQuery, type CommissionDoc, type CommissionQuery} from "@common/types/commissions";
 
 const ClCommission = {
     //

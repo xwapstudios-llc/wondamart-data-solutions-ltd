@@ -1,6 +1,6 @@
 import {collections, db} from "@common/lib/db";
-import { TxQuery, TxQueryAdmin } from "@common/types/tx";
-import { collection, Query, query, Timestamp, where, limit, WhereFilterOp, startAfter } from "firebase/firestore";
+import { type TxQuery, type TxQueryAdmin } from "@common/types/tx";
+import { collection, Query, query, Timestamp, where, limit, startAfter } from "firebase/firestore";
 
 const startOfDay = (d: Date | Timestamp): Timestamp => {
     const date = d instanceof Timestamp ? d.toDate() : d;

@@ -1,5 +1,5 @@
-import { NetworkId } from "./data-bundle";
-import { Tx, TxQuery } from "./tx";
+import { type NetworkId } from "./data-bundle";
+import { type Tx, type TxQuery } from "./tx";
 
 //
 //  SubType

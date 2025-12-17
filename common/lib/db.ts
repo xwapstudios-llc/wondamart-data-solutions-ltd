@@ -1,6 +1,6 @@
 import {
     getFirestore,
-    connectFirestoreEmulator,
+    // connectFirestoreEmulator,
 } from "firebase/firestore";
 import app from "@common/lib/app";
 

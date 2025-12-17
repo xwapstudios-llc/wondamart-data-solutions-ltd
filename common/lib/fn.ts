@@ -1,7 +1,7 @@
 import {
     getFunctions,
     httpsCallable,
-    connectFunctionsEmulator
+    // connectFunctionsEmulator
 } from "firebase/functions";
 import app from "@common/lib/app";
 

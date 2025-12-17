@@ -1,4 +1,4 @@
-import {collection, limit, query, Query, startAfter, Timestamp, where, WhereFilterOp} from "firebase/firestore";
+import {collection, limit, query, type Query, startAfter, Timestamp, where, type WhereFilterOp} from "firebase/firestore";
 import {db} from "@common/lib/db";
 import {collections} from "@common/lib/collections";
 

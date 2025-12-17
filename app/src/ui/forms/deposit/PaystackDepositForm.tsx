@@ -25,7 +25,7 @@ import Code from "@/ui/components/typography/Code.tsx";
 const formSchema = z.object({
     phone: z.string().regex(/^(0|\+233|233)[25][0-9]{8}$/, "Invalid phone number format"),
     network: z.enum([...networkIds, ""], "Select Network").refine((val) => val.length > 0),
-    amount: z.coerce.number().min(11, "Amount must be higher than 11.0"),
+    amount: z.coerce.number().min(5, "Amount must be higher than 5.0"),
 });
 type formValues = z.infer<typeof formSchema>;
 
@@ -125,14 +125,23 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
                         <FormItem>
                             <FormLabel>Amount</FormLabel>
                             <FormControl>
-                                <Input className={"h-12"} type={"number"} placeholder={"11.5"} {...field} />
+                                <Input className={"h-12"} type={"number"} placeholder={"5.5"} {...field} />
                             </FormControl>
                             <FormDescription>Amount of money in cedies to deposit into account. Minimum <Code>₵
-                                11.0</Code></FormDescription>
+                                5.0</Code></FormDescription>
                             <FormMessage/>
                         </FormItem>
                     )}
                 />
+
+                <FormItem>
+                    <FormLabel>Expected Amount</FormLabel>
+                    <FormControl>
+                        <Input className={"h-12"} type={"number"} placeholder={"5.5"} value={form.watch("amount") + (form.watch("amount") * 0.02)} />
+                    </FormControl>
+                    <FormDescription>Amount of money in cedies to confirm on your phone.</FormDescription>
+                    <FormMessage/>
+                </FormItem>
 
                 {
                     loading && <p className={"text-destructive"}>

@@ -2,8 +2,8 @@ import {
     createUserWithEmailAndPassword,
     getAuth,
     signInWithEmailAndPassword, signOut,
-    User,
-    connectAuthEmulator,
+    type User,
+    // connectAuthEmulator,
 } from "firebase/auth";
 import app from "@common/lib/app";
 import {FirebaseError} from "firebase/app";

@@ -9,10 +9,11 @@ import {Link} from "react-router-dom";
 import {R} from "@/app/routes.ts";
 import {cn} from "@/cn/lib/utils.ts";
 import TxMiniCardSync from "@/ui/components/cards/tx/TxMiniCardSync.tsx";
-import StockHighlights from "@/ui/components/cards/dashboard/StockHighlights.tsx";
+// import StockHighlights from "@/ui/components/cards/dashboard/StockHighlights.tsx";
 import DashboardSection from "@/ui/components/cards/dashboard/DashboardSection.tsx";
 import NoItems from "@/ui/components/cards/NoItems.tsx";
 import ActivityHighlights from "@/ui/components/cards/dashboard/ActivityHighlights.tsx";
+import OverviewGraph from "@/ui/components/OverviewGraph.tsx";
 
 const Dashboard: React.FC = () => {
     const {profile, wallet} = useAppStore();
@@ -56,7 +57,8 @@ const Dashboard: React.FC = () => {
                 link={{to: R.app.purchase.index, label: "Purchase"}}
                 className={""}
             >
-                <StockHighlights className={"mt-1"} />
+                {/*<StockHighlights className={"mt-1"} />*/}
+                <OverviewGraph className={"mt-1"} />
             </DashboardSection>
 
             {/*Activity*/}

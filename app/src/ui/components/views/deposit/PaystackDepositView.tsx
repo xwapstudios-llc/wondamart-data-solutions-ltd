@@ -25,7 +25,7 @@ const PaystackDepositView: React.FC<PaystackDepositViewProps> = ({
                 <NoticeContent>
                     <NoticeItem title={"Cost"}>
                         Transaction cost using this deposit method is{" "}
-                        <Code>0.5%</Code> of the stated amount
+                        <Code>0.2%</Code> of the stated amount
                     </NoticeItem>
                 </NoticeContent>
             </Notice>

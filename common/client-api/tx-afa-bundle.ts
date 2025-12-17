@@ -2,11 +2,11 @@
 //
 // Read
 //
-import { collections, db } from "@common/lib/db";
+import { db } from "@common/lib/db";
 import { Functions } from "@common/lib/fn";
 import { doc, getDoc, getDocs, query, Query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
-import { TxAfaBundle, TxAfaBundleQuery, TxAfaBundleRequest } from "@common/types/afa-bundle";
+import { type TxAfaBundle, type TxAfaBundleQuery, type TxAfaBundleRequest } from "@common/types/afa-bundle";
 
 const createQuery = (q: TxAfaBundleQuery): Query => {
     let Q = buildTxQuery(q);

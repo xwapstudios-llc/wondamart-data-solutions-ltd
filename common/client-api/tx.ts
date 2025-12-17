@@ -4,7 +4,7 @@
 //
 import {collections, db} from "@common/lib/db";
 import {doc, getDoc, getDocs} from "firebase/firestore";
-import {Tx, TxQuery} from "@common/types/tx";
+import { type Tx, type TxQuery } from "@common/types/tx";
 import { buildTxQuery } from "@common/lib/tx-query";
 
 const ClTx = {

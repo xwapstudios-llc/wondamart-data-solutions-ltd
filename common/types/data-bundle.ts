@@ -1,6 +1,6 @@
 
 import { Timestamp } from "firebase/firestore";
-import { Tx, TxQuery } from "./tx"
+import { type Tx, type TxQuery } from "./tx"
 
 //
 //  SubTypes

@@ -1,4 +1,4 @@
-import { Tx, TxQuery } from "./tx";
+import { type Tx, type TxQuery } from "./tx";
 
 //
 //  SubType

@@ -6,7 +6,7 @@
 
 import {collections, db} from "@common/lib/db";
 import {Functions} from "@common/lib/fn";
-import {UserInfoDocument, UserRegistrationRequest, UserWalletDocument} from "@common/types/user";
+import {type UserInfoDocument, type UserRegistrationRequest, type UserWalletDocument} from "@common/types/user";
 import {doc, getDoc, Timestamp, updateDoc} from "firebase/firestore";
 import {sendEmailVerification} from "firebase/auth"
 import {auth} from "@common/lib/auth";
