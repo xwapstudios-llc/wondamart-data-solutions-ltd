@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
     res.send("Hello World! from pay.wondamart.com");
 });
 
-app.get("/deposit/paystack", async (req, res) => {
+app.post("/deposit/paystack", async (req, res) => {
     const tx: Tx = req.body
     console.log("received tx for paystack", tx)
     const data = tx.data as TxDepositPaystackData;
