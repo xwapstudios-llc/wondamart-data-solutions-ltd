@@ -53,6 +53,7 @@ pnpm -v
 
 # Setup pnpm globally
 pnpm setup
+# shellcheck disable=SC1090
 source ~/.bashrc
 
 echo "Node.js and npm installation complete."
