@@ -23,7 +23,6 @@ echo ""
 echo ""
 echo " Reading WireGuard keys..."
 PRIVATE_KEY=$(sudo cat "$WG_CONFIG_DIR/privatekey")
-PUBLIC_KEY=$(sudo cat "$WG_CONFIG_DIR/publickey")
 
 # Create a basic WireGuard configuration file if it doesn't exist
 if [ ! -f "$WG_CONFIG_FILE" ]; then

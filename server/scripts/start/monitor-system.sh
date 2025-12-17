@@ -13,6 +13,6 @@ fi
 
 export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/wondamart/wondamart-data-solutions-ltd-firebase-adminsdk-fbsvc-d418aa8130.json
 # shellcheck disable=SC2164
-cd $WONDAMART_ROOT
+cd "$WONDAMART_ROOT"
 echo "Starting app"
 pnpm run start:monitor-system
