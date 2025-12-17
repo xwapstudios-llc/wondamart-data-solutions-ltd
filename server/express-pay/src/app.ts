@@ -8,13 +8,9 @@ if (config.nodeEnv === "development") {
     delete process.env.FIRESTORE_EMULATOR_HOST;
     delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
 }
-import {initializeApp, getApps, cert} from "firebase-admin/app";
+import {initializeApp, getApps} from "firebase-admin/app";
 
 
 if (!getApps().length) {
-    initializeApp({
-        credential: cert(
-            JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS as string)
-        ),
-    });
+    initializeApp();
 }
