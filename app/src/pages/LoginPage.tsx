@@ -18,7 +18,7 @@ const LoginPage: React.FC = () => {
                         Login to your account
                     </PageSubHeading>
                 </div>
-                <LoginForm/>
+                <LoginForm />
                 <div className="space-y-2">
                     <p className="text-center text-sm">
                         Don&apos;t have an account?{" "}

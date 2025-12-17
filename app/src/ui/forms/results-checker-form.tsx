@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -16,9 +16,7 @@ import {
     FormLabel,
     FormMessage
 } from "@/cn/components/ui/form.tsx";
-import type {CommonResultChecker} from "@common/types/common-settings";
 import {Loader2Icon} from "lucide-react";
-import {ClCommonSettings} from "@common/client-api/db-common-settings.ts";
 
 const resultsSchema = z.object({
     type: z.enum(["BECE", "WASSCE"], "Please select result type"),
@@ -29,12 +27,8 @@ const resultsSchema = z.object({
 type ResultsValues = z.infer<typeof resultsSchema>;
 
 const ResultsCheckerForm: React.FC = () => {
-    const {profile, setError} = useAppStore();
-    const [resultCheckerDoc, setResultCheckerDoc] = useState<CommonResultChecker>({
-        enabled: true,
-        unitPrice: 0,
-        commission: 0
-    });
+    const {profile, setError, commonSettings} = useAppStore();
+    const resultCheckerDoc = commonSettings.resultChecker;
     const [loading, setLoading] = useState(false);
 
     const form = useForm<ResultsValues>({
@@ -62,13 +56,6 @@ const ResultsCheckerForm: React.FC = () => {
             });
         }
     };
-
-    // Fetch Common Result Checker
-    useEffect(() => {
-        ClCommonSettings.read_resultChecker().then((res) => {
-            if (res) setResultCheckerDoc(res);
-        })
-    }, []);
 
     return (
         <Form {...form}>

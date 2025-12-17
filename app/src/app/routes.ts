@@ -7,6 +7,10 @@ const R = {
     terms: "/terms", // Todo: Implement terms and conditions page
     policy: "/policy",
 
+    help: "/help",
+    about: "/about",
+    faq: "/faq",
+
     auth: {
         forgotPassword: "/forgot-password",
         resetPassword: "/reset-password",
@@ -44,17 +48,17 @@ const R = {
 
             // Purchase history
             purchases: {
-                index: "/app/history/purchases",
-                dataBundles: "/app/history/purchases/data-bundles",
-                afaBundles: "/app/history/purchases/afa-bundles",
-                resultCheckers: "/app/history/purchases/result-checkers",
+                index: "app/history?type=purchase",
+                dataBundles: "/app/history?type=data-bundle",
+                afaBundles: "/app/history?type=afa-bundle",
+                resultCheckers: "/app/history?type=result-checker",
 
                 id: (id: string) => `/app/history/purchases/${id}`,
             },
 
             // Deposit history
             deposits: {
-                index: "/app/history/deposits",
+                index: "/app/history?type=deposit",
                 id: (id: string) => `/app/history/deposits/${id}`,
             },
         },

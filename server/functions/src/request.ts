@@ -56,9 +56,9 @@ const requestDataBundlePurchase = onCall(async (event) => {
             message: "Data Bundle order placed successfully",
         }
     } catch (e) {
+        await TxFn.update_status_failed(details.id);
         // if Failed, refund money.
         if (balance_modified) await UserFn.update_add_UserBalance(details.uid, details.amount);
-        await TxFn.update_status_failed(details.id);
 
         // Notify server to cancel order if placed Server
         await ServerFn.notify("tx_db");
@@ -120,9 +120,9 @@ export const requestAFABundlePurchase = onCall(async (event) => {
             message: "AFA Bundle order placed successfully",
         }
     } catch (e) {
+        await TxFn.update_status_failed(details.id);
         // if Failed, refund money.
         if (balance_modified) await UserFn.update_add_UserBalance(details.uid, details.amount);
-        await TxFn.update_status_failed(details.id);
 
         // Notify server to cancel order if placed
         await ServerFn.notify("tx_af");
@@ -182,9 +182,9 @@ export const requestResultCheckerPurchase = onCall(async (event) => {
             message: "Result Checker order placed successfully",
         }
     } catch (e) {
+        await TxFn.update_status_failed(details.id);
         // if Failed, refund money.
         if (balance_modified) await UserFn.update_add_UserBalance(details.uid, details.amount);
-        await TxFn.update_status_failed(details.id);
 
         // Notify server to cancel order if placed
         await ServerFn.notify("tx_db");

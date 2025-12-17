@@ -30,12 +30,7 @@ import ResultCheckerPurchase from "@/pages/app/purchase/resultChecker";
 
 // History
 import HistoryIndex from "@/pages/app/history/index";
-import HistoryPurchases from "@/pages/app/history/purchases/index";
-import HistoryDataBundles from "@/pages/app/history/purchases/dataBundles";
-import HistoryAfaBundles from "@/pages/app/history/purchases/afaBundles";
-import HistoryResultCheckers from "@/pages/app/history/purchases/resultCheckers";
 import HistoryPurchaseDetail from "@/pages/app/history/purchases/DetailPage";
-import HistoryDeposits from "@/pages/app/history/deposits/index";
 import HistoryDepositDetail from "@/pages/app/history/deposits/DetailPage";
 
 // Deposit
@@ -102,12 +97,7 @@ const App = () => {
 
                         {/* History */}
                         <Route path={R.app.history.index} element={<HistoryIndex/>}/>
-                        <Route path={R.app.history.purchases.index} element={<HistoryPurchases/>}/>
-                        <Route path={R.app.history.purchases.dataBundles} element={<HistoryDataBundles/>}/>
-                        <Route path={R.app.history.purchases.afaBundles} element={<HistoryAfaBundles/>}/>
-                        <Route path={R.app.history.purchases.resultCheckers} element={<HistoryResultCheckers/>}/>
                         <Route path={R.app.history.purchases.id(":id")} element={<HistoryPurchaseDetail/>}/>
-                        <Route path={R.app.history.deposits.index} element={<HistoryDeposits/>}/>
                         <Route path={R.app.history.deposits.id(":id")} element={<HistoryDepositDetail/>}/>
 
                         {/* Deposit */}

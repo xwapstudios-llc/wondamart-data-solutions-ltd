@@ -5,13 +5,12 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {cn} from "@/cn/lib/utils";
 import {Input} from "@/cn/components/ui/input";
 import {Button} from "@/cn/components/ui/button";
-import {User2Icon} from "lucide-react";
 import {useAppStore} from "@/lib/useAppStore";
 import {Link, useNavigate} from "react-router-dom";
 import {R} from "@/app/routes";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/cn/components/ui/form";
 import LoadingView from "../components/views/LoadingView";
-import {Avatar, AvatarFallback, AvatarImage} from "@/cn/components/ui/avatar";
+import ProfilePill from "@/ui/components/user/ProfilePill.tsx";
 
 // ✅ Validation schema
 const loginSchema = z.object({
@@ -52,22 +51,7 @@ const LoginForm: React.FC<LoginFormProps> = ({className, ...props}) => {
                 {/* Social buttons */}
                 {user ? (
                     <div className="space-y-4">
-                        <div className="flex items-center gap-4 border rounded-full p-2 bg-muted/25">
-                            <Avatar className="size-16">
-                                <AvatarFallback>
-                                    <User2Icon className={"text-muted-foreground"}/>
-                                </AvatarFallback>
-                                <AvatarImage src={user.photoURL ?? ""}/>
-                            </Avatar>
-                            <div className="space-y-1">
-                                <p className="font-medium">
-                                    {user.displayName}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                    {user.email}
-                                </p>
-                            </div>
-                        </div>
+                        <ProfilePill />
                         <Button
                             className="w-full"
                             size={"lg"}

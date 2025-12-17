@@ -242,8 +242,8 @@ export const requestEmailVerification = onCall(async (event) => {
     // Do checks
     const check = new ThrowCheck(uid);
     await check.init();
-    await check.isUser();
-    await check.isUserDisabled("A disabled account cannot be verified");
+    check.isUser();
+    check.isUserDisabled("A disabled account cannot be verified");
     const user = await auth.getUser(uid);
     if (user.emailVerified) {
         throw new HttpsError(
@@ -255,7 +255,7 @@ export const requestEmailVerification = onCall(async (event) => {
     try {
         if (user && user.email != null && !user.emailVerified) {
             auth.generateEmailVerificationLink(user.email, {
-                url: `http://localhost:5173/auth/verify-email/${user.email}`,
+                url: `https://wondamartgh.com/auth/verify-email/${user.email}`,
             }).then((result) => {
                 console.log("This is the result for email verification.");
                 console.log(result);

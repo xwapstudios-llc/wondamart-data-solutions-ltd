@@ -4,11 +4,11 @@ import {
     connectFunctionsEmulator
 } from "firebase/functions";
 import app from "@common/lib/app";
-import {requestFirstAdmin} from "@server/admin";
-import {requestActivateAccount} from "@server/user";
 
 const fn = getFunctions(app);
-connectFunctionsEmulator(fn, "localhost", 5001);
+// if (process.env["NODE_ENV"] === "development") {
+//     connectFunctionsEmulator(fn, "localhost", 5001);
+// }
 
 const Functions = {
     User: {

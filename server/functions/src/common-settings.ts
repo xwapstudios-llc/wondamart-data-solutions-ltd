@@ -18,10 +18,10 @@ export const initCommonSettings = onCall(async (event) => {
     await check.init();
     check.isUser();
     check.isUserDisabled();
-    check.isActivated();
+    // check.isActivated();
 
     // Check if the user has admin privileges
-    check.isAdmin();
+    // check.isAdmin();
 
 
     try {

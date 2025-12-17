@@ -8,8 +8,10 @@ import {
 import app from "@common/lib/app";
 import {FirebaseError} from "firebase/app";
 
-export const auth = getAuth(app)
-connectAuthEmulator(auth, "http://localhost:9099");
+export const auth = getAuth(app);
+// if (process.env["NODE_ENV"] === "development") {
+//     connectAuthEmulator(auth, "http://localhost:9099");
+// }
 
 
 function cleanFirebaseError(e: FirebaseError): string {

@@ -26,7 +26,7 @@ const CommissionsIndex: React.FC = () => {
             }
         }
         fetch().then().catch(e => console.error(e)).finally(() => setLoading(false));
-    }, [commissions, user]);
+    }, [user]);
 
     return (
         <Page>
