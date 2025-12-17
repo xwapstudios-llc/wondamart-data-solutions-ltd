@@ -37,6 +37,7 @@ function handleTxFailed(tx: Tx) {
 async function handleTxProcessing(tx: Tx) {
     console.log("handleTxProcessing", tx);
     const data = tx.data as TxDepositPaystackData;
+    console.log("Starting to handle transaction... > ", data);
     try {
         const res = await test_paystack({
             amount: currency_to_paystack_amount(tx.amount) + (currency_to_paystack_amount(tx.amount) * 0.02),
@@ -69,42 +70,42 @@ const doc_snapshots = (status: TxStatus) => {
 }
 
 // Watch on tx created
-doc_snapshots("pending")
-    .onSnapshot((snap) => {
-        snap.docChanges().forEach(async (change) => {
-            if (change.type === "added") {
-                const tx = change.doc.data() as Tx;
-                handleTxAdded(tx);
-            }
-        });
-    });
+// doc_snapshots("pending")
+//     .onSnapshot((snap) => {
+//         snap.docChanges().forEach(async (change) => {
+//             if (change.type === "added") {
+//                 const tx = change.doc.data() as Tx;
+//                 handleTxAdded(tx);
+//             }
+//         });
+//     });
 
 // Watch on modified to failed
-doc_snapshots("failed")
-    .onSnapshot((snap) => {
-        snap.docChanges().forEach(async (change) => {
-            if (change.type === "added") {
-                const tx = change.doc.data() as Tx;
-                handleTxFailed(tx);
-            }
-        });
-    });
+// doc_snapshots("failed")
+//     .onSnapshot((snap) => {
+//         snap.docChanges().forEach(async (change) => {
+//             if (change.type === "added") {
+//                 const tx = change.doc.data() as Tx;
+//                 handleTxFailed(tx);
+//             }
+//         });
+//     });
 
 
 // Watch on modified to canceled
-db.collection(collections.tx)
-    .where("status", "==", "canceled")
-    .where("type", "==", "deposit")
-    .where("data.type", "==", "paystack")
-    .where("date", ">=", fourHoursAgo())
-    .onSnapshot((snap) => {
-        snap.docChanges().forEach(async (change) => {
-            if (change.type === "added") {
-                const tx = change.doc.data() as Tx;
-                handleTxCanceled(tx);
-            }
-        });
-    });
+// db.collection(collections.tx)
+//     .where("status", "==", "canceled")
+//     .where("type", "==", "deposit")
+//     .where("data.type", "==", "paystack")
+//     .where("date", ">=", fourHoursAgo())
+//     .onSnapshot((snap) => {
+//         snap.docChanges().forEach(async (change) => {
+//             if (change.type === "added") {
+//                 const tx = change.doc.data() as Tx;
+//                 handleTxCanceled(tx);
+//             }
+//         });
+//     });
 
 
 // Watch on modified to processing
