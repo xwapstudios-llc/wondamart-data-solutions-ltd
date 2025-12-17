@@ -1,6 +1,8 @@
 import admin from "firebase-admin";
 import fs from "fs/promises";
 import path from "path";
+import {DataBundle} from "../../../common/types/data-bundle";
+import {AdminDataBundles} from "../../../common/admin-api/db-data-bundle";
 
 // ---------- CONFIG ----------
 const COLLECTION_NAME = "data-bundles";
@@ -38,7 +40,19 @@ async function exportCollectionToJson() {
     console.log(`✔ Export complete: ${filePath}`);
 }
 
-exportCollectionToJson().catch((err) => {
-    console.error("✖ Export failed:", err);
-    process.exit(1);
-});
+// exportCollectionToJson().catch((err) => {
+//     console.error("✖ Export failed:", err);
+//     process.exit(1);
+// });
+
+async function publish() {
+    const filePath = path.join(OUTPUT_DIR, OUTPUT_FILE);
+    const data = await fs.readFile(filePath, { encoding: "utf-8" });
+    const dataBundles: DataBundle[] = JSON.parse(data);
+
+    for (const bundle of dataBundles) {
+        await AdminDataBundles.create(bundle);
+    }
+}
+
+publish().then();

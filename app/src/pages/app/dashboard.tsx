@@ -3,9 +3,9 @@ import Page from "@/ui/page/Page.tsx"
 import PageHeading from "@/ui/page/PageHeading.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
 import {buttonVariants} from "@/cn/components/ui/button.tsx";
-import {BellIcon, PlusIcon} from "lucide-react";
+import {BellIcon, PackageXIcon, PlusIcon} from "lucide-react";
 import {toCurrency} from "@/lib/icons.ts";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {R} from "@/app/routes.ts";
 import {cn} from "@/cn/lib/utils.ts";
 import TxMiniCardSync from "@/ui/components/cards/tx/TxMiniCardSync.tsx";
@@ -14,9 +14,11 @@ import DashboardSection from "@/ui/components/cards/dashboard/DashboardSection.t
 import NoItems from "@/ui/components/cards/NoItems.tsx";
 import ActivityHighlights from "@/ui/components/cards/dashboard/ActivityHighlights.tsx";
 import OverviewGraph from "@/ui/components/OverviewGraph.tsx";
+import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
 
 const Dashboard: React.FC = () => {
-    const {profile, wallet} = useAppStore();
+    const {profile, wallet, claims} = useAppStore();
+    const navigate = useNavigate()
 
     return (
         <Page className={"pt-2 space-y-4"}>
@@ -50,40 +52,55 @@ const Dashboard: React.FC = () => {
                     <PlusIcon strokeWidth={1.5}/>
                 </Link>
             </div>
+            {
+                claims?.isActivated ? (
+                    <>
 
-            {/*Highlights*/}
-            <DashboardSection
-                title={"Highlights"}
-                link={{to: R.app.purchase.index, label: "Purchase"}}
-                className={""}
-            >
-                {/*<StockHighlights className={"mt-1"} />*/}
-                <OverviewGraph className={"mt-1"} />
-            </DashboardSection>
+                        {/*Highlights*/}
+                        <DashboardSection
+                            title={"Highlights"}
+                            link={{to: R.app.purchase.index, label: "Purchase"}}
+                            className={""}
+                        >
+                            {/*<StockHighlights className={"mt-1"} />*/}
+                            <OverviewGraph className={"mt-1"} />
+                        </DashboardSection>
 
-            {/*Activity*/}
-            <DashboardSection
-                title={"Activity"}
-            >
-                <ActivityHighlights />
-            </DashboardSection>
+                        {/*Activity*/}
+                        <DashboardSection
+                            title={"Activity"}
+                        >
+                            <ActivityHighlights />
+                        </DashboardSection>
 
-            {/*Recent Transactions*/}
-            <DashboardSection
-                title={"Recent Transactions"}
-                link={{to: R.app.history.purchases.index, label: "See all"}}
-                className={"space-y-2"}
-            >
-                {
-                    profile?.recentTx == undefined || profile.recentTx.length == 0 ? (
-                        <NoItems>
-                            No recent transactions
-                        </NoItems>
-                    ) : profile.recentTx.map((tx) => (
-                        <TxMiniCardSync key={tx} txID={tx} />
-                    ))
-                }
-            </DashboardSection>
+                        {/*Recent Transactions*/}
+                        <DashboardSection
+                            title={"Recent Transactions"}
+                            link={{to: R.app.history.purchases.index, label: "See all"}}
+                            className={"space-y-2"}
+                        >
+                            {
+                                profile?.recentTx == undefined || profile.recentTx.length == 0 ? (
+                                    <NoItems>
+                                        No recent transactions
+                                    </NoItems>
+                                ) : profile.recentTx.map((tx) => (
+                                    <TxMiniCardSync key={tx} txID={tx} />
+                                ))
+                            }
+                        </DashboardSection>
+                    </>
+                ) : (
+                    <ActivationCard
+                        className={"w-full md:w-lg"}
+                        Icon={PackageXIcon}
+                        title={"Account Activation"}
+                        cta={{label: "Go to Activation", action: () => navigate(R.app.user.activate)}}
+                    >
+                        You are not activated to use all of wondamart services.
+                    </ActivationCard>
+                )
+            }
         </Page>
     );
 };

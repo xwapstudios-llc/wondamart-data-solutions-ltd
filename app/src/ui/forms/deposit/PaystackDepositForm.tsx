@@ -136,10 +136,14 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
 
                 <FormItem>
                     <FormLabel>Expected Amount</FormLabel>
-                    <FormControl>
-                        <Input className={"h-12"} type={"number"} placeholder={"5.5"} value={form.watch("amount") + (form.watch("amount") * 0.02)} />
-                    </FormControl>
-                    <FormDescription>Amount of money in cedies to confirm on your phone.</FormDescription>
+                    <Input
+                        className={"h-12"}
+                        type={"number"}
+                        placeholder={"5.5"}
+                        disabled={true}
+                        value={(form.watch("amount") + (form.watch("amount") * 0.02)).toFixed(2)}
+                    />
+                    <FormDescription>Amount of money in cedis to confirm on your phone.</FormDescription>
                     <FormMessage/>
                 </FormItem>
 
