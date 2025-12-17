@@ -1,12 +1,14 @@
 import express from "express";
 import config from "@common-server/config";
-import {TxDepositPaystackData} from "@common/types/account-deposit";
-import {test_paystack} from "@/paystack";
-import {currency_to_paystack_amount, networkID_to_paystack_provider} from "@/paystack/charge";
-import {TxFn} from "@common-server/fn/tx/tx-fn";
-import {UserFn} from "@common-server/fn/user-fn";
+import { TxDepositPaystackData } from "@common/types/account-deposit";
+import { test_paystack } from "@/paystack";
+import {
+    currency_to_paystack_amount,
+    networkID_to_paystack_provider,
+} from "@/paystack/charge";
+import { TxFn } from "@common-server/fn/tx/tx-fn";
+import { UserFn } from "@common-server/fn/user-fn";
 import crypto from "crypto";
-
 
 const app = express();
 app.use(express.json());
@@ -28,13 +30,12 @@ app.post("/deposit/paystack", async (req, res) => {
     console.log("Received tx for Paystack:", tx);
 
     try {
-        // await TxFn.update_status_processing(tx.id);
+        await TxFn.update_status_processing(tx.id);
 
         const data = tx.data as TxDepositPaystackData;
 
         const response = await test_paystack({
-            amount:
-                currency_to_paystack_amount(tx.amount) * 1.02, // fee uplift
+            amount: currency_to_paystack_amount(tx.amount) * 1.02, // fee uplift
             currency: "GHS",
             email: data.email,
             mobile_money: {
@@ -45,11 +46,12 @@ app.post("/deposit/paystack", async (req, res) => {
         });
 
         return res.status(200).json(response);
-
     } catch (err) {
         console.error("Paystack init failed:", err);
-        // await TxFn.update_status_failed(tx.id);
-        return res.status(500).json({ error: "Paystack initialization failed" });
+        await TxFn.update_status_failed(tx.id);
+        return res
+            .status(500)
+            .json({ error: "Paystack initialization failed" });
     }
 });
 
@@ -87,9 +89,8 @@ app.post(
         await UserFn.update_UserWalletBalance(tx.uid, tx.amount);
 
         return res.sendStatus(200);
-    }
+    },
 );
-
 
 app.listen(port, () => {
     console.log(`pay.wondamartgh.com running at http://${host}:${port}`);

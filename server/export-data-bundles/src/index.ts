@@ -56,4 +56,4 @@ async function publish() {
     }
 }
 
-publish().then();
+publish().then().catch(e => console.log(e));
