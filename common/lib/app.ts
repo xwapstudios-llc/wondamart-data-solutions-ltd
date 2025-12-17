@@ -6,13 +6,12 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyAUei-Afhvz4ABbdasZmpMG5gHs92TIh80",
-    authDomain: "wondamart-data-solutions.firebaseapp.com",
-    projectId: "wondamart-data-solutions",
-    storageBucket: "wondamart-data-solutions.firebasestorage.app",
-    messagingSenderId: "441830393869",
-    appId: "1:441830393869:web:518fb900f8c78cc7b0ed44",
-    measurementId: "G-D19PYYRQ7N",
+    apiKey: "AIzaSyCgir0Wxgs3BbWIAHrh5JTrozDMIYeuR-E",
+    authDomain: "wondamart-data-solutions-ltd.firebaseapp.com",
+    projectId: "wondamart-data-solutions-ltd",
+    storageBucket: "wondamart-data-solutions-ltd.firebasestorage.app",
+    messagingSenderId: "930673735196",
+    appId: "1:930673735196:web:a6a7a752f7aa1b30e351d9",
 };
 
 // Initialize Firebase
