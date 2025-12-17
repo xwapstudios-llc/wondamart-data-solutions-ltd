@@ -70,15 +70,17 @@ const doc_snapshots = (status: TxStatus) => {
 }
 
 // Watch on tx created
-// doc_snapshots("pending")
-//     .onSnapshot((snap) => {
-//         snap.docChanges().forEach(async (change) => {
-//             if (change.type === "added") {
-//                 const tx = change.doc.data() as Tx;
-//                 handleTxAdded(tx);
-//             }
-//         });
-//     });
+doc_snapshots("pending")
+    .onSnapshot((snap) => {
+        snap.docChanges().forEach(async (change) => {
+            console.log("Status pending for ", change.doc.data())
+            if (change.type === "added") {
+                console.log("Into added on paystack pending");
+                const tx = change.doc.data() as Tx;
+                handleTxAdded(tx);
+            }
+        });
+    });
 
 // Watch on modified to failed
 // doc_snapshots("failed")
