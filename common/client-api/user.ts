@@ -8,6 +8,8 @@ import {collections, db} from "@common/lib/db";
 import {Functions} from "@common/lib/fn";
 import {UserInfoDocument, UserRegistrationRequest, UserWalletDocument} from "@common/types/user";
 import {doc, getDoc, Timestamp, updateDoc} from "firebase/firestore";
+import {sendEmailVerification} from "firebase/auth"
+import {auth} from "@common/lib/auth";
 
 const ClUser = {
     create: async (data: UserRegistrationRequest): Promise<void> => {
@@ -29,8 +31,15 @@ const ClUser = {
         }
     },
     verifyEmail: async (): Promise<void> => {
+        const user = auth.currentUser;
+        if (!user) {
+            return Promise.reject("No authenticated user found");
+        }
         try {
-            await Functions.User.requestEmailVerification();
+            await sendEmailVerification(user, {
+                url: `https://wondamartgh.com/auth/verify-email/${user.email}`
+            });
+            // Toast email verification sent
             return Promise.resolve();
         } catch (err) {
             // @ts-expect-error message might not be available on error
