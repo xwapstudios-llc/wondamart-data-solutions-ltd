@@ -6,6 +6,14 @@ import {TxAccountDepositFn} from "@common-server/fn/tx/tx-account-deposit-fn.js"
 import {ServerFn} from "@common-server/fn/server/server-fn.js";
 
 import axios from "axios";
+const client = axios.create({
+    baseURL: "https://pay.wondamartgh.com",
+    timeout: 15000,
+    headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    },
+});
 
 export const requestDepositPaystack = onCall(async (event) => {
     // Check if the user is authenticated.
@@ -45,22 +53,13 @@ export const requestDepositPaystack = onCall(async (event) => {
     // }
 
     // Start a transaction document
-    await TxAccountDepositFn.createAndCommit.paystack(d);
+    const details = await TxAccountDepositFn.createAndCommit.paystack(d);
     // Tell server to continue processing the deposit
     await ServerFn.notify("tx_dp_paystack");
 
-    const client = axios.create({
-        baseURL: "https://api.wondamartgh.com",
-        timeout: 15000,
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        },
-    });
-
     const response = await client.post(
-        "/deposti/paystack",
-        d
+        "/deposit/paystack",
+        details
     );
     if (response.status === 500) {
         return response;
@@ -109,8 +108,20 @@ export const requestDepositSend = onCall(async (event) => {
     // }
 
     // Start a transaction document
-    await TxAccountDepositFn.createAndCommit.send(d);
+    const details = await TxAccountDepositFn.createAndCommit.send(d);
     // Tell server to continue processing the deposit
+
+    const response = await client.post(
+        "/deposit/send",
+        details
+    );
+    if (response.status === 500) {
+        return response;
+    } else {
+        return {
+            statusCode: response.status,
+        };
+    }
 });
 
 export const requestDepositMoMo = onCall(async (event) => {
@@ -151,6 +162,18 @@ export const requestDepositMoMo = onCall(async (event) => {
     // }
 
     // Start a transaction document
-    await TxAccountDepositFn.createAndCommit.momo(d);
+    const details = await TxAccountDepositFn.createAndCommit.momo(d);
     // Tell server to continue processing the deposit
+
+    const response = await client.post(
+        "/deposit/momo",
+        details
+    );
+    if (response.status === 500) {
+        return response;
+    } else {
+        return {
+            statusCode: response.status,
+        };
+    }
 });
