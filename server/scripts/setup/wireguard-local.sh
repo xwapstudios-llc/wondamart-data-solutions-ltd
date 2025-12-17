@@ -5,7 +5,7 @@ echo "Setting up WireGuard configuration..."
 WG_CONFIG_DIR="/etc/wireguard"
 WG_CONFIG_FILE="$WG_CONFIG_DIR/wg0.conf"
 
-GCP_PUBLIC_KEY="/AdtcG1U0wWmWucvZGtDgf+hwmF5atJwOATrw9BvESE="
+GCP_PUBLIC_KEY="z3JRNbhSDTI+e2RmPoAIndqozRy1nKr2kW0nlgisHwo="
 GCP_ENDPOINT="136.111.11.216:51820"
 WG_INTERNAL_IP="10.8.0.2"
 WG_PEER_IP="10.8.0.1"

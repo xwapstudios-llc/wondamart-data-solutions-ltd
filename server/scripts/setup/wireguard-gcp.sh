@@ -5,7 +5,7 @@ echo "Setting up WireGuard configuration..."
 WG_CONFIG_DIR="/etc/wireguard"
 WG_CONFIG_FILE="$WG_CONFIG_DIR/wg0.conf"
 
-LOCAL_PUBLIC_KEY="cdOTnILwA1yKhMk/YgR/Vzod+PrkMhBlQbTPqHCzSls="
+LOCAL_PUBLIC_KEY="9xXU1UQXmWnA4BUl+8/T2ymGDNUFTRGlSaGiwbikEgA="
 LISTEN_PORT="51820"
 WG_INTERNAL_IP="10.8.0.1"
 WG_PEER_IP="10.8.0.2"
