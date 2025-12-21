@@ -1,5 +1,6 @@
-import {HttpsError, onCall} from "firebase-functions/v2/https";
+import {onCall} from "firebase-functions/v2/https";
 import {TxDepositMoMoRequest, TxDepositPaystackRequest, TxDepositSendRequest} from "@common/types/account-deposit.js";
+import { httpResponse } from "@common/types/request.js";
 import {ThrowCheck} from "./internals/throw-check-fn.js";
 import {CommonSettingsFn} from "@common-server/fn/common-settings-fn.js";
 import {TxAccountDepositFn} from "@common-server/fn/tx/tx-account-deposit-fn.js";
@@ -19,7 +20,7 @@ export const requestDepositPaystack = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated.",
         );
@@ -39,14 +40,14 @@ export const requestDepositPaystack = onCall(async (event) => {
     // Read settings
     const paymentSettings = await CommonSettingsFn.read_paymentMethods();
     if (!paymentSettings.paystack.enabled) {
-        throw new HttpsError(
+        throw httpResponse(
             "aborted",
             "This payment method is no available at the moment."
         )
     }
 
     // if (!await ServerFn.isActive()) {
-    //     throw new HttpsError(
+    //     throw httpResponse(
     //         "aborted",
     //         "Payment server is currently not available."
     //     )
@@ -61,20 +62,14 @@ export const requestDepositPaystack = onCall(async (event) => {
         "/deposit/paystack",
         details
     );
-    if (response.status === 500) {
-        return response;
-    } else {
-        return {
-            statusCode: response.status,
-        };
-    }
+    return response.data;
 });
 
 export const requestDepositSend = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated.",
         );
@@ -94,14 +89,14 @@ export const requestDepositSend = onCall(async (event) => {
     // Read settings
     const paymentSettings = await CommonSettingsFn.read_paymentMethods();
     if (!paymentSettings.send.enabled) {
-        throw new HttpsError(
+        throw httpResponse(
             "aborted",
             "This payment method is no available at the moment."
         )
     }
 
     // if (!await ServerFn.isActive()) {
-    //     throw new HttpsError(
+    //     throw httpResponse(
     //         "aborted",
     //         "Payment server is currently not available."
     //     )
@@ -128,7 +123,7 @@ export const requestDepositMoMo = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated.",
         );
@@ -148,14 +143,14 @@ export const requestDepositMoMo = onCall(async (event) => {
     // Read settings
     const paymentSettings = await CommonSettingsFn.read_paymentMethods();
     if (!paymentSettings.momo.enabled) {
-        throw new HttpsError(
+        throw httpResponse(
             "aborted",
             "This payment method is no available at the moment."
         )
     }
 
     // if (!await ServerFn.isActive()) {
-    //     throw new HttpsError(
+    //     throw httpResponse(
     //         "aborted",
     //         "Payment server is currently not available."
     //     )

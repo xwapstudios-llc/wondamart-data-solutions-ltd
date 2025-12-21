@@ -20,6 +20,8 @@ import {Button} from "@/cn/components/ui/button.tsx";
 import {Loader2Icon} from "lucide-react";
 import {ClTxAccountDeposit} from "@common/client-api/tx-account-deposit.ts";
 import Code from "@/ui/components/typography/Code.tsx";
+import {useNavigate} from "react-router-dom";
+import {R} from "@/app/routes.ts";
 
 
 const formSchema = z.object({
@@ -34,6 +36,7 @@ type PaystackDepositFormProps = React.HTMLAttributes<HTMLFormElement>;
 const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, children, ...props}) => {
     const {profile, setError, commonSettings} = useAppStore();
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
     const form = useForm<formValues>({
         resolver: zodResolver(formSchema) as never,
         defaultValues: {
@@ -48,15 +51,29 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
             setLoading(true);
             if (profile) {
                 try {
-                    await ClTxAccountDeposit.create.paystack({
+                    const res = await ClTxAccountDeposit.create.paystack({
                         uid: profile.id,
                         email: profile.email,
                         phoneNumber: values.phone,
                         network: values.network as NetworkId,
                         amount: values.amount,
                     })
-                    //Todo: Await response and check if OTP is required.
-                    // If required, navigate to OTP page for confirmation
+                    switch (res.status) {
+                        case "send_otp": {
+                            navigate(R.auth.otp);
+                            break;
+                        }
+                        case "ok": {
+                            console.log("success", res)
+                            break;
+                        }
+                        case "pay_offline": {
+                            console.log("pay_offline", res);
+                            break;
+                        }
+                        default:
+                            break;
+                    }
                     form.reset();
                 } catch (err) {
                     setError(err as string);

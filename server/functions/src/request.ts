@@ -1,5 +1,6 @@
 import { TxDataBundleRequest } from "@common/types/data-bundle.js";
-import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { onCall } from "firebase-functions/v2/https";
+import { httpResponse } from "@common/types/request.js";
 import { ThrowCheck } from "./internals/throw-check-fn.js";
 import {TxDataBundleFn} from "@common-server/fn/tx/tx-data-bundle-fn.js";
 import {TxFn} from "@common-server/fn/tx/tx-fn.js";
@@ -14,7 +15,7 @@ const requestDataBundlePurchase = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated.",
         );
@@ -50,11 +51,11 @@ const requestDataBundlePurchase = onCall(async (event) => {
 
         await TxFn.update_status_completed(details.id); // Todo: remove;
 
-        return {
-            status: "success",
-            details: details,
-            message: "Data Bundle order placed successfully",
-        }
+        return httpResponse(
+            "ok",
+            "Data Bundle order placed successfully",
+            details
+        )
     } catch (e) {
         await TxFn.update_status_failed(details.id);
         // if Failed, refund money.
@@ -63,8 +64,8 @@ const requestDataBundlePurchase = onCall(async (event) => {
         // Notify server to cancel order if placed Server
         await ServerFn.notify("tx_db");
 
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "Something went wrong while processing your order."
         )
     }
@@ -77,7 +78,7 @@ export const requestAFABundlePurchase = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated.",
         );
@@ -114,11 +115,11 @@ export const requestAFABundlePurchase = onCall(async (event) => {
 
         await TxFn.update_status_completed(details.id); // Todo: remove;
 
-        return {
-            status: "success",
-            details: details,
-            message: "AFA Bundle order placed successfully",
-        }
+        return httpResponse(
+            "ok",
+            "AFA Bundle order placed successfully",
+            details
+        )
     } catch (e) {
         await TxFn.update_status_failed(details.id);
         // if Failed, refund money.
@@ -127,8 +128,8 @@ export const requestAFABundlePurchase = onCall(async (event) => {
         // Notify server to cancel order if placed
         await ServerFn.notify("tx_af");
 
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "Something went wrong while processing your order."
         )
     }
@@ -140,7 +141,7 @@ export const requestResultCheckerPurchase = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated.",
         );
@@ -176,11 +177,11 @@ export const requestResultCheckerPurchase = onCall(async (event) => {
 
         await TxFn.update_status_completed(details.id); // Todo: remove;
 
-        return {
-            status: "success",
-            details: details,
-            message: "Result Checker order placed successfully",
-        }
+        return httpResponse(
+            "ok",
+            "Result Checker order placed successfully",
+            details
+        )
     } catch (e) {
         await TxFn.update_status_failed(details.id);
         // if Failed, refund money.
@@ -189,8 +190,8 @@ export const requestResultCheckerPurchase = onCall(async (event) => {
         // Notify server to cancel order if placed
         await ServerFn.notify("tx_db");
 
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "Something went wrong while processing your order."
         )
     }

@@ -1,7 +1,7 @@
-import {HttpsError} from "firebase-functions/https";
 import {getAuth, UserRecord} from "firebase-admin/auth";
 import {UserClaims, UserWalletDocument} from "@common/types/user.js";
 import {UserFn} from "@common-server/fn/user-fn.js";
+import {httpResponse} from "@common/types/request.js"
 
 const auth = getAuth();
 
@@ -30,7 +30,8 @@ class ThrowCheck {
 
     isUser(message?: string) {
         if (!this._isUser()) {
-            throw new HttpsError(
+            throw httpResponse
+            (
                 "unauthenticated",
                 message ? message : "User does not exist",
             )
@@ -39,7 +40,8 @@ class ThrowCheck {
 
     isUserDisabled(message?: string) {
         if (this.user?.disabled) {
-            throw new HttpsError(
+            throw httpResponse
+            (
                 "permission-denied",
                 message ? message : "User is disabled",
             )
@@ -52,7 +54,8 @@ class ThrowCheck {
 
     isActivated(message?: string) {
         if (!this._isActivated()) {
-            throw new HttpsError(
+            throw httpResponse
+            (
                 "permission-denied",
                 message ? message : "User is not activated to use this service"
             )
@@ -61,7 +64,8 @@ class ThrowCheck {
 
     isAdmin(message?: string) {
         if (!this.userClaims?.isAdmin) {
-            throw new HttpsError(
+            throw httpResponse
+            (
                 "permission-denied",
                 message ? message : "User is not admin",
             )
@@ -73,7 +77,8 @@ class ThrowCheck {
             this.userWallet = await UserFn.read_UserWallet(this.uid);
         }
         if (!this.userWallet) {
-            throw new HttpsError(
+            throw httpResponse
+            (
                 "aborted",
                 message ? message : "Unable to read user wallet for processing."
             )
@@ -99,7 +104,8 @@ class ThrowCheck {
         const has_enough = await this._hasEnoughBalance(amount);
         console.log("Has enough balance, ", has_enough);
         if (!has_enough) {
-            throw new HttpsError(
+            throw httpResponse
+            (
                 "cancelled",
                 message ? message : "User does not have enough balance"
             )
@@ -109,11 +115,12 @@ class ThrowCheck {
 
 const ThrowCheckFn = {
     async isUser(uid: string, message?: string) {
-        // Find the user requesting the new admin registration;
+        // Find the user requesting the admin registration;
         const user = await auth.getUser(uid);
 
         if (!user) {
-            throw new HttpsError(
+            throw httpResponse
+            (
                 "permission-denied",
                 message ? message : `User with uid:${uid} does not exist.`
             )
@@ -122,7 +129,8 @@ const ThrowCheckFn = {
     async userAlreadyExistsByEmail(email: string, message?: string) {
         const existingUser = await auth.getUserByEmail(email).catch(() => null);
         if (existingUser) {
-            throw new HttpsError(
+            throw httpResponse
+            (
                 "already-exists",
                 message ? message : `User with email ${email} already exists.`
             );
@@ -131,7 +139,8 @@ const ThrowCheckFn = {
     async userAlreadyExistsByPhone(phoneNumber: string, message?: string) {
         const existingUserByPhone = await auth.getUserByPhoneNumber(UserFn.preparePhoneNumber(phoneNumber) ?? phoneNumber).catch(() => null);
         if (existingUserByPhone) {
-            throw new HttpsError(
+            throw httpResponse
+            (
                 "already-exists",
                 message ? message : `User with phone number ${phoneNumber} already exists.`
             );
@@ -139,8 +148,7 @@ const ThrowCheckFn = {
     },
 
     claims: {
-        isActivated(uid: string) {
-        }
+        isActivated(uid: string) {}
     }
 }
 

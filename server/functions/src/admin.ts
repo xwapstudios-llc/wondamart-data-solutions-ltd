@@ -1,5 +1,6 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { onCall } from "firebase-functions/v2/https";
 import {UserClaims, UserClaimsUpdate} from "@common/types/user.js";
+import { httpResponse } from "@common/types/request.js";
 
 import { getAuth } from "firebase-admin/auth";
 import {FieldValue} from "firebase-admin/firestore";
@@ -12,7 +13,7 @@ export const requestFirstAdmin = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated."
         );
@@ -35,16 +36,16 @@ export const requestFirstAdmin = onCall(async (event) => {
         await UserFn.claims.makeAdmin(uid);
 
         // Return a success status to the client.
-        return {
-            status: "success",
-            message: `User ${uid} is now an admin`,
-        };
+        return httpResponse(
+            "ok",
+            `User ${uid} is now an admin`
+        );
     } catch (error) {
         // Log the error for server-side debugging.
         console.error("Error making user admin:", error);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred. Please try again."
         );
     }
@@ -54,7 +55,7 @@ export const requestMakeAdmin = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated."
         );
@@ -106,16 +107,16 @@ export const requestMakeAdmin = onCall(async (event) => {
         } as UserClaims);
 
         // Return a success status to the client.
-        return {
-            status: "success",
-            message: `User ${uid} is now an admin`,
-        };
+        return httpResponse(
+            "ok",
+            `User ${uid} is now an admin`
+        );
     } catch (error) {
         // Log the error for server-side debugging.
         console.error("Error making user admin:", error);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred. Please try again."
         );
     }
@@ -125,7 +126,7 @@ export const requestUpdateAdmin = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated."
         );
@@ -163,16 +164,16 @@ export const requestUpdateAdmin = onCall(async (event) => {
         } as UserClaims);
 
         // Return a success status to the client.
-        return {
-            status: "success",
-            message: `User ${data.uid} is updated successfully.`,
-        };
+        return httpResponse(
+            "ok",
+            `User ${data.uid} is updated successfully.`
+        );
     } catch (error) {
         // Log the error for server-side debugging.
         console.error("Error updating user admin:", error);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred. Please try again."
         );
     }
@@ -182,7 +183,7 @@ export const requestRevokeAdmin = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated."
         );
@@ -223,16 +224,16 @@ export const requestRevokeAdmin = onCall(async (event) => {
         } as UserClaims);
 
         // Return a success status to the client.
-        return {
-            status: "success",
-            message: `User ${uid} is no longer an admin`,
-        };
+        return httpResponse(
+            "ok",
+            `User ${uid} is no longer an admin`
+        );
     } catch (error) {
         // Log the error for server-side debugging.
         console.error("Error revoking admin:", error);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred. Please try again."
         );
     }

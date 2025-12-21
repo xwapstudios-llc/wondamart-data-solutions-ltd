@@ -9,6 +9,7 @@ import {
 import { TxFn } from "@common-server/fn/tx/tx-fn";
 import { UserFn } from "@common-server/fn/user-fn";
 import crypto from "crypto";
+import {HTTPResponse, httpResponse, httpStatusCode} from "@common/types/request";
 
 const app = express();
 app.use(express.json());
@@ -24,7 +25,14 @@ app.post("/deposit/paystack", async (req, res) => {
     const tx = req.body;
 
     if (!tx?.id || !tx?.amount || !tx?.uid) {
-        return res.status(400).json({ error: "Invalid transaction payload" });
+        const http_res = httpResponse(
+            "invalid-data",
+            {
+                title: "Invalid data in request",
+                message: "Request expected a valid transaction id, an amount and a valid user id.",
+            }
+        )
+        return res.status(http_res.code).json(http_res);
     }
 
     console.log("Received tx for Paystack:", tx);
@@ -45,13 +53,14 @@ app.post("/deposit/paystack", async (req, res) => {
             reference: tx.id,
         });
 
-        return res.status(200).json(response);
-    } catch (err) {
+        return res.status(response.code).json(response);
+    } catch (err: unknown) {
         console.error("Paystack init failed:", err);
         await TxFn.update_status_failed(tx.id);
+
         return res
-            .status(500)
-            .json({ error: "Paystack initialization failed" });
+            .status(httpStatusCode["error"])
+            .json(err);
     }
 });
 

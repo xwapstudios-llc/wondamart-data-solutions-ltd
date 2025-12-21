@@ -1,8 +1,9 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { onCall } from "firebase-functions/v2/https";
 
 import {
     UserPhoneNumberUpdateRequest, UserRegistrationRequest
 } from "@common/types/user.js";
+import { httpResponse } from "@common/types/request.js";
 import {getAuth} from "firebase-admin/auth";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import {ThrowCheck, ThrowCheckFn} from "./internals/throw-check-fn.js";
@@ -26,8 +27,8 @@ export const createUser = onCall(async (event) => {
         !d.firstName ||
         !d.phoneNumber
     ) {
-        throw new HttpsError(
-            "invalid-argument",
+        throw httpResponse(
+            "invalid",
             "The function must be called with a email and phoneNumber."
         );
     }
@@ -41,10 +42,10 @@ export const createUser = onCall(async (event) => {
     try {
         await UserFn.createAccount(d);
         // Return a success status to the client.
-        return {
-            status: "success",
-            message: `User ${d.email} account created successfully`,
-        };
+        return httpResponse(
+            "ok",
+            `User ${d.email} account created successfully`
+        );
     } catch (err) {
         // Clean the user if partially created
         const userRecord = await auth.getUserByEmail(d.email).catch(() => null);
@@ -65,8 +66,8 @@ export const createUser = onCall(async (event) => {
         // Log the error for server-side debugging.
         console.error("Error creating user:", err);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred. Please try again."
         );
     }
@@ -76,7 +77,7 @@ export const registerNewAgent = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated."
         );
@@ -95,13 +96,13 @@ export const registerNewAgent = onCall(async (event) => {
     // Read common user registration cost
     const commonUserRegistration = await CommonSettingsFn.read_userRegistration();
     if (!wallet) {
-        throw new HttpsError(
+        throw httpResponse(
             "aborted",
             "Could not read user wallet"
         )
     }
     if (!commonUserRegistration) {
-        throw new HttpsError(
+        throw httpResponse(
             "aborted",
             "Could not read User Registration Settings"
         )
@@ -109,7 +110,7 @@ export const registerNewAgent = onCall(async (event) => {
 
     // If the user has enough money to register another user
     if (wallet.balance < commonUserRegistration.unitPrice) {
-        throw new HttpsError(
+        throw httpResponse(
             "cancelled",
             "Not enough Balance"
         )
@@ -126,8 +127,8 @@ export const registerNewAgent = onCall(async (event) => {
         !d.firstName ||
         !d.phoneNumber
     ) {
-        throw new HttpsError(
-            "invalid-argument",
+        throw httpResponse(
+            "invalid",
             "The function must be called with a email and phoneNumber."
         );
     }
@@ -152,10 +153,10 @@ export const registerNewAgent = onCall(async (event) => {
 
         await TxFn.update_status_completed(tx.id);
 
-        return {
-            status: "success",
-            message: `User ${d.email} account registered successfully`,
-        };
+        return httpResponse(
+            "ok",
+            `User ${d.email} account registered successfully`
+        );
     } catch (err) {
         // Clean the user if partially created
         const userRecord = await auth.getUserByEmail(d.email).catch(() => null);
@@ -178,8 +179,8 @@ export const registerNewAgent = onCall(async (event) => {
         // Log the error for server-side debugging.
         console.error("Error creating user:", err);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred. Please try again."
         );
     }
@@ -189,7 +190,7 @@ export const requestActivateAccount = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated."
         );
@@ -219,8 +220,8 @@ export const requestActivateAccount = onCall(async (event) => {
         // Log the error for server-side debugging.
         console.error("Error Activating user :", error);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred. Please try again."
         );
     }
@@ -230,7 +231,7 @@ export const requestEmailVerification = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated."
         );
@@ -246,7 +247,7 @@ export const requestEmailVerification = onCall(async (event) => {
     check.isUserDisabled("A disabled account cannot be verified");
     const user = await auth.getUser(uid);
     if (user.emailVerified) {
-        throw new HttpsError(
+        throw httpResponse(
             "cancelled",
             "Email is already verified. No need for verification."
         )
@@ -267,8 +268,8 @@ export const requestEmailVerification = onCall(async (event) => {
         // Log the error for server-side debugging.
         console.error("Error Creating email verification :", error);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred. Please try again."
         );
     }
@@ -278,7 +279,7 @@ export const updateUserPhoneNumber = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated."
         );
@@ -290,14 +291,14 @@ export const updateUserPhoneNumber = onCall(async (event) => {
         !d.uid ||
         !d.phoneNumber
     ) {
-        throw new HttpsError(
-            "invalid-argument",
+        throw httpResponse(
+            "invalid",
             "The function must be called with a phoneNumber."
         );
     }
     // Check if the uid matches the authenticated user's uid
     if (d.uid !== event.auth.uid) {
-        throw new HttpsError(
+        throw httpResponse(
             "permission-denied",
             "You can only update your own phone number."
         );
@@ -308,14 +309,14 @@ export const updateUserPhoneNumber = onCall(async (event) => {
     // Get previous phone number
     const userRecord = await auth.getUser(d.uid).catch(() => null);
     if (!userRecord) {
-        throw new HttpsError(
-            "not-found",
+        throw httpResponse(
+            "unauthorized",
             `User with uid ${d.uid} not found.`
         );
     }
     if (userRecord.phoneNumber === d.phoneNumber) {
-        throw new HttpsError(
-            "failed-precondition",
+        throw httpResponse(
+            "invalid",
             `The new phone number is the same as the current one.`
         );
     }
@@ -326,10 +327,10 @@ export const updateUserPhoneNumber = onCall(async (event) => {
         await UserFn.update_phoneNumber(d.uid, d.phoneNumber);
 
         // Return a success status to the client.
-        return {
-            status: "success",
-            message: `User ${d.uid} phone number updated successfully`,
-        };
+        return httpResponse(
+            "ok",
+            `User ${d.uid} phone number updated successfully`
+        );
     } catch (error) {
         // Attempt to revert the phone number in Auth if Firestore update failed
         if (previousPhoneNumber) {
@@ -338,8 +339,8 @@ export const updateUserPhoneNumber = onCall(async (event) => {
         // Log the error for server-side debugging.
         console.error("Error updating phone number:", error);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred. Please try again."
         );
     }
@@ -349,7 +350,7 @@ export const requestDeleteUser = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated."
         );
@@ -363,8 +364,8 @@ export const requestDeleteUser = onCall(async (event) => {
     // Check if user document exists
     const userDoc = await userRef.get();
     if (userDoc.exists === false) {
-        throw new HttpsError(
-            "not-found",
+        throw httpResponse(
+            "unauthorized",
             `User with uid ${uID} not found.`
         );
     }
@@ -405,16 +406,16 @@ export const requestDeleteUser = onCall(async (event) => {
 
 
         // Return a success status to the client.
-        return {
-            status: "success",
-            message: `User ${event.auth.uid} document deleted successfully`,
-        };
+        return httpResponse(
+            "ok",
+            `User ${event.auth.uid} document deleted successfully`
+        );
     } catch (error) {
         // Log the error for server-side debugging.
         console.error("Error deleting user:", error);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred. Please try again."
         );
     }

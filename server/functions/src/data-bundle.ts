@@ -1,5 +1,6 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { onCall } from "firebase-functions/v2/https";
 import {AdminNewDataBundle} from "@common/types/data-bundle.js";
+import { httpResponse } from "@common/types/request.js";
 import {DataBundleFn} from "@common-server/fn/data-bundle/data-bundle-fn.js";
 import {ThrowCheck} from "./internals/throw-check-fn.js";
 
@@ -10,7 +11,7 @@ export const createDataBundle = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated.",
         );
@@ -36,8 +37,8 @@ export const createDataBundle = onCall(async (event) => {
         // Log the error for server-side debugging.
         console.error("Error creating data bundle:", error);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred while creating data bundle. Please try again."
         );
     }
@@ -50,7 +51,7 @@ export const deleteDataBundle = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
-        throw new HttpsError(
+        throw httpResponse(
             "unauthenticated",
             "The function must be called while authenticated.",
         );
@@ -76,8 +77,8 @@ export const deleteDataBundle = onCall(async (event) => {
         // Log the error for server-side debugging.
         console.error("Error deleting data bundle:", error);
         // Throw an HttpsError to provide the client with a meaningful error.
-        throw new HttpsError(
-            "internal",
+        throw httpResponse(
+            "error",
             "An unexpected error occurred while deleting data bundle. Please try again."
         );
     }

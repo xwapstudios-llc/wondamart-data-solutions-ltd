@@ -17,6 +17,7 @@ import { collections, db } from "@common/lib/db";
 import { Functions } from "@common/lib/fn";
 import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
+import {HTTPResponse} from "@common/types/request";
 
 const createQuery = (q: TxAccountDepositQuery): Query => {
     let Q = buildTxQuery(q);
@@ -28,19 +29,9 @@ const createQuery = (q: TxAccountDepositQuery): Query => {
 
 const ClTxAccountDeposit = {
     create: {
-        paystack: async (data: TxDepositPaystackRequest): Promise<void> => {
-            try {
-                await Functions.Request.deposit.paystack(data);
-                return Promise.resolve();
-            } catch (error) {
-                console.error("Error calling function:", error);
-                // const code = error.code;
-                // @ts-expect-error : message might not exist on error object
-                const message = error.message;
-                return Promise.reject(
-                    new Error(message || "Failed to create account deposit")
-                );
-            }
+        paystack: async (data: TxDepositPaystackRequest): Promise<HTTPResponse> => {
+            const result = await Functions.Request.deposit.paystack(data) as HTTPResponse;
+            return Promise.resolve(result);
         },
         send: async (data: TxDepositSendRequest): Promise<void> => {
             try {
