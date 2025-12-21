@@ -1,4 +1,5 @@
 import dbus, {ProxyObject, Variant} from "dbus-next";
+import {USSDCode} from "@/types";
 
 type USSDState = 1 | 2 | 3 | 4;
 
@@ -113,13 +114,13 @@ export class ModemManagerClient {
         }
     }
 
-    async navigateUSSDMenu(rootCode: string, options: string[]): Promise<string> {
+    async navigateUSSDMenu(ussd: USSDCode): Promise<string> {
         // 1. Start the session
-        let lastResponse = await this.sendUSSD(rootCode);
+        let lastResponse = await this.sendUSSD(ussd.root);
         console.log("Initial Response:", lastResponse);
 
         // 2. Walk through the options
-        for (const option of options) {
+        for (const option of ussd.sequence) {
             console.log(`Selecting option: ${option}`);
             lastResponse = await this.respondUSSD(option);
             console.log("Next Screen:", lastResponse);

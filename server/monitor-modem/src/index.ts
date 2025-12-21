@@ -1,5 +1,10 @@
 import {ModemManagerClient} from "./mm";
+import {USSDCode} from "@/types";
 
+const check_number: USSDCode = {
+    root: "*156#",
+    sequence: ["1"]
+}
 async function main() {
     const mm = new ModemManagerClient();
     await mm.init();
@@ -14,7 +19,8 @@ async function main() {
         await mm.ensureIdle();
 
         // Example: Check balance on a network where you dial *124# then press 1
-        const finalBalance = await mm.navigateUSSDMenu("*171#", ["3", "1", "0244254373", "0244254373", "250", "5050"]);
+        const finalBalance = await mm.navigateUSSDMenu(check_number);
+
         console.log("Final Result:", finalBalance);
         await mm.cancelUSSD();
 
