@@ -11,9 +11,10 @@ if [ ! -d "$WONDAMART_ROOT" ]; then
     exit 1
 fi
 
-# This was ment to run on the cloud where GOOGLE_APPLICATION_CREDENTIALS is available
+# This was made to run on the cloud where GOOGLE_APPLICATION_CREDENTIALS is available.
+# However we resolved to use it on the wondamart vps as google services says insufficient access scopes.
 # For the rest, we export it.
-if [ "$USER" == "nketsiah000" ] || [ "$USER" == "wondamart-server" ]; then
+if [ "$USER" == "nketsiah000" ] || [ "$USER" == "wondamart-server" ] || [ "$USER" == "xwapstudios" ]; then
     export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/wondamart/wondamart-data-solutions-ltd-firebase-adminsdk-fbsvc-d418aa8130.json
 fi
 # shellcheck disable=SC2164
