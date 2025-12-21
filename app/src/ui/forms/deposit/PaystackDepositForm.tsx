@@ -58,6 +58,7 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
                         network: values.network as NetworkId,
                         amount: values.amount,
                     })
+                    console.log("Response from paystack request > ", res)
                     switch (res.status) {
                         case "send_otp": {
                             navigate(R.auth.otp);

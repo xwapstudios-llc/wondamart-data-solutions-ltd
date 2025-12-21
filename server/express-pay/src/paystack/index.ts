@@ -43,6 +43,7 @@ const test_paystack = async (p: CreateChargeParams): Promise<HTTPResponse> => {
                 )
             case "send_otp": // Prompt user for otp
                 console.log("OTP required. Please provide the OTP to continue.");
+                console.log("OTP required. >>>>>>>> ", res);
                 return httpResponse(
                     "send_otp",
                     {

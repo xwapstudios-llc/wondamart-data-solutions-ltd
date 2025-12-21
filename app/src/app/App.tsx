@@ -53,6 +53,7 @@ import UserSettingsAccount from "@/pages/app/user/settings/account";
 import UserSettingsSecurity from "@/pages/app/user/settings/security";
 import {ThemeProvider} from "@/cn/components/theme/theme-provider.tsx";
 import RegisterAgent from "@/pages/app/RegisterAgent.tsx";
+import OTPPage from "@/pages/auth/OTPPage.tsx";
 
 
 const App = () => {
@@ -72,6 +73,7 @@ const App = () => {
                         <Route path={R.auth.verifyEmail} element={<VerifyEmailPage/>}/>
                         <Route path={R.auth.forgotPassword} element={<ForgotPasswordPage/>}/>
                         <Route path={R.auth.resetPassword} element={<ResetPasswordPage/>}/>
+                        <Route path={R.auth.otp} element={<OTPPage/>} />
                     </>
 
                     {/*Routes group for user*/}

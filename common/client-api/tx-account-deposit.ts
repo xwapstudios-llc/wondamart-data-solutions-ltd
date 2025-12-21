@@ -30,36 +30,16 @@ const createQuery = (q: TxAccountDepositQuery): Query => {
 const ClTxAccountDeposit = {
     create: {
         paystack: async (data: TxDepositPaystackRequest): Promise<HTTPResponse> => {
-            const result = await Functions.Request.deposit.paystack(data) as HTTPResponse;
-            return Promise.resolve(result);
+            const result = await Functions.Request.deposit.paystack(data);
+            return Promise.resolve(result.data as HTTPResponse);
         },
-        send: async (data: TxDepositSendRequest): Promise<void> => {
-            try {
-                await Functions.Request.deposit.send(data);
-                return Promise.resolve();
-            } catch (error) {
-                console.error("Error calling function:", error);
-                // const code = error.code;
-                // @ts-expect-error : message might not exist on error object
-                const message = error.message;
-                return Promise.reject(
-                    new Error(message || "Failed to create account deposit")
-                );
-            }
+        send: async (data: TxDepositSendRequest): Promise<HTTPResponse> => {
+            const result = await Functions.Request.deposit.send(data);
+            return Promise.resolve(result.data as HTTPResponse);
         },
-        momo: async (data: TxDepositMoMoRequest): Promise<void> => {
-            try {
-                await Functions.Request.deposit.momo(data);
-                return Promise.resolve();
-            } catch (error) {
-                console.error("Error calling function:", error);
-                // const code = error.code;
-                // @ts-expect-error : message might not exist on error object
-                const message = error.message;
-                return Promise.reject(
-                    new Error(message || "Failed to create account deposit")
-                );
-            }
+        momo: async (data: TxDepositMoMoRequest): Promise<HTTPResponse> => {
+            const result = await Functions.Request.deposit.momo(data);
+            return Promise.resolve(result.data as HTTPResponse);
         },
     },
     readOne: async (uid: string): Promise<TxDeposit | undefined> => {
