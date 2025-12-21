@@ -14,3 +14,7 @@
     top: calc(100vh - 20px);
     opacity: 0.75;
 }
+
+.hidden-scroll-bar::-webkit-scrollbar {
+    display: none;
+}

@@ -48,8 +48,7 @@ const AfaBundlePurchase: React.FC = () => {
                         </Code>
                     </NoticeItem>
                     <NoticeItem title={"Delivery"}>
-                        Delivery is near instant but sometimes you need to wait
-                        for about 10 minutes to receive the AFA bundle.
+                        Registration takes 24hrs to be completed.
                     </NoticeItem>
                 </NoticeContent>
             </Notice>

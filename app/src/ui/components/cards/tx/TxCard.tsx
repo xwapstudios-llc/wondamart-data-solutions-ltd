@@ -8,6 +8,7 @@ import {useNavigate} from "react-router-dom";
 import {R} from "@/app/routes.ts";
 import {ClockCheckIcon, ClockPlusIcon} from "lucide-react";
 import StatusBadge from "@/ui/components/typography/StatusBadge.tsx";
+import {Button} from "@/cn/components/ui/button.tsx";
 
 const formatDate = (ts: Timestamp) => {
     if (!ts) return "---";
@@ -65,14 +66,21 @@ const TxCard: React.FC<TxCardProps> = ({tx, className, ...props}) => {
                     <div className="text-xl font-bold text-right">
                         {toCurrency(tx.amount)}
                     </div>
-
-                    <div className="text-xs text-right">
-                        Commission: {toCurrency(tx.commission)}
-                    </div>
+                    {
+                        tx.type != "deposit" && (
+                            <div className="text-xs text-right">
+                                Commission: {toCurrency(tx.commission)}
+                            </div>
+                        )
+                    }
                 </div>
-
             </div>
-                <div className="mt-2 text-xs">Ref: {tx.id}</div>
+            <div className="mt-2 text-xs">Ref: {tx.id}</div>
+            {
+                tx.type != "deposit" && (
+                    <Button className={"mt-1.5 w-full"} variant={"outline"}>Copy details</Button>
+                )
+            }
         </div>
     )
 }

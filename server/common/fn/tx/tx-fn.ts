@@ -65,7 +65,9 @@ const TxFn = {
     commit: async (tx: Tx) => {
         const ref = txCollections.doc(tx.id);
         await ref.set(tx);
-        await UserFn.update_add_recentTransaction(tx.uid, tx.id);
+        if (tx.type != "deposit") {
+            await UserFn.update_add_recentTransaction(tx.uid, tx.id);
+        }
     },
     // Create an initial transaction document object
     // This does not create the document in Firestore, just returns the object

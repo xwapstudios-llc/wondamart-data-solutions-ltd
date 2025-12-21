@@ -44,7 +44,8 @@ const HistoryIndex: React.FC = () => {
             setLoading(true);
             try {
                 const filterObject = buildFilterFromSearchParams();
-                const txes = await ClTx.read({uid: user?.uid ?? "", ...filterObject});
+                // Todo: limit is on the first 20. Can be changed by user
+                const txes = await ClTx.read({uid: user?.uid ?? "", ...filterObject, limit: 20});
                 console.log(txes);
                 setTxes(txes.sort((a, b) => b.date.seconds - a.date.seconds));
             } catch (e) {
@@ -73,7 +74,7 @@ const HistoryIndex: React.FC = () => {
             <PageHeading>History</PageHeading>
             {/*List of query buttons to deposit, purchase, afa-bundles, data-bundles, result checker and filter*/}
             {/*Filter buttons*/}
-            <div className={"flex gap-2 overflow-x-auto my-2"}>
+            <div className={"flex gap-2 overflow-x-auto my-2 hidden-scroll-bar"}>
                 <Button size={"sm"} variant={activeType === null ? "default" : "outline"} onClick={() => setTypeFilter(undefined)}>
                     All
                 </Button>

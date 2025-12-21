@@ -9,12 +9,12 @@ import {Link, useNavigate} from "react-router-dom";
 import {R} from "@/app/routes.ts";
 import {cn} from "@/cn/lib/utils.ts";
 import TxMiniCardSync from "@/ui/components/cards/tx/TxMiniCardSync.tsx";
-// import StockHighlights from "@/ui/components/cards/dashboard/StockHighlights.tsx";
 import DashboardSection from "@/ui/components/cards/dashboard/DashboardSection.tsx";
 import NoItems from "@/ui/components/cards/NoItems.tsx";
 import ActivityHighlights from "@/ui/components/cards/dashboard/ActivityHighlights.tsx";
 import OverviewGraph from "@/ui/components/OverviewGraph.tsx";
 import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
+import StockHighlights from "@/ui/components/cards/dashboard/StockHighlights.tsx";
 
 const Dashboard: React.FC = () => {
     const {profile, wallet, claims} = useAppStore();
@@ -27,6 +27,8 @@ const Dashboard: React.FC = () => {
                     <p className={"text-xl"}>Hello,</p>
                     <PageHeading>{profile?.firstName}</PageHeading>
                 </div>
+                {/*Ernest said notifications should be only for general or high priority notices.*/}
+                {/*Todo: Main instant notification on open.*/}
                 <Link
                     to={R.app.notifications}
                     className={cn(
@@ -37,24 +39,27 @@ const Dashboard: React.FC = () => {
                     <BellIcon strokeWidth={1.5}/>
                 </Link>
             </div>
-            <div className={"bg-linear-90 from-secondary/25 to-primary/90 flex items-center justify-between rounded-md gap-4 p-4"}>
-                <div className={"space-y-2"}>
-                    <p className={"text-xs opacity-75"}>Current Balance</p>
-                    <span className={"text-2xl font-semibold"}>{toCurrency(wallet?.balance || 0)}</span>
-                </div>
-                <Link
-                    to={R.app.deposit}
-                    className={cn(
-                        buttonVariants({size: "icon-lg", variant: "secondary"}),
-                        "rounded-full"
-                    )}
-                >
-                    <PlusIcon strokeWidth={1.5}/>
-                </Link>
-            </div>
             {
                 claims?.isActivated ? (
                     <>
+                        <div className={"bg-linear-90 from-secondary/25 to-primary/90 flex items-center justify-between rounded-md gap-4 p-4"}>
+                            <div className={"space-y-2"}>
+                                <p className={"text-xs opacity-75"}>Current Balance</p>
+                                <span className={"text-2xl font-semibold"}>{toCurrency(wallet?.balance || 0)}</span>
+                            </div>
+                            <div className={"flex flex-col items-center gap-y-1"}>
+                                <Link
+                                    to={R.app.deposit}
+                                    className={cn(
+                                        buttonVariants({size: "icon-lg", variant: "secondary"}),
+                                        "rounded-full"
+                                    )}
+                                >
+                                    <PlusIcon strokeWidth={1.5}/>
+                                </Link>
+                                <span className={"text-xs"}>Deposit</span>
+                            </div>
+                        </div>
 
                         {/*Highlights*/}
                         <DashboardSection
@@ -62,27 +67,25 @@ const Dashboard: React.FC = () => {
                             link={{to: R.app.purchase.index, label: "Purchase"}}
                             className={""}
                         >
-                            {/*<StockHighlights className={"mt-1"} />*/}
+                            <StockHighlights className={"mt-1 hidden-scroll-bar"}/>
                             <OverviewGraph className={"mt-1"} />
                         </DashboardSection>
 
                         {/*Activity*/}
-                        <DashboardSection
-                            title={"Activity"}
-                        >
+                        <DashboardSection title={"Activity"}>
                             <ActivityHighlights />
                         </DashboardSection>
 
-                        {/*Recent Transactions*/}
+                        {/*Recent Purchases*/}
                         <DashboardSection
-                            title={"Recent Transactions"}
+                            title={"Recent Purchases"}
                             link={{to: R.app.history.purchases.index, label: "See all"}}
                             className={"space-y-2"}
                         >
                             {
                                 profile?.recentTx == undefined || profile.recentTx.length == 0 ? (
                                     <NoItems>
-                                        No recent transactions
+                                        No recent purchases
                                     </NoItems>
                                 ) : profile.recentTx.map((tx) => (
                                     <TxMiniCardSync key={tx} txID={tx} />
@@ -97,7 +100,7 @@ const Dashboard: React.FC = () => {
                         title={"Account Activation"}
                         cta={{label: "Go to Activation", action: () => navigate(R.app.user.activate)}}
                     >
-                        You are not activated to use all of wondamart services.
+                        You are not activated to use wondamart services.
                     </ActivationCard>
                 )
             }

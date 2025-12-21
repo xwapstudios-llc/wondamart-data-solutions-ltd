@@ -24,7 +24,7 @@ export function OTPForm({className, ...props}: React.ComponentProps<"form">) {
                         OTP
                     </FieldLabel>
                     <InputOTP
-                        maxLength={6}
+                        maxLength={4}
                         id="otp"
                         required
                         containerClassName="gap-4 justify-center"
