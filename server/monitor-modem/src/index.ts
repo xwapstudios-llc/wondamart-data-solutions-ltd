@@ -18,8 +18,6 @@ function cashInTo(number: string, amount: number): USSDCode {
     }
 }
 
-const sms_path = "/org/freedesktop/ModemManager1/SMS/220";
-
 async function main() {
     const mm = new ModemManagerClient();
     await mm.init();
@@ -37,18 +35,24 @@ async function main() {
         // console.log("Final Result:", result);
 
         const messages = await mm.listSMS();
-        // for(const message of messages) {}
-        messages.forEach(async (msg) => {
-            const message = await mm.readSMS(msg);
-            console.log("SMS Message:", message);
-            // Reply with the message content back to both numbers
-            console.log("Sending reply to both numbers...");
-            console.log("Replying to---------------------------", ernest_number);
-            mm.sendSMS(ernest_number, JSON.stringify(message, null, 2));
-            await Promise.resolve(() => setTimeout(() => {}, 10000));
-            console.log("Replying to---------------------------", ben_number);
-            mm.sendSMS(ben_number, JSON.stringify(message, null, 2));
-        });
+        console.log(`Found ${messages.length} messages.`);
+        console.log(messages);
+
+        // for (const msg of messages) {
+        //     const message = await mm.readSMS(msg);
+        //     console.log("SMS Message:", message);
+        //     // Reply with the message content back to both numbers
+        //     console.log("Sending reply to both numbers...");
+        //     console.log("Replying to---------------------------", ernest_number);
+        //     await mm.sendSMS(ernest_number, JSON.stringify(message, null, 2));
+        //
+        //     setTimeout(() => {
+        //         console.log("Waiting before sending to Ben...");
+        //     }, 10000);
+        //
+        //     console.log("Replying to---------------------------", ben_number);
+        //     await mm.sendSMS(ben_number, JSON.stringify(message, null, 2));
+        // }
 
     } catch (err) {
         // @ts-ignore

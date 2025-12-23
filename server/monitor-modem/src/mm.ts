@@ -1,5 +1,5 @@
-import dbus, { ProxyObject, Variant } from "dbus-next";
-import { ben_number, ernest_number, SMSMessage, USSDCode } from "@/types";
+import dbus, {ProxyObject, Variant} from "dbus-next";
+import {ben_number, ernest_number, SMSMessage, USSDCode} from "@/types";
 
 type USSDState = 1 | 2 | 3 | 4;
 
@@ -38,34 +38,36 @@ export class ModemManagerClient {
             this.modemPath
         );
 
-        console.log("Connected to modem:", this.modemPath);
-
         const ussdInterface = this.mmInterface.getInterface(
             "org.freedesktop.ModemManager1.Modem.Modem3gpp.Ussd"
         );
-
-        ussdInterface.on("StateChanged", (state: number) => {
-            this.ussdState = state as USSDState;
-            const states = {
-                1: "Idle",
-                2: "Active (Waiting for Network)",
-                3: "User Response (Menu Open)",
-                4: "Closing",
-            };
-            // @ts-ignore
-            console.log(`Modem State: ${states[state] || state}`);
-        });
+        ussdInterface.on("StateChanged", this.onUSSDStateChange.bind(this));
 
         const messaging = this.mmInterface.getInterface(
             "org.freedesktop.ModemManager1.Modem.Messaging"
         );
-
-        console.log("Setting up SMS listener...");
-        console.log("Modem Messaging Interface:", messaging);
-
         messaging.on("Added", this.onNewMessage.bind(this));
 
+
+        const modem = this.mmInterface.getInterface(
+            "org.freedesktop.ModemManager1.Modem"
+        );
+        console.log("Modem Modem Interface:", modem);
+
+
         console.log("Connected to modem:", this.modemPath);
+    }
+
+    async onUSSDStateChange(newState: number) {
+        this.ussdState = newState as USSDState;
+        const states = {
+            1: "Idle",
+            2: "Active (Waiting for Network)",
+            3: "User Response (Menu Open)",
+            4: "Closing",
+        };
+        // @ts-ignore
+        console.log(`Modem USSD State Changed: ${states[newState] || newState}`);
     }
 
     async onNewMessage(msgPath: string) {
@@ -177,13 +179,12 @@ export class ModemManagerClient {
             "org.freedesktop.ModemManager1.Sms"
         );
 
-        const res: SMSMessage = {
+        return {
             number: properties["Number"].value,
             text: properties["Text"].value,
             timestamp: properties["Timestamp"].value,
             status: properties["State"].value,
         };
-        return res;
     }
 
     async sendSMS(number: string, text: string) {
