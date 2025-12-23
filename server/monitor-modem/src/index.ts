@@ -13,7 +13,7 @@ const check_momo_balance: USSDCode = {
 
 function cashInTo(number: string, amount: number): USSDCode {
     return {
-        root: "*170#",
+        root: "*171#",
         sequence: ["3", "1", number, number, amount.toString(), "5050"]
     }
 }
