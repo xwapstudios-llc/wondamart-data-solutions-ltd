@@ -182,7 +182,7 @@ export class ModemManagerClient {
         // Signal Quality: returns [quality_percentage, is_recent]
         const signal = await modem.SignalQuality;
 
-        console.log("Modem :: ", modem)
+        // console.log("Modem :: ", modem)
         console.log("Type of state:", state);
         console.log("Type of state:", typeof state);
         console.log("Type of signal:", signal);

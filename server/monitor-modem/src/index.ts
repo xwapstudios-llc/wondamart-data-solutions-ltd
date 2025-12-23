@@ -19,9 +19,9 @@ async function main() {
         await mm.ensureIdle();
 
         // Example: Check balance on a network where you dial *124# then press 1
-        const finalBalance = await mm.navigateUSSDMenu(check_number);
+        const result = await mm.navigateUSSDMenu(check_number);
 
-        console.log("Final Result:", finalBalance);
+        console.log("Final Result:", result);
         await mm.cancelUSSD();
 
     } catch (err) {
