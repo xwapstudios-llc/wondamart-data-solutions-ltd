@@ -35,8 +35,10 @@ export const charge = {
         if (res.error) {
             // console.error(res.error);
         } else {
-            console.log("Successfully created charge:");
-            // console.log(res);
+            console.log("Successfully created charge");
+            console.log("-----------------------------------------------------------------");
+            console.log(res);
+            console.log("-----------------------------------------------------------------");
         }
         return res;
     },
