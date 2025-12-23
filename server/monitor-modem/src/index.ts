@@ -1,9 +1,8 @@
 import {ModemManagerClient} from "./mm";
-import {USSDCode, ben_number, ernest_number} from "@/types";
+import {USSDCode} from "@/types";
 
 const check_number: USSDCode = {
-    root: "*124#",
-    sequence: []
+    root: "*124#"
 }
 
 const check_momo_balance: USSDCode = {

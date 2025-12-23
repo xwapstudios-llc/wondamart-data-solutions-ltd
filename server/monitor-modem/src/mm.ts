@@ -147,6 +147,9 @@ export class ModemManagerClient {
         console.log("Initial Response:", lastResponse);
 
         // 2. Walk through the options
+        if (!ussd.sequence || ussd.sequence.length === 0) {
+            return lastResponse;
+        }
         for (const option of ussd.sequence) {
             console.log(`Selecting option: ${option}`);
             lastResponse = await this.respondUSSD(option);

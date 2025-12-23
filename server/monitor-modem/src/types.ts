@@ -1,7 +1,7 @@
 
 export interface USSDCode {
     root: string;
-    sequence: string[];
+    sequence?: string[];
 }
 
 export interface SMSMessage {
