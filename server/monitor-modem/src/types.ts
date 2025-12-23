@@ -5,7 +5,7 @@ export interface USSDCode {
 }
 
 export interface SMSMessage {
-    from: string;
+    number: string;
     text: string;
     timestamp: string;
     status: number;

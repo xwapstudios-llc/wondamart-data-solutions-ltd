@@ -51,12 +51,24 @@ async function main() {
         const messages = await mm.listSMS();
         console.log("All SMS Messages:", messages);
 
-        messages.forEach(async (msgPath) => {
+        for(const msgPath of messages) {
+            console.log("-------------------------");
+            console.log("Reading SMS at path:", msgPath);
             const message = await mm.readSMS(msgPath);
             console.log(`SMS ${msgPath} Content:`, JSON.stringify(message, null, 2));
-            await mm.sendSMS(ernest_number, `MESSAGE RECEIVED:\n${JSON.stringify(message, null, 2)}`);
-            await mm.sendSMS(ben_number, `MESSAGE RECEIVED:\n${JSON.stringify(message, null, 2)}`);
-        });
+            console.log("-------------------------");
+            setTimeout(() => {}, 2000); // small delay
+            console.log("Deleting message...");
+            mm.deleteSMS(msgPath);
+            console.log(`Deleted SMS at path: ${msgPath}`);
+            console.log("\n\n");
+        }
+        // messages.forEach(async (msgPath) => {
+        //     const message = await mm.readSMS(msgPath);
+        //     console.log(`SMS ${msgPath} Content:`, JSON.stringify(message, null, 2));
+        //     // await mm.sendSMS(ernest_number, `MESSAGE RECEIVED:\n${JSON.stringify(message, null, 2)}`);
+        //     // await mm.sendSMS(ben_number, `MESSAGE RECEIVED:\n${JSON.stringify(message, null, 2)}`);
+        // });
 
         // if (messages.length > 0) {
         //     const result = JSON.stringify(await mm.readSMS(messages[0]), null, 2);

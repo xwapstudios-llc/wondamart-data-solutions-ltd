@@ -156,7 +156,7 @@ export class ModemManagerClient {
         const properties = await propertiesInterface.GetAll("org.freedesktop.ModemManager1.Sms");
 
         const res: SMSMessage = {
-            from: properties["Number"].value,
+            number: properties["Number"].value,
             text: properties["Text"].value,
             timestamp: properties["Timestamp"].value,
             status: properties["State"].value,
