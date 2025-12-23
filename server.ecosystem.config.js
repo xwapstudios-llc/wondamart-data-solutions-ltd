@@ -22,7 +22,7 @@ module.exports = {
             // Ops hygiene
             autorestart: true,
             watch: false,
-            max_restarts: 12,
+            max_restarts: 20,
             restart_delay: 3000,
         },
 
@@ -47,7 +47,7 @@ module.exports = {
             // Ops hygiene
             autorestart: true,
             watch: false,
-            max_restarts: 12,
+            max_restarts: 2,
             restart_delay: 3000,
         },
     ],

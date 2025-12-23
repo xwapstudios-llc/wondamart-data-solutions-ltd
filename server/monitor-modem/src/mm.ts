@@ -196,17 +196,12 @@ export class ModemManagerClient {
     }
 
     async deleteSMS(smsPath: string) {
-        const smsObj = await this.systemBus.getProxyObject(
-            "org.freedesktop.ModemManager1",
-            smsPath
-        );
-
-        const smsInterface = smsObj.getInterface(
-            "org.freedesktop.ModemManager1.Sms"
+        const messaging = this.mmInterface!.getInterface(
+            "org.freedesktop.ModemManager1.Modem.Messaging"
         );
 
         console.log("Deleting SMS at:", smsPath);
-        await smsInterface.Delete();
+        await messaging.Delete(smsPath);
         console.log("SMS deleted.");
     }
 
