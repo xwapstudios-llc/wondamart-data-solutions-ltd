@@ -144,11 +144,11 @@ export class ModemManagerClient {
             smsPath
         );
 
-        const smsInterface = smsObj.getInterface(
-            "org.freedesktop.ModemManager1.Sms"
+        const propertiesInterface = smsObj.getInterface(
+            "org.freedesktop.DBus.Properties"
         );
 
-        const properties = await smsInterface.GetAll();
+        const properties = await propertiesInterface.GetAll("org.freedesktop.ModemManager1.Sms");
 
         return properties;
     }
