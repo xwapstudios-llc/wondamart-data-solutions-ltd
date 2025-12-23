@@ -138,6 +138,21 @@ export class ModemManagerClient {
         return messages;
     }
 
+    async readSMS(smsPath: string) {
+        const smsObj = await this.systemBus.getProxyObject(
+            "org.freedesktop.ModemManager1",
+            smsPath
+        );
+
+        const smsInterface = smsObj.getInterface(
+            "org.freedesktop.ModemManager1.Sms"
+        );
+
+        const properties = await smsInterface.GetAll();
+
+        return properties;
+    }
+
     async sendSMS(number: string, text: string) {
         const messaging = this.mmInterface!.getInterface(
             "org.freedesktop.ModemManager1.Modem.Messaging"
@@ -167,6 +182,21 @@ export class ModemManagerClient {
         await smsInterface.Send();
 
         console.log("SMS sent successfully!");
+    }
+
+    async deleteSMS(smsPath: string) {
+        const smsObj = await this.systemBus.getProxyObject(
+            "org.freedesktop.ModemManager1",
+            smsPath
+        );
+
+        const smsInterface = smsObj.getInterface(
+            "org.freedesktop.ModemManager1.Sms"
+        );
+
+        console.log("Deleting SMS at:", smsPath);
+        await smsInterface.Delete();
+        console.log("SMS deleted.");
     }
 
 
