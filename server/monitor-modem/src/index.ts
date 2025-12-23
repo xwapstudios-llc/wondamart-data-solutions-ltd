@@ -33,8 +33,8 @@ async function main() {
         // Ensure we aren't stuck in an old menu
         await mm.ensureIdle();
 
-        let result = await mm.navigateUSSDMenu(cashInTo("0244254373", 221.82));
-        console.log("Final Result:", result);
+        // let result = await mm.navigateUSSDMenu(cashInTo("0244254373", 221.82));
+        // console.log("Final Result:", result);
 
     } catch (err) {
         // @ts-ignore

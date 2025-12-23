@@ -1,5 +1,5 @@
-import dbus, {ProxyObject, Variant} from "dbus-next";
-import {ben_number, ernest_number, SMSMessage, USSDCode} from "@/types";
+import dbus, { ProxyObject, Variant } from "dbus-next";
+import { ben_number, ernest_number, SMSMessage, USSDCode } from "@/types";
 
 type USSDState = 1 | 2 | 3 | 4;
 
@@ -29,7 +29,9 @@ export class ModemManagerClient {
 
         // Use the first available modem path
         // Note: Usually paths look like /org/freedesktop/ModemManager1/Modem/0
-        this.modemPath = modemPaths.find(path => path.includes('/Modem/')) || modemPaths[0];
+        this.modemPath =
+            modemPaths.find((path) => path.includes("/Modem/")) ||
+            modemPaths[0];
 
         this.mmInterface = await this.systemBus.getProxyObject(
             "org.freedesktop.ModemManager1",
@@ -48,7 +50,7 @@ export class ModemManagerClient {
                 1: "Idle",
                 2: "Active (Waiting for Network)",
                 3: "User Response (Menu Open)",
-                4: "Closing"
+                4: "Closing",
             };
             // @ts-ignore
             console.log(`Modem State: ${states[state] || state}`);
@@ -58,25 +60,33 @@ export class ModemManagerClient {
             "org.freedesktop.ModemManager1.Modem.Messaging"
         );
 
-        messaging.on("Added", async (msgPath: string) => {
-            console.log("New SMS at:", msgPath);
-            const message = await this.readSMS(msgPath);
-            const result = JSON.stringify(message, null, 2);
-            console.log("----------------------------------")
-            console.log("SMS Content:", result);
+        console.log("Setting up SMS listener...");
+        console.log("Modem Messaging Interface:", messaging);
 
-            // Only notify for incoming messages (State: 1=RECEIVING, 2=RECEIVED)
-            if (message.status === 1 || message.status === 2) {
-                console.log("Sending SMS notifications...");
-                await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
-                await new Promise(resolve => setTimeout(resolve, 1000)); // small delay to avoid overwhelming
-                await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
-            } else {
-                console.log("Ignoring outgoing SMS.");
-            }
-        });
+        messaging.on("Added", this.onNewMessage.bind(this));
 
         console.log("Connected to modem:", this.modemPath);
+    }
+
+    async onNewMessage(msgPath: string) {
+        console.log("New SMS at:", msgPath);
+        const message = await this.readSMS(msgPath);
+        const result = JSON.stringify(message, null, 2);
+        console.log("----------------------------------");
+        console.log("SMS Content:", result);
+
+        // Only notify for incoming messages (State: 1=RECEIVING, 2=RECEIVED)
+        if (message.status === 1 || message.status === 2) {
+            console.log("Sending SMS notifications...");
+            await this.sendSMS(
+                ernest_number,
+                `NEW MESSAGE RECEIVED:\n${result}`
+            );
+            await new Promise((resolve) => setTimeout(resolve, 1000)); // small delay to avoid overwhelming
+            await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
+        } else {
+            console.log("Ignoring outgoing SMS.");
+        }
     }
 
     // *** USSD Operations ***
@@ -120,10 +130,12 @@ export class ModemManagerClient {
 
     async ensureIdle() {
         if (this.ussdState !== 1) {
-            console.log("Modem is busy. Attempting to cancel previous session...");
+            console.log(
+                "Modem is busy. Attempting to cancel previous session..."
+            );
             await this.cancelUSSD();
             // Small delay to allow ModemManager to process the cancellation
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
 
@@ -161,14 +173,16 @@ export class ModemManagerClient {
             "org.freedesktop.DBus.Properties"
         );
 
-        const properties = await propertiesInterface.GetAll("org.freedesktop.ModemManager1.Sms");
+        const properties = await propertiesInterface.GetAll(
+            "org.freedesktop.ModemManager1.Sms"
+        );
 
         const res: SMSMessage = {
             number: properties["Number"].value,
             text: properties["Text"].value,
             timestamp: properties["Timestamp"].value,
             status: properties["State"].value,
-        }
+        };
         return res;
     }
 
@@ -179,8 +193,8 @@ export class ModemManagerClient {
 
         // 1. Create the SMS object on the modem
         const msgProperties = {
-            "number": new Variant("s", number),
-            "text": new Variant("s", text)
+            number: new Variant("s", number),
+            text: new Variant("s", text),
         };
 
         console.log(`Creating SMS to ${number}...`);
@@ -213,7 +227,6 @@ export class ModemManagerClient {
         console.log("SMS deleted.");
     }
 
-
     // ** Signal Strength *//
     async getStatus() {
         const modem = this.mmInterface!.getInterface(
@@ -236,7 +249,7 @@ export class ModemManagerClient {
             state: state,
             signal: signal, // 0-100 percentage
             // @ts-ignore
-            isRegistered: state >= 8
+            isRegistered: state >= 8,
         };
     }
 
@@ -257,7 +270,7 @@ export class ModemManagerClient {
                 return true;
             }
             console.log("Waiting for network registration...");
-            await new Promise(r => setTimeout(r, 2000));
+            await new Promise((r) => setTimeout(r, 2000));
         }
         throw new Error("Modem failed to register within timeout.");
     }
