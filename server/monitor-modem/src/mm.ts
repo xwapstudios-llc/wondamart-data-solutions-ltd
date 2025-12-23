@@ -52,9 +52,9 @@ export class ModemManagerClient {
 
         const modem = this.mmInterface.getInterface(
             "org.freedesktop.ModemManager1.Modem"
-        ) as unknown as IModem;
-        console.log("Modem State:", modem.$properties.State);
-        console.log("Modem Signal Quality:", modem.$properties.SignalQuality);
+        );
+        console.log("Modem State:", modem.State);
+        console.log("Modem Signal Quality:", modem.SignalQuality);
         console.log("Modem Properties: ", JSON.stringify(modem.$properties, null, 2));
 
 
