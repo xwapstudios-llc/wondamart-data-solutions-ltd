@@ -188,7 +188,7 @@ app.post(
         }
 
         await TxFn.update_status_completed(reference);
-        await UserFn.update_UserWalletBalance(tx.uid, tx.amount);
+        await UserFn.update_add_UserBalance(tx.uid, tx.amount);
 
         const response = httpResponse(
             "ok",
