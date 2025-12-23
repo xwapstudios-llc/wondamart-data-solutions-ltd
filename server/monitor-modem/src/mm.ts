@@ -65,10 +65,15 @@ export class ModemManagerClient {
             console.log("----------------------------------")
             console.log("SMS Content:", result);
 
-            console.log("Sending SMS notifications...");
-            await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
-            await new Promise(resolve => setTimeout(resolve, 1000)); // small delay to avoid overwhelming
-            await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
+            // Only notify for incoming messages (State: 1=RECEIVING, 2=RECEIVED)
+            if (message.status === 1 || message.status === 2) {
+                console.log("Sending SMS notifications...");
+                await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
+                await new Promise(resolve => setTimeout(resolve, 1000)); // small delay to avoid overwhelming
+                await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
+            } else {
+                console.log("Ignoring outgoing SMS.");
+            }
         });
 
         console.log("Connected to modem:", this.modemPath);
