@@ -1,0 +1,7 @@
+DBus Type,Description,TypeScript Type
+s,String,string
+o,Object Path,string
+u / i,Unsigned/Signed Int,number
+ao,Array of Objects,string[]
+a{sv},Dictionary (String/Variant),"Record<string, any>"
+(ub),"Struct (Uint, Bool)","[number, boolean]"

@@ -1,5 +1,6 @@
 import dbus, {ProxyObject, Variant} from "dbus-next";
 import {ben_number, ernest_number, SMSMessage, USSDCode} from "@/types";
+import {IModem} from "@/interfaces/IModem";
 
 type USSDState = 1 | 2 | 3 | 4;
 
@@ -51,8 +52,8 @@ export class ModemManagerClient {
 
         const modem = this.mmInterface.getInterface(
             "org.freedesktop.ModemManager1.Modem"
-        );
-        console.log("Modem Modem Interface:", modem);
+        ) as unknown as IModem;
+        console.log("Modem Properties: ", JSON.stringify(modem.$properties, null, 2));
 
 
         console.log("Connected to modem:", this.modemPath);

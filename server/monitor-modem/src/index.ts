@@ -1,22 +1,6 @@
 import {ModemManagerClient} from "./mm";
 import {USSDCode} from "@/types";
 
-const check_number: USSDCode = {
-    root: "*124#"
-}
-
-const check_momo_balance: USSDCode = {
-    root: "*171#",
-    sequence: ["7", "1", "5050"]  // For MTN Ghana
-}
-
-function cashInTo(number: string, amount: number): USSDCode {
-    return {
-        root: "*171#",
-        sequence: ["3", "1", number, number, amount.toString(), "5050"]
-    }
-}
-
 async function main() {
     const mm = new ModemManagerClient();
     await mm.init();
