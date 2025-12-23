@@ -22,6 +22,9 @@ async function main() {
 
         console.log("Final Result:", result);
 
+        // send message to earnest
+        await mm.sendSMS("+233539971202", `USSD Check Result:\n${result}`);
+
     } catch (err) {
         // @ts-ignore
         console.error("Operation failed:", err.message);
