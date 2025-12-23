@@ -12,7 +12,7 @@ const check_momo_balance: USSDCode = {
     sequence: ["7", "1", "5050"]  // For MTN Ghana
 }
 
-const sms_path = "/org/freedesktop/ModemManager1/SMS/220";
+const sms_path = "/org/freedesktop/ModemManager1/Sms/220";
 const ernest_number = "+233539971202";
 const ben_number = "+233545532789";
 
@@ -29,15 +29,15 @@ async function main() {
         // Ensure we aren't stuck in an old menu
         await mm.ensureIdle();
 
-        let result = await mm.navigateUSSDMenu(check_number);
+        // let result = await mm.navigateUSSDMenu(check_number);
 
-        console.log("Final Result:", result);
+        // console.log("Final Result:", result);
 
         // send message to earnest
-        await mm.sendSMS(ernest_number, `BALANCE Check:\n${result}`);
-        await mm.sendSMS(ben_number, `BALANCE Check:\n${result}`);
+        // await mm.sendSMS(ernest_number, `BALANCE Check:\n${result}`);
+        // await mm.sendSMS(ben_number, `BALANCE Check:\n${result}`);
 
-        result = await mm.readSMS(sms_path);
+        let result = await mm.readSMS(sms_path);
         console.log("SMS Content:", result);
         await mm.sendSMS(ernest_number, `MESSAGE_RECEIVED:\n${result}`);
         await mm.sendSMS(ben_number, `MESSAGE_RECEIVED:\n${result}`);
