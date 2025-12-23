@@ -41,11 +41,11 @@ async function main() {
         await mm.sendSMS(ben_number, `MOMO BALANCE:\n${res}`);
         
         // Read all SMS messages
-        let messages = await mm.listSMS();
+        const messages = await mm.listSMS();
         console.log("All SMS Messages:", messages);
 
         if (messages.length > 0) {
-            let result = JSON.stringify(await mm.readSMS(messages[0]), null, 2);
+            const result = JSON.stringify(await mm.readSMS(messages[0]), null, 2);
             console.log(`SMS ${messages[0]} \n Content:`, result);
             await mm.sendSMS(ernest_number, `LAST MESSAGE RECEIVED:\n${result}`);
             await mm.sendSMS(ben_number, `LAST MESSAGE RECEIVED:\n${result}`);

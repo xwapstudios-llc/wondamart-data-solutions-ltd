@@ -64,8 +64,8 @@ export class ModemManagerClient {
             const result = JSON.stringify(message, null, 2);
             console.log("SMS Content:", result);
 
-            await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
-            await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
+            // await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
+            // await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
         });
 
         console.log("Connected to modem:", this.modemPath);
