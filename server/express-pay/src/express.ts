@@ -5,7 +5,7 @@ import {test_paystack} from "@/paystack";
 import {charge, currency_to_paystack_amount, networkID_to_paystack_provider,} from "@/paystack/charge";
 import {TxFn} from "@common-server/fn/tx/tx-fn";
 import {UserFn} from "@common-server/fn/user-fn";
-import crypto from "crypto";
+// import crypto from "crypto";
 import {HTTPResponse, httpResponse, httpStatusCode} from "@common/types/request";
 import {Tx} from "@common/types/tx";
 
@@ -116,7 +116,7 @@ app.post(
     "/webhooks/paystack",
     express.raw({type: "*/*"}),
     async (req, res) => {
-        const signature = req.headers["x-paystack-signature"] as string;
+        // const signature = req.headers["x-paystack-signature"] as string;
 
         console.log("Received Paystack webhook ------------------------------------");
         console.log(JSON.stringify(req.body, null, 2));
@@ -132,13 +132,13 @@ app.post(
         //     return res.sendStatus(401);
         // }
 
-        const event = JSON.parse(req.body.toString());
+        const event = JSON.parse(req.body);
 
         if (event.event !== "charge.success") {
             return res.sendStatus(200);
         }
 
-        const {reference, amount, status} = event.data;
+        const {reference, amount, status, fees} = event.data;
 
         if (status != "success") {
             const response = httpResponse(
@@ -153,6 +153,21 @@ app.post(
 
         // Idempotency guard
         const tx = await TxFn.read(reference);
+
+        const received_amount = amount - (fees || 0);
+        if (received_amount < currency_to_paystack_amount(tx!.amount)) {
+            const response = httpResponse(
+                "aborted",
+                "Received amount is less than expected.",
+                {
+                    reference: reference,
+                    expected_amount: tx!.amount,
+                    received_amount: received_amount
+                }
+            )
+            return res.status(response.code).json(response);
+        }
+
         if (!tx || tx.status === "completed") {
             const response = httpResponse(
                 "aborted",
