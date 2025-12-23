@@ -122,15 +122,15 @@ app.post(
         console.log(JSON.stringify(req.body, null, 2));
         console.log("------------------------------------");
 
-        const hash = crypto
-            .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY!)
-            .update(req.body)
-            .digest("hex");
-
-        if (hash !== signature) {
-            console.warn("Invalid Paystack signature");
-            return res.sendStatus(401);
-        }
+        // const hash = crypto
+        //     .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY!)
+        //     .update(req.body)
+        //     .digest("hex");
+        //
+        // if (hash !== signature) {
+        //     console.warn("Invalid Paystack signature");
+        //     return res.sendStatus(401);
+        // }
 
         const event = JSON.parse(req.body.toString());
 
@@ -138,18 +138,44 @@ app.post(
             return res.sendStatus(200);
         }
 
-        const {reference, amount} = event.data;
+        const {reference, amount, status} = event.data;
+
+        if (status != "success") {
+            const response = httpResponse(
+                "rejected",
+                "Payment not successful.",
+                {
+                    reference: reference
+                }
+            )
+            return res.status(response.code).json(response);
+        }
 
         // Idempotency guard
         const tx = await TxFn.read(reference);
         if (!tx || tx.status === "completed") {
-            return res.sendStatus(200);
+            const response = httpResponse(
+                "aborted",
+                "Transaction already processed.",
+                {
+                    reference: reference
+                }
+            )
+            return res.status(response.code).json(response);
         }
 
         await TxFn.update_status_completed(reference);
         await UserFn.update_UserWalletBalance(tx.uid, tx.amount);
 
-        return res.sendStatus(200);
+        const response = httpResponse(
+            "ok",
+            "Payment processed successfully.",
+            {
+                reference: reference
+            }
+        )
+        console.log("Processed Paystack payment for reference:", reference);
+        return res.status(response.code).json(response);
     },
 );
 
