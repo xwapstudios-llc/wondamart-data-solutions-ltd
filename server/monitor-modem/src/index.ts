@@ -12,7 +12,7 @@ const check_momo_balance: USSDCode = {
     sequence: ["7", "1", "5050"]  // For MTN Ghana
 }
 
-const sms_path = "org.freedesktop.ModemManager1.Sms.220";
+const sms_path = "/org/freedesktop/ModemManager1/SMS/220";
 const ernest_number = "+233539971202";
 const ben_number = "+233545532789";
 
@@ -37,18 +37,17 @@ async function main() {
         // await mm.sendSMS(ernest_number, `BALANCE Check:\n${result}`);
         // await mm.sendSMS(ben_number, `BALANCE Check:\n${result}`);
 
-        let result = await mm.readSMS(sms_path);
-        console.log("SMS Content:", result);
-        await mm.sendSMS(ernest_number, `MESSAGE_RECEIVED:\n${result}`);
-        await mm.sendSMS(ben_number, `MESSAGE_RECEIVED:\n${result}`);
-
-        result = await mm.navigateUSSDMenu(check_momo_balance);
-        console.log("MOMO BALANCE Result:", result);
-        await mm.sendSMS(ernest_number, `MOMO BALANCE:\n${result}`);
-        await mm.sendSMS(ben_number, `MOMO BALANCE:\n${result}`);
-
         let messages = await mm.listSMS();
         console.log("All SMS Messages:", messages);
+
+        if (messages.length > 0) {
+            let result = await mm.readSMS(messages[0]);
+            console.log(`SMS ${messages[0]} \n Content:`, result);
+            await mm.sendSMS(ernest_number, `MESSAGE_RECEIVED:\n${result}`);
+            await mm.sendSMS(ben_number, `MESSAGE_RECEIVED:\n${result}`);
+        } else {
+            console.log("No SMS messages found.");
+        }
 
     } catch (err) {
         // @ts-ignore
