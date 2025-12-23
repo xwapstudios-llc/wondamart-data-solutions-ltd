@@ -36,6 +36,20 @@ async function main() {
         // let result = await mm.navigateUSSDMenu(cashInTo("0244254373", 221.82));
         // console.log("Final Result:", result);
 
+        const messages = await mm.listSMS();
+        // for(const message of messages) {}
+        messages.forEach(async (msg) => {
+            const message = await mm.readSMS(msg);
+            console.log("SMS Message:", message);
+            // Reply with the message content back to both numbers
+            console.log("Sending reply to both numbers...");
+            console.log("Replying to---------------------------", ernest_number);
+            mm.sendSMS(ernest_number, JSON.stringify(message, null, 2));
+            await Promise.resolve(() => setTimeout(() => {}, 10000));
+            console.log("Replying to---------------------------", ben_number);
+            mm.sendSMS(ben_number, JSON.stringify(message, null, 2));
+        });
+
     } catch (err) {
         // @ts-ignore
         console.error("Operation failed:", err.message);
