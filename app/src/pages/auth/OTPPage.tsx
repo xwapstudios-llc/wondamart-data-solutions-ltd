@@ -16,7 +16,7 @@ const OTPPage: React.FC = () => {
         <Page>
             <PageContent className={"min-h-[80svh] flex items-center justify-center"}>
                 <OTPForm
-                    length={4}
+                    length={6}
                     onVerify={async (otp) => {
                         await ClTxAccountDeposit.otp.submit({
                             otp: otp,

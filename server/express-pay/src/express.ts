@@ -65,6 +65,9 @@ app.post("/deposit/paystack", async (req, res) => {
 app.post("/deposit/paystack/submit-otp", async (req, res) => {
     const {txID, otp, uid} = req.body as TxSubmitOTPRequest;
 
+    console.log("-----------------------------------------------")
+    console.log("paystack/submit-otp data:", req.body);
+    console.log("-----------------------------------------------")
     if (!txID || !otp) {
         const http_res = httpResponse(
             "invalid-data",

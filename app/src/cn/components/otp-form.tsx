@@ -2,7 +2,7 @@ import {cn} from "@/cn/lib/utils"
 import {Button} from "@/cn/components/ui/button"
 import {Field, FieldDescription, FieldGroup, FieldLabel,} from "@/cn/components/ui/field"
 import {InputOTP, InputOTPGroup, InputOTPSlot,} from "@/cn/components/ui/input-otp"
-import React, {useContext, useState} from "react";
+import React, {useContext, useRef, useState} from "react";
 import {OTPInputContext} from "input-otp"
 import {Loader2Icon} from "lucide-react";
 
@@ -16,17 +16,41 @@ export const OTPForm : React.FC<OTPFormProps> = ({className, onVerify, onResend,
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
     const [resendLoading, setResendLoading] = useState(false);
+    const containerRef = useRef<HTMLDivElement | null>(null)
 
     const getOtpValue = () => {
-        const slots = inputOTPContext?.slots ?? []
-        // join chars in order; fallback to empty string for missing slots
-        return slots.map((s: any) => s?.char ?? "").slice(0, length).join("")
+        // Prefer reading the rendered slot elements inside the InputOTP container using local ref.
+        try {
+            const container = containerRef.current
+            if (container) {
+                const slots = Array.from(container.querySelectorAll('[data-slot="input-otp-slot"]'))
+                if (slots.length > 0) {
+                    return slots.map(s => (s.textContent ?? "").trim().slice(0,1)).slice(0, length).join("")
+                }
+            }
+            // fallback to querying by id if ref isn't available for any reason
+            if (typeof document !== "undefined") {
+                const docContainer = document.getElementById("otp")
+                if (docContainer) {
+                    const slots = Array.from(docContainer.querySelectorAll('[data-slot="input-otp-slot"]'))
+                    if (slots.length > 0) {
+                        return slots.map(s => (s.textContent ?? "").trim().slice(0,1)).slice(0, length).join("")
+                    }
+                }
+            }
+        } catch (err) {
+            // ignore DOM errors and fallback to context
+        }
+        // Fallback to context (maybe empty if called before provider is ready)
+        const slotsCtx = inputOTPContext?.slots ?? []
+        return slotsCtx.map((s: any) => s?.char ?? "").slice(0, length).join("")
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError(null)
         const otp = getOtpValue()
+        console.log("OTP: ", otp)
         if (otp.length !== length) {
             setError(`Enter the ${length}-digit code.`)
             return
@@ -40,14 +64,15 @@ export const OTPForm : React.FC<OTPFormProps> = ({className, onVerify, onResend,
             setLoading(false)
         }
     }
-    const handleResend = () => {
+    const handleResend = async () => {
         try {
+            setError(null)
             setResendLoading(true)
             onResend && onResend()
         } catch (error: any) {
             setError(error.message ?? String(error))
         } finally {
-            setLoading(false)
+            setResendLoading(false)
         }
     }
 
@@ -70,19 +95,21 @@ export const OTPForm : React.FC<OTPFormProps> = ({className, onVerify, onResend,
                     <FieldLabel htmlFor="otp" className="sr-only">
                         OTP
                     </FieldLabel>
-                    <InputOTP
-                        maxLength={length}
-                        id="otp"
-                        required
-                        containerClassName="gap-4 justify-center"
-                    >
-                        <InputOTPGroup
-                            className="gap-2.5 *:data-[slot=input-otp-slot]:h-16 *:data-[slot=input-otp-slot]:w-12 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border *:data-[slot=input-otp-slot]:text-xl">
-                            {Array.from({length}).map((_, i) => (
-                                <InputOTPSlot key={i} index={i}/>
-                            ))}
-                        </InputOTPGroup>
-                    </InputOTP>
+                    <div ref={containerRef}>
+                        <InputOTP
+                            maxLength={length}
+                            id="otp"
+                            required
+                            containerClassName="gap-4 justify-center"
+                        >
+                            <InputOTPGroup
+                                className="gap-2.5 *:data-[slot=input-otp-slot]:h-16 *:data-[slot=input-otp-slot]:w-12 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border *:data-[slot=input-otp-slot]:text-xl">
+                                {Array.from({length}).map((_, i) => (
+                                    <InputOTPSlot key={i} index={i}/>
+                                ))}
+                            </InputOTPGroup>
+                        </InputOTP>
+                    </div>
                     <FieldDescription className="text-center">
                         <span>Didn&apos;t receive the code?</span>
                         <Button type="button" variant={"link"} onClick={handleResend} disabled={loading || resendLoading}>
