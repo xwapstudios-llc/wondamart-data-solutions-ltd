@@ -62,10 +62,13 @@ export class ModemManagerClient {
             console.log("New SMS at:", msgPath);
             const message = await this.readSMS(msgPath);
             const result = JSON.stringify(message, null, 2);
+            console.log("----------------------------------")
             console.log("SMS Content:", result);
 
-            // await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
-            // await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
+            console.log("Sending SMS notifications...");
+            await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
+            await new Promise(resolve => setTimeout(resolve, 1000)); // small delay to avoid overwhelming
+            await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
         });
 
         console.log("Connected to modem:", this.modemPath);

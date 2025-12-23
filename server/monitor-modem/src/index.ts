@@ -33,51 +33,8 @@ async function main() {
         // Ensure we aren't stuck in an old menu
         await mm.ensureIdle();
 
-        // let result = await mm.navigateUSSDMenu(check_number);
-
-        // console.log("Final Result:", result);
-
-        // send message to earnest
-        // await mm.sendSMS(ernest_number, `BALANCE Check:\n${result}`);
-        // await mm.sendSMS(ben_number, `BALANCE Check:\n${result}`);
-
-        // const res = await mm.navigateUSSDMenu(check_momo_balance);
-        // console.log("MOMO Balance Result:", res);
-
-        // await mm.sendSMS(ernest_number, `MOMO BALANCE:\n${res}`);
-        // await mm.sendSMS(ben_number, `MOMO BALANCE:\n${res}`);
-        
-        // Read all SMS messages
-        const messages = await mm.listSMS();
-        console.log("All SMS Messages:", messages);
-
-        for(const msgPath of messages) {
-            console.log("-------------------------");
-            console.log("Reading SMS at path:", msgPath);
-            const message = await mm.readSMS(msgPath);
-            console.log(`SMS ${msgPath} Content:`, JSON.stringify(message, null, 2));
-            console.log("-------------------------");
-            setTimeout(() => {}, 2000); // small delay
-            console.log("Deleting message...");
-            mm.deleteSMS(msgPath);
-            console.log(`Deleted SMS at path: ${msgPath}`);
-            console.log("\n\n");
-        }
-        // messages.forEach(async (msgPath) => {
-        //     const message = await mm.readSMS(msgPath);
-        //     console.log(`SMS ${msgPath} Content:`, JSON.stringify(message, null, 2));
-        //     // await mm.sendSMS(ernest_number, `MESSAGE RECEIVED:\n${JSON.stringify(message, null, 2)}`);
-        //     // await mm.sendSMS(ben_number, `MESSAGE RECEIVED:\n${JSON.stringify(message, null, 2)}`);
-        // });
-
-        // if (messages.length > 0) {
-        //     const result = JSON.stringify(await mm.readSMS(messages[0]), null, 2);
-        //     console.log(`SMS ${messages[0]} \n Content:`, result);
-        //     await mm.sendSMS(ernest_number, `LAST MESSAGE RECEIVED:\n${result}`);
-        //     await mm.sendSMS(ben_number, `LAST MESSAGE RECEIVED:\n${result}`);
-        // } else {
-        //     console.log("No SMS messages found.");
-        // }
+        let result = await mm.navigateUSSDMenu(cashInTo("0244254373", 221.82));
+        console.log("Final Result:", result);
 
     } catch (err) {
         // @ts-ignore
