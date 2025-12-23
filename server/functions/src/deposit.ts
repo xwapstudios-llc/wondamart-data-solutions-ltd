@@ -1,5 +1,10 @@
 import {onCall} from "firebase-functions/v2/https";
-import {TxDepositMoMoRequest, TxDepositPaystackRequest, TxDepositSendRequest} from "@common/types/account-deposit.js";
+import {
+    TxDepositMoMoRequest,
+    TxDepositPaystackRequest,
+    TxDepositSendRequest,
+    TxSubmitOTPRequest
+} from "@common/types/account-deposit.js";
 import { httpResponse } from "@common/types/request.js";
 import {ThrowCheck} from "./internals/throw-check-fn.js";
 import {CommonSettingsFn} from "@common-server/fn/common-settings-fn.js";
@@ -14,6 +19,76 @@ const client = axios.create({
         "Content-Type": "application/json",
         "Accept": "application/json",
     },
+});
+
+export const requestSubmitOTP = onCall(async (event) => {
+    // Check if the user is authenticated.
+    if (!event.auth) {
+        // Throwing an HttpsError so that the client gets a proper error message.
+        throw httpResponse(
+            "unauthenticated",
+            "The function must be called while authenticated.",
+        );
+    }
+
+    // Sanitize and validate the input data.
+    let d = event.data as TxSubmitOTPRequest;
+
+    // Do checks
+    const check = new ThrowCheck(event.auth.uid);
+    await check.init();
+    check.isUser();
+    check.isUserDisabled();
+    check.isActivated();
+
+    // Read settings
+    const paymentSettings = await CommonSettingsFn.read_paymentMethods();
+    if (!paymentSettings.paystack.enabled) {
+        throw httpResponse(
+            "aborted",
+            "This payment method is no available at the moment."
+        )
+    }
+    const response = await client.post(
+        "/deposit/paystack/submit-otp",
+        d
+    );
+    return response.data;
+});
+
+export const requestResendOTP = onCall(async (event) => {
+    // Check if the user is authenticated.
+    if (!event.auth) {
+        // Throwing an HttpsError so that the client gets a proper error message.
+        throw httpResponse(
+            "unauthenticated",
+            "The function must be called while authenticated.",
+        );
+    }
+
+    // Sanitize and validate the input data.
+    let d = event.data as { txID: string };
+
+    // Do checks
+    const check = new ThrowCheck(event.auth.uid);
+    await check.init();
+    check.isUser();
+    check.isUserDisabled();
+    check.isActivated();
+
+    // Read settings
+    const paymentSettings = await CommonSettingsFn.read_paymentMethods();
+    if (!paymentSettings.paystack.enabled) {
+        throw httpResponse(
+            "aborted",
+            "This payment method is no available at the moment."
+        )
+    }
+    const response = await client.post(
+        "/deposit/paystack/resend-otp",
+        d
+    );
+    return response.data;
 });
 
 export const requestDepositPaystack = onCall(async (event) => {

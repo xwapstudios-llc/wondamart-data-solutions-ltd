@@ -43,6 +43,11 @@ export interface TxDepositPaystackRequest extends Omit<TxDepositPaystackData, "t
     uid: string;
     amount: number;
 }
+export interface TxSubmitOTPRequest {
+    uid: string;
+    txID: string;
+    otp: string;
+}
 export interface TxDepositSendRequest extends Omit<TxDepositSendData, "type"> {
     uid: string;
 }

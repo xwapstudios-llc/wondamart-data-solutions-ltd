@@ -85,7 +85,7 @@ interface PayStackResponse {
 
 interface PayStackRequestResult {
     res?: PayStackResponse;
-    error: object | null;
+    error: any | null;
 }
 
 const paystackRequest = async (params: string, options: PayStackOptions): Promise<PayStackRequestResult> => {

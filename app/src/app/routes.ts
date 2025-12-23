@@ -15,7 +15,9 @@ const R = {
         forgotPassword: "/forgot-password",
         resetPassword: "/reset-password",
         verifyEmail: "/auth/verify-email/:email",
-        otp: "/auth/otp",
+        otp: (txID: string) => {
+            return `/auth/otp/${txID}`
+        },
     },
 
     app: {

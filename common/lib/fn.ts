@@ -40,6 +40,10 @@ const Functions = {
             send: httpsCallable(fn, "requestDepositSend"),
             momo: httpsCallable(fn, "requestDepositMoMo"),
         },
+        otp: {
+            submit: httpsCallable(fn, "requestSubmitOTP"),
+            resend: httpsCallable(fn, "requestResendOTP"),
+        }
     },
     DataBundle: {
         create: httpsCallable(fn, "createDataBundle"),

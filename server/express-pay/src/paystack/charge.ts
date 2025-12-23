@@ -52,7 +52,6 @@ export const charge = {
             console.error(res.error);
         } else {
             console.log("Successfully submitted OTP:");
-            console.log(res);
         }
         return res;
     },

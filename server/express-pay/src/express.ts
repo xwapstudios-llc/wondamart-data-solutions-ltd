@@ -1,15 +1,13 @@
 import express from "express";
 import config from "@common-server/config";
-import { TxDepositPaystackData } from "@common/types/account-deposit";
-import { test_paystack } from "@/paystack";
-import {
-    currency_to_paystack_amount,
-    networkID_to_paystack_provider,
-} from "@/paystack/charge";
-import { TxFn } from "@common-server/fn/tx/tx-fn";
-import { UserFn } from "@common-server/fn/user-fn";
+import {TxDepositPaystackData, TxSubmitOTPRequest} from "@common/types/account-deposit";
+import {test_paystack} from "@/paystack";
+import {charge, currency_to_paystack_amount, networkID_to_paystack_provider,} from "@/paystack/charge";
+import {TxFn} from "@common-server/fn/tx/tx-fn";
+import {UserFn} from "@common-server/fn/user-fn";
 import crypto from "crypto";
 import {HTTPResponse, httpResponse, httpStatusCode} from "@common/types/request";
+import {Tx} from "@common/types/tx";
 
 const app = express();
 app.use(express.json());
@@ -22,7 +20,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/deposit/paystack", async (req, res) => {
-    const tx = req.body;
+    const tx = req.body as Tx;
 
     if (!tx?.id || !tx?.amount || !tx?.uid) {
         const http_res = httpResponse(
@@ -64,11 +62,62 @@ app.post("/deposit/paystack", async (req, res) => {
     }
 });
 
+app.post("/deposit/paystack/submit-otp", async (req, res) => {
+    const {txID, otp, uid} = req.body as TxSubmitOTPRequest;
+
+    if (!txID || !otp) {
+        const http_res = httpResponse(
+            "invalid-data",
+            {
+                title: "Invalid data in request",
+                message: "Request expected a valid transaction reference and an otp.",
+            }
+        )
+        return res.status(http_res.code).json(http_res);
+    }
+
+    try {
+        console.log(`Received OTP submission for reference ${txID}: ${otp}`);
+        const response = await charge.submit_otp(txID, otp);
+
+        if (response.error) {
+            const http_res: HTTPResponse = {
+                code: httpStatusCode["error"],
+                status: "error",
+                message: {
+                    title: "Failed to submit OTP",
+                    message: `An error occurred while submitting the OTP: ${response.error}`,
+                },
+            };
+            return res.status(http_res.code).json(http_res);
+        }
+        const http_res: HTTPResponse = {
+            code: httpStatusCode["ok"],
+            status: "ok",
+            message: "OTP submitted successfully.",
+        };
+        return res.status(http_res.code).json(http_res);
+    } catch (err: unknown) {
+        console.error("Paystack OTP submission failed:", err);
+
+        return res
+            .status(httpStatusCode["error"])
+            .json(err);
+    }
+});
+
+app.post("/deposit/paystack/resend-otp", async (req, res) => {
+});
+
 app.post(
     "/webhooks/paystack",
-    express.raw({ type: "*/*" }),
+    express.raw({type: "*/*"}),
     async (req, res) => {
         const signature = req.headers["x-paystack-signature"] as string;
+
+        console.log("Received Paystack webhook ------------------------------------");
+        console.log(req.body.toString())
+        console.log("------------------------------------");
 
         const hash = crypto
             .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY!)
@@ -86,7 +135,7 @@ app.post(
             return res.sendStatus(200);
         }
 
-        const { reference, amount } = event.data;
+        const {reference, amount} = event.data;
 
         // Idempotency guard
         const tx = await TxFn.read(reference);

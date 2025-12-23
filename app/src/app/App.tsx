@@ -73,7 +73,7 @@ const App = () => {
                         <Route path={R.auth.verifyEmail} element={<VerifyEmailPage/>}/>
                         <Route path={R.auth.forgotPassword} element={<ForgotPasswordPage/>}/>
                         <Route path={R.auth.resetPassword} element={<ResetPasswordPage/>}/>
-                        <Route path={R.auth.otp} element={<OTPPage/>} />
+                        <Route path={R.auth.otp(":txID")} element={<OTPPage/>} />
                     </>
 
                     {/*Routes group for user*/}
