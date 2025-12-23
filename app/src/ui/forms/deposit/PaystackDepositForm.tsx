@@ -61,7 +61,7 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
                     console.log("Response from paystack request > ", res)
                     switch (res.status) {
                         case "send_otp": {
-                            navigate(R.auth.otp);
+                            navigate(R.auth.otp(res.data.reference));
                             break;
                         }
                         case "ok": {

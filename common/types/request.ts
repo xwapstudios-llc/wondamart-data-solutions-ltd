@@ -70,7 +70,7 @@ export const httpStatusCode = {
 
 export interface HTTPResponse {
     status: HTTPStatus;
-    data?: unknown;
+    data?: any;
     message?: string | HTTPMessage;
     code: number;
 }

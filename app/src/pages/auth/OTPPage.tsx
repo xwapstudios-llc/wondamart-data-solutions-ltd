@@ -12,6 +12,10 @@ const OTPPage: React.FC = () => {
     const {user} = useAppStore();
     const navigate = useNavigate();
 
+    if (txID == undefined || txID == "") {
+        return null
+    }
+
     return (
         <Page>
             <PageContent className={"min-h-[80svh] flex items-center justify-center"}>

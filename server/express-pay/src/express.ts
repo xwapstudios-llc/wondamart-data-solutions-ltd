@@ -119,7 +119,7 @@ app.post(
         const signature = req.headers["x-paystack-signature"] as string;
 
         console.log("Received Paystack webhook ------------------------------------");
-        console.log(req.body.toString())
+        console.log(JSON.stringify(req.body, null, 2));
         console.log("------------------------------------");
 
         const hash = crypto
