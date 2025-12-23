@@ -132,10 +132,18 @@ app.post(
         //     return res.sendStatus(401);
         // }
 
-        const event = JSON.parse(req.body);
+        const event = req.body;
 
         if (event.event !== "charge.success") {
-            return res.sendStatus(200);
+            const response = httpResponse(
+                "aborted",
+                "Event type not supported.",
+                {
+                    event: event.event
+                }
+            )
+            return res.status(response.code).json(response
+            )
         }
 
         const {reference, amount, status, fees} = event.data;
