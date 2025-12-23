@@ -12,7 +12,7 @@ const check_momo_balance: USSDCode = {
     sequence: ["7", "1", "5050"]  // For MTN Ghana
 }
 
-const sms_path = "org.freedesktop.ModemManager1.SMS.220";
+const sms_path = "org.freedesktop.ModemManager1.Sms.220";
 const ernest_number = "+233539971202";
 const ben_number = "+233545532789";
 
