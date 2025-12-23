@@ -1,6 +1,5 @@
-import { read } from "node:fs";
 import {ModemManagerClient} from "./mm";
-import {USSDCode} from "@/types";
+import {USSDCode, ben_number, ernest_number} from "@/types";
 
 const check_number: USSDCode = {
     root: "*124#",
@@ -13,8 +12,6 @@ const check_momo_balance: USSDCode = {
 }
 
 const sms_path = "/org/freedesktop/ModemManager1/SMS/220";
-const ernest_number = "+233539971202";
-const ben_number = "+233545532789";
 
 async function main() {
     const mm = new ModemManagerClient();
@@ -37,14 +34,21 @@ async function main() {
         // await mm.sendSMS(ernest_number, `BALANCE Check:\n${result}`);
         // await mm.sendSMS(ben_number, `BALANCE Check:\n${result}`);
 
+        const res = await mm.navigateUSSDMenu(check_momo_balance);
+        console.log("MOMO Balance Result:", res);
+
+        await mm.sendSMS(ernest_number, `MOMO BALANCE:\n${res}`);
+        await mm.sendSMS(ben_number, `MOMO BALANCE:\n${res}`);
+        
+        // Read all SMS messages
         let messages = await mm.listSMS();
         console.log("All SMS Messages:", messages);
 
         if (messages.length > 0) {
-            let result = await mm.readSMS(messages[0]);
+            let result = JSON.stringify(await mm.readSMS(messages[0]), null, 2);
             console.log(`SMS ${messages[0]} \n Content:`, result);
-            await mm.sendSMS(ernest_number, `MESSAGE_RECEIVED:\n${result}`);
-            await mm.sendSMS(ben_number, `MESSAGE_RECEIVED:\n${result}`);
+            await mm.sendSMS(ernest_number, `LAST MESSAGE RECEIVED:\n${result}`);
+            await mm.sendSMS(ben_number, `LAST MESSAGE RECEIVED:\n${result}`);
         } else {
             console.log("No SMS messages found.");
         }

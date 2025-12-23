@@ -1,5 +1,5 @@
 import dbus, {ProxyObject, Variant} from "dbus-next";
-import {USSDCode} from "@/types";
+import {ben_number, ernest_number, SMSMessage, USSDCode} from "@/types";
 
 type USSDState = 1 | 2 | 3 | 4;
 
@@ -60,8 +60,13 @@ export class ModemManagerClient {
 
         messaging.on("Added", async (msgPath: string) => {
             console.log("New SMS at:", msgPath);
-        });
+            const message = await this.readSMS(msgPath);
+            const result = JSON.stringify(message, null, 2);
+            console.log("SMS Content:", result);
 
+            await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
+            await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
+        });
 
         console.log("Connected to modem:", this.modemPath);
     }
@@ -138,7 +143,7 @@ export class ModemManagerClient {
         return messages;
     }
 
-    async readSMS(smsPath: string) {
+    async readSMS(smsPath: string): Promise<SMSMessage> {
         const smsObj = await this.systemBus.getProxyObject(
             "org.freedesktop.ModemManager1",
             smsPath
@@ -150,7 +155,13 @@ export class ModemManagerClient {
 
         const properties = await propertiesInterface.GetAll("org.freedesktop.ModemManager1.Sms");
 
-        return properties;
+        const res: SMSMessage = {
+            from: properties["Number"].value,
+            text: properties["Text"].value,
+            timestamp: properties["Timestamp"].value,
+            status: properties["State"].value,
+        }
+        return res;
     }
 
     async sendSMS(number: string, text: string) {
