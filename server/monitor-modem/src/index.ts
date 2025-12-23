@@ -11,6 +11,13 @@ const check_momo_balance: USSDCode = {
     sequence: ["7", "1", "5050"]  // For MTN Ghana
 }
 
+function cashInTo(number: string, amount: number): USSDCode {
+    return {
+        root: "*170#",
+        sequence: ["3", "1", number, number, amount.toString(), "5050"]
+    }
+}
+
 const sms_path = "/org/freedesktop/ModemManager1/SMS/220";
 
 async function main() {
@@ -19,8 +26,8 @@ async function main() {
 
     // await mm.waitForReady();
 
-    console.log("Operator Name:", await mm.getOperatorName());
-    console.log("Signal Status:", await mm.getStatus());
+    // console.log("Operator Name:", await mm.getOperatorName());
+    // console.log("Signal Status:", await mm.getStatus());
 
     try {
         // Ensure we aren't stuck in an old menu
@@ -34,24 +41,31 @@ async function main() {
         // await mm.sendSMS(ernest_number, `BALANCE Check:\n${result}`);
         // await mm.sendSMS(ben_number, `BALANCE Check:\n${result}`);
 
-        const res = await mm.navigateUSSDMenu(check_momo_balance);
-        console.log("MOMO Balance Result:", res);
+        // const res = await mm.navigateUSSDMenu(check_momo_balance);
+        // console.log("MOMO Balance Result:", res);
 
-        await mm.sendSMS(ernest_number, `MOMO BALANCE:\n${res}`);
-        await mm.sendSMS(ben_number, `MOMO BALANCE:\n${res}`);
+        // await mm.sendSMS(ernest_number, `MOMO BALANCE:\n${res}`);
+        // await mm.sendSMS(ben_number, `MOMO BALANCE:\n${res}`);
         
         // Read all SMS messages
         const messages = await mm.listSMS();
         console.log("All SMS Messages:", messages);
 
-        if (messages.length > 0) {
-            const result = JSON.stringify(await mm.readSMS(messages[0]), null, 2);
-            console.log(`SMS ${messages[0]} \n Content:`, result);
-            await mm.sendSMS(ernest_number, `LAST MESSAGE RECEIVED:\n${result}`);
-            await mm.sendSMS(ben_number, `LAST MESSAGE RECEIVED:\n${result}`);
-        } else {
-            console.log("No SMS messages found.");
-        }
+        messages.forEach(async (msgPath) => {
+            const message = await mm.readSMS(msgPath);
+            console.log(`SMS ${msgPath} Content:`, JSON.stringify(message, null, 2));
+            await mm.sendSMS(ernest_number, `MESSAGE RECEIVED:\n${JSON.stringify(message, null, 2)}`);
+            await mm.sendSMS(ben_number, `MESSAGE RECEIVED:\n${JSON.stringify(message, null, 2)}`);
+        });
+
+        // if (messages.length > 0) {
+        //     const result = JSON.stringify(await mm.readSMS(messages[0]), null, 2);
+        //     console.log(`SMS ${messages[0]} \n Content:`, result);
+        //     await mm.sendSMS(ernest_number, `LAST MESSAGE RECEIVED:\n${result}`);
+        //     await mm.sendSMS(ben_number, `LAST MESSAGE RECEIVED:\n${result}`);
+        // } else {
+        //     console.log("No SMS messages found.");
+        // }
 
     } catch (err) {
         // @ts-ignore
