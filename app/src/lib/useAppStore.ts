@@ -200,7 +200,10 @@ export const useAppStore = create<AppState>()(
             },
 
             // User Claims
-            claims: null,
+            claims: {
+                admin: false,
+                isActivated: true,
+            },
             fetchClaims: async () => {
                 set({loading: true, error: null});
                 const user = get().user;
