@@ -20,6 +20,9 @@ import {
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
+import {toast} from "sonner";
+import { R } from "@/app/routes";
+import {useNavigate} from "react-router-dom";
 
 const formSchema = z
     .object({
@@ -34,9 +37,10 @@ interface DataPackageCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const DataPackageCard: React.FC<DataPackageCardProps> = ({dataPackage, className, activeID, onActivate, ...props}) => {
-    const {setError, profile} = useAppStore();
+    const {profile, wallet} = useAppStore();
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -71,6 +75,25 @@ const DataPackageCard: React.FC<DataPackageCardProps> = ({dataPackage, className
 
     const submitPurchaseRequest = async (values: FormValues) => {
         setLoading(true);
+        if (!wallet || !profile) {
+            toast.error("Profile or wallet not found");
+            setLoading(false);
+            return;
+        }
+        if (wallet?.balance < dataPackage.price) {
+            form.setError("root", {message: "Insufficient Funds"});
+            toast.error("Insufficient Funds", {
+                description: "Please top up your wallet to proceed with the purchase.",
+                action: {
+                    label: "Top Up",
+                    onClick: () => {
+                        navigate(R.app.deposit)
+                    }
+                }
+            });
+            setLoading(false);
+            return;
+        }
         if (profile && dataPackage.enabled) {
             await ClTxDataBundle.create({
                 uid: profile.id,
@@ -82,7 +105,9 @@ const DataPackageCard: React.FC<DataPackageCardProps> = ({dataPackage, className
                     form.reset();
                 })
                 .catch((err) => {
-                    setError(err);
+                    toast.error("Purchase Failed", {
+                        description: err.message,
+                    })
                     form.setError("root", {message: "Failed"})
                 })
         }

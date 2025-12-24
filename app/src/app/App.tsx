@@ -54,6 +54,8 @@ import UserSettingsSecurity from "@/pages/app/user/settings/security";
 import {ThemeProvider} from "@/cn/components/theme/theme-provider.tsx";
 import RegisterAgent from "@/pages/app/RegisterAgent.tsx";
 import OTPPage from "@/pages/auth/OTPPage.tsx";
+import {Toaster} from "@/cn/components/ui/sonner.tsx";
+import OnErrorCard from "@/ui/components/cards/OnErrorCard.tsx";
 
 
 const App = () => {
@@ -129,6 +131,8 @@ const App = () => {
                     <Route path={"*"} element={<NotFoundPage/>}/>
                 </Routes>
             </BrowserRouter>
+            <Toaster />
+            <OnErrorCard />
         </ThemeProvider>
     );
 }

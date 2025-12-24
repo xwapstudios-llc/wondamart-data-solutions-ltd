@@ -18,16 +18,26 @@ import {
 } from "@common/types/common-settings";
 import {ClCommonSettings} from "@common/client-api/db-common-settings";
 import {collections, db} from "@common/lib/db";
+import type {LucideIcon} from "lucide-react";
+import type {ButtonVariant} from "@/cn/components/ui/button.tsx";
 
+interface AppDetailedError {
+    title?: string;
+    description?: string;
+    Icon?: LucideIcon;
+    actions?: Array<{label: string, variant?: ButtonVariant; action: () => void;}>;
+}
+type AppError = string | null | AppDetailedError;
 
 interface AppState {
     // Utils
     loading: boolean;
-    error: string | null;
+    error: AppError;
 
     // utils
     setLoading: (state: boolean) => void;
-    setError: (err: string) => void;
+    setError: (err: string | AppError) => void;
+    clearError: () => void;
 
     // Logins and logouts
     login: (email: string, password: string) => Promise<void>;
@@ -67,8 +77,11 @@ export const useAppStore = create<AppState>()(
             setLoading: (state: boolean) => {
                 set({loading: state});
             },
-            setError: (err: string) => {
+            setError: (err: string | AppError) => {
                 set({error: err});
+            },
+            clearError: () => {
+                set({error: null});
             },
 
             // Logins and logouts
