@@ -28,8 +28,10 @@ const BundlesView: React.FC<BundlesViewProps> = ({loading, bundles, className, c
                     <div className={cn("bundles-grid", className)} {...props}>
                         {
                             bundles.sort((a, b) => {
-                                if (a.dataPackage.data > b.dataPackage.data) return 1;
-                                else return -1;
+                                if (a.validityPeriod !== b.validityPeriod) {
+                                    return a.validityPeriod - b.validityPeriod;
+                                }
+                                return a.dataPackage.data - b.dataPackage.data;
                             }).map((dataPackage, i) => (
                                 <DataPackageCard activeID={activeID} onActivate={() => {
                                     setActiveID(dataPackage.id === activeID ? "" : dataPackage.id);
