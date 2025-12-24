@@ -1,4 +1,4 @@
-import {AdminNewDataBundle} from "@common/types/data-bundle";
+import type {AdminNewDataBundle} from "@common/types/data-bundle";
 
 export
 function gen_bundle_id(d: AdminNewDataBundle): string {

@@ -9,11 +9,12 @@
 import { DataBundles } from "@common/client-api/db-data-bundle";
 import { collections, db } from "@common/lib/db";
 import { Functions } from "@common/lib/fn";
-import {
-    type AdminNewDataBundle,
-    DataBundle, DataBundleQuery,
-    type DataPackage,
-    type ValidityPeriod
+import type {
+    AdminNewDataBundle,
+    DataBundle,
+    DataBundleQuery,
+    DataPackage,
+    ValidityPeriod
 } from "@common/types/data-bundle";
 import {collection, getDocs, query, Query, Timestamp, where} from "firebase/firestore";
 import { doc, getDoc, updateDoc } from "firebase/firestore";

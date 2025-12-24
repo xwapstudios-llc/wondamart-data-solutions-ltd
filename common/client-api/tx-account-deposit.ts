@@ -17,7 +17,7 @@ import { collections, db } from "@common/lib/db";
 import { Functions } from "@common/lib/fn";
 import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
-import {HTTPResponse} from "@common/types/request";
+import type {HTTPResponse} from "@common/types/request";
 
 const createQuery = (q: TxAccountDepositQuery): Query => {
     let Q = buildTxQuery(q);
