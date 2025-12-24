@@ -9,11 +9,18 @@ type ProfilePillProps = React.HTMLAttributes<HTMLDivElement>;
 const ProfilePill: React.FC<ProfilePillProps> = ({className, children, ...props}) => {
     const {user} = useAppStore();
 
+    const getInitials = (name: string) => {
+        const names = name.split(" ");
+        return names.map(n => n.charAt(0).toUpperCase()).join("").slice(0, 2);
+    }
+
     return (
         <div className={cn("flex items-center gap-4 border rounded-full p-2 bg-muted/25", className)} {...props}>
             <Avatar className="size-16">
                 <AvatarFallback>
-                    <User2Icon className={"text-muted-foreground"}/>
+                    {
+                        user?.displayName ? getInitials(user.displayName) : <User2Icon className={"text-muted-foreground"}/>
+                    }
                 </AvatarFallback>
                 <AvatarImage src={user?.photoURL ?? ""}/>
             </Avatar>
