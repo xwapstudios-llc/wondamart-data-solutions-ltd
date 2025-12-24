@@ -3,12 +3,13 @@ import {cn} from "@/cn/lib/utils.ts";
 
 import { Timestamp } from "firebase/firestore";
 import type {Tx} from "@common/types/tx.ts";
-import {getTxIcon, getTxName, toCurrency} from "@/lib/icons.ts";
+import {getTxIcon, getTxName, getTxReportText, toCurrency} from "@/lib/icons.ts";
 import {useNavigate} from "react-router-dom";
 import {R} from "@/app/routes.ts";
 import {ClockCheckIcon, ClockPlusIcon} from "lucide-react";
 import StatusBadge from "@/ui/components/typography/StatusBadge.tsx";
 import {Button} from "@/cn/components/ui/button.tsx";
+import {toast} from "sonner";
 
 const formatDate = (ts: Timestamp) => {
     if (!ts) return "---";
@@ -78,7 +79,17 @@ const TxCard: React.FC<TxCardProps> = ({tx, className, ...props}) => {
             <div className="mt-2 text-xs">Ref: {tx.id}</div>
             {
                 tx.type != "deposit" && (
-                    <Button className={"mt-1.5 w-full"} variant={"outline"}>Copy details</Button>
+                    <Button
+                        className={"mt-1.5 w-full"}
+                        variant={"outline"}
+                        onClick={() => {
+                            navigator.clipboard.writeText(getTxReportText(tx)).then(() => {
+                                toast.success("Transaction details copied to clipboard", {duration: 3000});
+                            })
+                        }}
+                    >
+                        Copy details
+                    </Button>
                 )
             }
         </div>

@@ -6,6 +6,7 @@ import {Button} from "@/cn/components/ui/button.tsx";
 import {CopyIcon} from "lucide-react";
 import {Notice, NoticeContent, NoticeHeading, NoticeItem,} from "@/ui/components/typography/Notice";
 import DisabledNotice from "@/ui/components/cards/DisabledNotice";
+import {toast} from "sonner";
 
 interface SendDepositViewProps extends React.HTMLAttributes<HTMLDivElement> {
     disabled?: boolean;
@@ -51,7 +52,9 @@ const SendDepositView: React.FC<SendDepositViewProps> = ({
                                     size={"icon-sm"}
                                     variant={"outline"}
                                     onClick={() => {
-                                        // Copy number and notify copied
+                                        navigator.clipboard.writeText("0595113729").then(() => {
+                                            toast.success("Number copied to clipboard");
+                                        })
                                     }}
                                 >
                                     <CopyIcon/>
