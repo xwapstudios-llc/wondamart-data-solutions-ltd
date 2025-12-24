@@ -22,6 +22,7 @@ import {ClTxAccountDeposit} from "@common/client-api/tx-account-deposit.ts";
 import Code from "@/ui/components/typography/Code.tsx";
 import {useNavigate} from "react-router-dom";
 import {R} from "@/app/routes.ts";
+import {toast} from "sonner";
 
 
 const formSchema = z.object({
@@ -57,18 +58,21 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
                         phoneNumber: values.phone,
                         network: values.network as NetworkId,
                         amount: values.amount,
-                    })
-                    console.log("Response from paystack request > ", res)
+                    });
+                    console.log("Response from paystack request > ", res);
                     switch (res.status) {
                         case "send_otp": {
+                            toast.info("An OTP has been sent to your phone. Please enter it to complete the deposit.");
                             navigate(R.auth.otp(res.data.reference));
                             break;
                         }
                         case "ok": {
+                            toast.message("Deposit successful!");
                             console.log("success", res)
                             break;
                         }
                         case "pay_offline": {
+                            toast.message("Please complete the payment on your phone.");
                             console.log("pay_offline", res);
                             break;
                         }
