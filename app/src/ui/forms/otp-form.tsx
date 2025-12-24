@@ -113,18 +113,20 @@ export const OTPForm : React.FC<OTPFormProps> = ({className, onVerify, onResend,
                             </InputOTPGroup>
                         </InputOTP>
                     </div>
-                    onResend && (
-                    <FieldDescription className="text-center">
-                        <span>Didn&apos;t receive the code?</span>
-                        <Button type="button" variant={"link"} onClick={handleResend} disabled={loading || resendLoading}>
-                            {
-                                resendLoading ? <>
-                                    <Loader2Icon className={"animate-spin"} /> Resending...
-                                </> : "Resend Code"
-                            }
-                        </Button>
-                    </FieldDescription>
-                    )
+                    {
+                        onResend && (
+                            <FieldDescription className="text-center">
+                                <span>Didn&apos;t receive the code?</span>
+                                <Button type="button" variant={"link"} onClick={handleResend} disabled={loading || resendLoading}>
+                                    {
+                                        resendLoading ? <>
+                                            <Loader2Icon className={"animate-spin"} /> Resending...
+                                        </> : "Resend Code"
+                                    }
+                                </Button>
+                            </FieldDescription>
+                        )
+                    }
                 </Field>
                 {error && (
                     <div className="text-sm text-destructive text-center">{error}</div>
