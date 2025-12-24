@@ -7,12 +7,17 @@ import {TxFn} from "@common-server/fn/tx/tx-fn";
 import {UserFn} from "@common-server/fn/user-fn";
 import {HTTPResponse, httpResponse, httpStatusCode} from "@common/types/request";
 import {Tx} from "@common/types/tx";
+import crypto from "crypto";
+import {firebaseOnlyMiddleware} from "@common-server/utils/express";
 
 const app = express();
 app.use(express.json());
 
 const port = config.port_pay;
 const host = config.host_server;
+
+
+app.use(firebaseOnlyMiddleware);
 
 app.get("/", (req, res) => {
     res.send("Hello World! from pay.wondamart.com");
@@ -126,21 +131,21 @@ app.post(
     "/webhooks/paystack",
     express.raw({type: "*/*"}),
     async (req, res) => {
-        // const signature = req.headers["x-paystack-signature"] as string;
+        const signature = req.headers["x-paystack-signature"] as string;
 
         console.log("Received Paystack webhook ------------------------------------");
         console.log(JSON.stringify(req.body, null, 2));
         console.log("------------------------------------");
 
-        // const hash = crypto
-        //     .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY!)
-        //     .update(req.body)
-        //     .digest("hex");
-        //
-        // if (hash !== signature) {
-        //     console.warn("Invalid Paystack signature");
-        //     return res.sendStatus(401);
-        // }
+        const hash = crypto
+            .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY!)
+            .update(req.body)
+            .digest("hex");
+
+        if (hash !== signature) {
+            console.warn("Invalid Paystack signature");
+            return res.sendStatus(401);
+        }
 
         const event = req.body;
 
