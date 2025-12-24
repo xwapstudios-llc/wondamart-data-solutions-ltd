@@ -1,6 +1,6 @@
 import React from "react";
 import Page from "@/ui/page/Page.tsx";
-import {OTPForm} from "@/cn/components/otp-form.tsx";
+import {OTPForm} from "@/ui/forms/otp-form.tsx";
 import PageContent from "@/ui/page/PageContent.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import {ClTxAccountDeposit} from "@common/client-api/tx-account-deposit.ts";
@@ -31,9 +31,9 @@ const OTPPage: React.FC = () => {
                             navigate(R.app.dashboard)
                         })
                     }}
-                    onResend={async () => {
-                        await ClTxAccountDeposit.otp.resend(txID ?? "");
-                    }}
+                    // onResend={async () => {
+                    //     await ClTxAccountDeposit.otp.resend(txID ?? "");
+                    // }}
                 />
             </PageContent>
         </Page>

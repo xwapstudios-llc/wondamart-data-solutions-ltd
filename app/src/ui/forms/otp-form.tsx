@@ -1,14 +1,15 @@
-import {cn} from "@/cn/lib/utils"
-import {Button} from "@/cn/components/ui/button"
-import {Field, FieldDescription, FieldGroup, FieldLabel,} from "@/cn/components/ui/field"
-import {InputOTP, InputOTPGroup, InputOTPSlot,} from "@/cn/components/ui/input-otp"
+import {cn} from "@/cn/lib/utils.ts"
+import {Button} from "@/cn/components/ui/button.tsx"
+import {Field, FieldDescription, FieldGroup, FieldLabel,} from "@/cn/components/ui/field.tsx"
+import {InputOTP, InputOTPGroup, InputOTPSlot,} from "@/cn/components/ui/input-otp.tsx"
 import React, {useContext, useRef, useState} from "react";
 import {OTPInputContext} from "input-otp"
 import {Loader2Icon} from "lucide-react";
+import {toast} from "sonner";
 
 interface OTPFormProps extends React.HTMLAttributes<HTMLFormElement> {
     onVerify: (otp: string) => void | Promise<void>;
-    onResend: () => void;
+    onResend?: () => void;
     length: number;
 }
 export const OTPForm : React.FC<OTPFormProps> = ({className, onVerify, onResend, length = 4, ...props}) => {
@@ -53,13 +54,15 @@ export const OTPForm : React.FC<OTPFormProps> = ({className, onVerify, onResend,
         console.log("OTP: ", otp)
         if (otp.length !== length) {
             setError(`Enter the ${length}-digit code.`)
+            toast.error("Please enter the complete OTP code.");
             return
         }
         try {
             setLoading(true)
             await onVerify?.(otp)
+            toast.success("OTP verified successfully!");
         } catch (err: any) {
-            setError(err?.message ?? String(err))
+            toast.error("OTP verification failed.");
         } finally {
             setLoading(false)
         }
@@ -110,6 +113,7 @@ export const OTPForm : React.FC<OTPFormProps> = ({className, onVerify, onResend,
                             </InputOTPGroup>
                         </InputOTP>
                     </div>
+                    onResend && (
                     <FieldDescription className="text-center">
                         <span>Didn&apos;t receive the code?</span>
                         <Button type="button" variant={"link"} onClick={handleResend} disabled={loading || resendLoading}>
@@ -120,6 +124,7 @@ export const OTPForm : React.FC<OTPFormProps> = ({className, onVerify, onResend,
                             }
                         </Button>
                     </FieldDescription>
+                    )
                 </Field>
                 {error && (
                     <div className="text-sm text-destructive text-center">{error}</div>

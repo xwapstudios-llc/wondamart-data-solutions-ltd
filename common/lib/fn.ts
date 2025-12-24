@@ -42,7 +42,7 @@ const Functions = {
         },
         otp: {
             submit: httpsCallable(fn, "requestSubmitOTP"),
-            resend: httpsCallable(fn, "requestResendOTP"),
+            // resend: httpsCallable(fn, "requestResendOTP"),
         }
     },
     DataBundle: {
