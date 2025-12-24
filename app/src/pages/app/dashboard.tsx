@@ -60,15 +60,7 @@ const Dashboard: React.FC = () => {
             {
                 claims?.isActivated ? (
                     <>
-                        {/*Highlights*/}
-                        <DashboardSection
-                            title={"Highlights"}
-                            link={{to: R.app.purchase.index, label: "Purchase"}}
-                            className={""}
-                        >
-                            {/*<StockHighlights className={"hidden-scroll-bar"}/>*/}
-                            <OverviewGraph className={"mt-1"} />
-                        </DashboardSection>
+                        <OverviewGraph className={"mt-1"} />
 
                         {/*Activity*/}
                         <DashboardSection title={"Activity"}>
