@@ -37,10 +37,12 @@
         "build:deposit-send-otp": "cd server && pnpm i && cd deposit-send-otp && pnpm i && pnpm run build",
         "dev:deposit-send-otp": "cd server/deposit-send-otp && pnpm run dev",
         "start:deposit-send-otp": "cd server/deposit-send-otp && pnpm run start",
+
         "Server Purchase Data Bundle": "echo '--------------- Server Purchase Data Bundle ----------------'",
-        "build:purchase-bundle": "cd server && pnpm i && cd purchase-bundle && pnpm i && pnpm run build",
-        "dev:purchase-bundle": "cd server/purchase-bundle && pnpm run dev",
-        "start:purchase-bundle": "cd server/purchase-bundle && pnpm run start",
+        "build:express-api": "cd server && pnpm i && cd express-api && pnpm i && pnpm run build",
+        "dev:express-api": "cd server/express-api && pnpm run dev",
+        "start:express-api": "cd server/express-api && pnpm run start",
+
         "Functions": "echo '--------------- Functions ----------------'",
         "build:functions": "cd server && pnpm i && cd functions && pnpm i && pnpm run build",
         "dev:functions": "cd server/functions && pnpm i && pnpm run build:watch"
