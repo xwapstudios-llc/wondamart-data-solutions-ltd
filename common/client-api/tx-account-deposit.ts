@@ -33,10 +33,10 @@ const ClTxAccountDeposit = {
             const result = await Functions.Request.otp.submit(data);
             return Promise.resolve(result.data as HTTPResponse);
         },
-        resend: async (txID: string): Promise<HTTPResponse> => {
-            const result = await Functions.Request.otp.resend({ txID });
-            return Promise.resolve(result.data as HTTPResponse);
-        },
+        // resend: async (txID: string): Promise<HTTPResponse> => {
+        //     const result = await Functions.Request.otp.resend({ txID });
+        //     return Promise.resolve(result.data as HTTPResponse);
+        // },
     },
     create: {
         paystack: async (data: TxDepositPaystackRequest): Promise<HTTPResponse> => {
