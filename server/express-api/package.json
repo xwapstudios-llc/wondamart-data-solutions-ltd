@@ -1,0 +1,25 @@
+{
+    "name": "wondamart-api",
+    "version": "1.0.0",
+    "description": "This handles api calls to purchase items on wondamart.",
+    "keywords": [
+        "wondamart"
+    ],
+    "license": "ISC",
+    "author": "XWap Studios LLC",
+    "type": "commonjs",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "start": "node dist/index.js"
+    },
+    "dependencies": {
+        "axios": "^1.13.2",
+        "express": "^5.2.1"
+    },
+    "devDependencies": {
+        "tsup": "^8.5.1",
+        "@types/express": "^5.0.6"
+    }
+}
