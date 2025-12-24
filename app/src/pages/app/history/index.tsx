@@ -59,7 +59,6 @@ const HistoryIndex: React.FC = () => {
             next.set("type", "purchase");
             setSearchParams(next, { replace: true });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Core fetch page logic. If `append` is false we reset list, otherwise append to existing.
@@ -171,7 +170,6 @@ const HistoryIndex: React.FC = () => {
     return (
         <Page>
             <PageHeading>History</PageHeading>
-            {/*List of query buttons to deposit, purchase, afa-bundles, data-bundles, result checker and filter*/}
             {/*Filter buttons*/}
             <div className={"flex gap-2 overflow-x-auto my-2 hidden-scroll-bar"}>
                 <Button size={"sm"} variant={activeType === null ? "default" : "outline"} onClick={() => setTypeFilter(undefined)}>
