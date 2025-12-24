@@ -5,7 +5,6 @@ import {test_paystack} from "@/paystack";
 import {charge, currency_to_paystack_amount, networkID_to_paystack_provider,} from "@/paystack/charge";
 import {TxFn} from "@common-server/fn/tx/tx-fn";
 import {UserFn} from "@common-server/fn/user-fn";
-// import crypto from "crypto";
 import {HTTPResponse, httpResponse, httpStatusCode} from "@common/types/request";
 import {Tx} from "@common/types/tx";
 
@@ -63,7 +62,7 @@ app.post("/deposit/paystack", async (req, res) => {
 });
 
 app.post("/deposit/paystack/submit-otp", async (req, res) => {
-    const {txID, otp, uid} = req.body as TxSubmitOTPRequest;
+    const {txID, otp} = req.body as TxSubmitOTPRequest;
 
     console.log("-----------------------------------------------")
     console.log("paystack/submit-otp data:", req.body);
@@ -109,8 +108,19 @@ app.post("/deposit/paystack/submit-otp", async (req, res) => {
     }
 });
 
-app.post("/deposit/paystack/resend-otp", async (req, res) => {
-});
+// app.post("/deposit/paystack/resend-otp", async (req, res) => {});
+
+app.post(
+    "callbacks/paystack",
+    express.raw({type: "*/*"}),
+    async (req, res) => {
+        console.log("Received Paystack callback ------------------------------------");
+        console.log(JSON.stringify(req.body, null, 2));
+        console.log("------------------------------------");
+
+        res.sendStatus(200);
+    },
+);
 
 app.post(
     "/webhooks/paystack",
