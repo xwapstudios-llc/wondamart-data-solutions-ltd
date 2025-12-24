@@ -7,6 +7,9 @@ export async function firebaseOnlyMiddleware(
     res: Response,
     next: NextFunction
 ) {
+    console.log("Headers ----------------------------------")
+    console.log(req.headers);
+    console.log("-----------------------------------------");
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith("Bearer ")) {
         return res.status(httpStatusCode["unauthenticated"]).end();
