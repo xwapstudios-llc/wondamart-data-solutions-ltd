@@ -110,7 +110,7 @@ export const requestDepositPaystack = onCall(async (event) => {
     await check.init();
     check.isUser();
     check.isUserDisabled();
-    check.isActivated();
+    // check.isActivated();
 
     // Read settings
     const paymentSettings = await CommonSettingsFn.read_paymentMethods();
@@ -159,7 +159,7 @@ export const requestDepositSend = onCall(async (event) => {
     await check.init();
     check.isUser();
     check.isUserDisabled();
-    check.isActivated();
+    // check.isActivated();
 
     // Read settings
     const paymentSettings = await CommonSettingsFn.read_paymentMethods();
@@ -213,7 +213,7 @@ export const requestDepositMoMo = onCall(async (event) => {
     await check.init();
     check.isUser();
     check.isUserDisabled();
-    check.isActivated();
+    // check.isActivated();
 
     // Read settings
     const paymentSettings = await CommonSettingsFn.read_paymentMethods();
