@@ -39,36 +39,36 @@ const Dashboard: React.FC = () => {
                     <BellIcon strokeWidth={1.5}/>
                 </Link>
             </div>
+            <div className={"bg-linear-90 from-secondary/25 to-primary/90 flex items-center justify-between rounded-md gap-4 p-4"}>
+                <div className={"space-y-2"}>
+                    <p className={"text-xs opacity-75"}>Current Balance</p>
+                    <span className={"text-2xl font-semibold"}>{toCurrency(wallet?.balance || 0)}</span>
+                </div>
+                <div className={"flex flex-col items-center gap-y-1"}>
+                    <Link
+                        to={R.app.deposit}
+                        className={cn(
+                            buttonVariants({size: "icon-lg", variant: "secondary"}),
+                            "rounded-full"
+                        )}
+                    >
+                        <PlusIcon strokeWidth={1.5}/>
+                    </Link>
+                    <span className={"text-xs"}>Deposit</span>
+                </div>
+            </div>
+
             {
                 claims?.isActivated ? (
                     <>
-                        <div className={"bg-linear-90 from-secondary/25 to-primary/90 flex items-center justify-between rounded-md gap-4 p-4"}>
-                            <div className={"space-y-2"}>
-                                <p className={"text-xs opacity-75"}>Current Balance</p>
-                                <span className={"text-2xl font-semibold"}>{toCurrency(wallet?.balance || 0)}</span>
-                            </div>
-                            <div className={"flex flex-col items-center gap-y-1"}>
-                                <Link
-                                    to={R.app.deposit}
-                                    className={cn(
-                                        buttonVariants({size: "icon-lg", variant: "secondary"}),
-                                        "rounded-full"
-                                    )}
-                                >
-                                    <PlusIcon strokeWidth={1.5}/>
-                                </Link>
-                                <span className={"text-xs"}>Deposit</span>
-                            </div>
-                        </div>
-
                         {/*Highlights*/}
                         <DashboardSection
                             title={"Highlights"}
                             link={{to: R.app.purchase.index, label: "Purchase"}}
                             className={""}
                         >
-                            <StockHighlights className={"mt-1 hidden-scroll-bar"}/>
-                            <OverviewGraph className={"mt-1"} />
+                            <StockHighlights className={"hidden-scroll-bar"}/>
+                            <OverviewGraph className={"mt-4"} />
                         </DashboardSection>
 
                         {/*Activity*/}
