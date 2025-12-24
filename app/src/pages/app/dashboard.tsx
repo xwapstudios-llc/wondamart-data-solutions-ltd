@@ -14,7 +14,6 @@ import NoItems from "@/ui/components/cards/NoItems.tsx";
 import ActivityHighlights from "@/ui/components/cards/dashboard/ActivityHighlights.tsx";
 import OverviewGraph from "@/ui/components/OverviewGraph.tsx";
 import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
-import StockHighlights from "@/ui/components/cards/dashboard/StockHighlights.tsx";
 
 const Dashboard: React.FC = () => {
     const {profile, wallet, claims} = useAppStore();
@@ -67,8 +66,8 @@ const Dashboard: React.FC = () => {
                             link={{to: R.app.purchase.index, label: "Purchase"}}
                             className={""}
                         >
-                            <StockHighlights className={"hidden-scroll-bar"}/>
-                            <OverviewGraph className={"mt-4"} />
+                            {/*<StockHighlights className={"hidden-scroll-bar"}/>*/}
+                            <OverviewGraph className={"mt-1"} />
                         </DashboardSection>
 
                         {/*Activity*/}
