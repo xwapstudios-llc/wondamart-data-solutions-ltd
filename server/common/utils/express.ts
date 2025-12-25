@@ -20,7 +20,7 @@ export async function firebaseOnlyMiddleware(
     const token = authHeader.slice(7);
     const ticket = await client.verifyIdToken({
         idToken: token,
-        audience: "https://api.yourdomain.com",
+        audience: "https://pay.wondamartgh.com",
     });
 
     const payload = ticket.getPayload();

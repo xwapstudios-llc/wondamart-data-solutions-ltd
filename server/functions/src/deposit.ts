@@ -20,7 +20,7 @@ async function pay_client() {
     });
 
     const g_client = await auth.getIdTokenClient(
-        "https://api.yourdomain.com"
+        "https://pay.wondamartgh.com"
     );
 
     const headers = await g_client.getRequestHeaders();
