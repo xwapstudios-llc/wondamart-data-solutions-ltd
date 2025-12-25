@@ -1,6 +1,6 @@
 import { ModemManagerClient } from "./mm";
 import { ernest_number } from "./types";
-import { check_momo_balance, cashInTo } from "./ussd";
+import { check_momo_balance, cashInTo, cashOut } from "./ussd";
 
 async function main() {
     const mm = new ModemManagerClient();
@@ -41,25 +41,29 @@ async function main() {
         // }
 
         let message = "";
-        message = await mm.navigateUSSDMenu(cashInTo("0542946247", 4500));
+        // message = await mm.navigateUSSDMenu(cashInTo("0542946247", 4500));
+        // console.log("USSD Balance Result:", message);
+        // console.log("----------------------------------");
+        // console.log("Waiting before sending CashOut to Ernest.........................");
+        // await new Promise((resolve) => setTimeout(resolve, 5000)); // small delay to avoid overwhelming
+        // await mm.sendSMS(ernest_number, `USSD Final Result:\n${message}`);
+        // console.log("Message Sent----------------------------------");
+
+        message = await mm.navigateUSSDMenu(cashOut("0542946247", 4500));
         console.log("USSD Balance Result:", message);
         console.log("----------------------------------");
-        console.log("Waiting before sending Balance to Ernest.........................");
-        await new Promise((resolve) =>
-            setTimeout(resolve, 5000)
-        ); // small delay to avoid overwhelming
+        console.log("Waiting before sending CashOut to Ernest.........................");
+        await new Promise((resolve) => setTimeout(resolve, 5000)); // small delay to avoid overwhelming
         await mm.sendSMS(ernest_number, `USSD Final Result:\n${message}`);
         console.log("Message Sent----------------------------------");
 
-        message = await mm.navigateUSSDMenu(check_momo_balance);
-        console.log("USSD Balance Result:", message);
-        console.log("----------------------------------");
-        console.log("Waiting before sending Balance to Ernest.........................");
-        await new Promise((resolve) =>
-            setTimeout(resolve, 5000)
-        ); // small delay to avoid overwhelming
-        await mm.sendSMS(ernest_number, `USSD MoMo Balance:\n${message}`);
-        console.log("Message Sent----------------------------------");
+        // message = await mm.navigateUSSDMenu(check_momo_balance);
+        // console.log("USSD Balance Result:", message);
+        // console.log("----------------------------------");
+        // console.log("Waiting before sending Balance to Ernest.........................");
+        // await new Promise((resolve) => setTimeout(resolve, 5000)); // small delay to avoid overwhelming
+        // await mm.sendSMS(ernest_number, `USSD MoMo Balance:\n${message}`);
+        // console.log("Message Sent----------------------------------");
 
     } catch (err) {
         // @ts-ignore

@@ -74,28 +74,26 @@ export class ModemManagerClient {
     }
 
     async onNewMessage(msgPath: string) {
+        console.log("\n\n\n\n\n--------------------------------------------------------------------------------");
+
         console.log("New SMS at:", msgPath);
         const message = await this.readSMS(msgPath);
-        console.log("\n\nNEW SMS Status:", message.status, "\n\n");
+        console.log("\nNEW SMS Status:", message.status, "\n");
 
         // Only notify for incoming messages (State: 1=RECEIVING, 2=RECEIVED)
-        if (message.status === 1 || message.status === 2) {
+        if (message.status === 3 || message.status === 2) {
             const result = JSON.stringify(message, null, 2);
-            console.log("----------------------------------");
-            
-            await new Promise(() => setTimeout(() => {
-                console.log("Waiting before sending to Ernest.........................");
-            }, 5000)); // small delay to avoid overwhelming
-            console.log("Sending SMS notifications...");
-            await this.sendSMS(
-                ernest_number,
-                `NEW MESSAGE RECEIVED:\n${result}`
-            );
-            await new Promise(() => setTimeout(() => {
-                console.log("Waiting before sending to Ben.........................");
-            }, 5000)); // small delay to avoid overwhelming
+            console.log("--------------------------------------------------------------------------------");
+
+            console.log("Waiting before sending Balance to Ernest.........................");
+            await new Promise((resolve) => setTimeout(resolve, 5000) ); // small delay to avoid overwhelming
+            await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
+
+            console.log("Waiting before sending to Ben.........................");
+            await new Promise((resolve) => setTimeout(resolve, 5000) ); // small delay to avoid overwhelming
             await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
-            console.log("----------------------------------");
+
+            console.log("--------------------------------------------------------------------------------");
         } else {
             console.log("Ignoring outgoing SMS ------------------------------");
         }

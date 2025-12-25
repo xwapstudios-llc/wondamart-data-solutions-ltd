@@ -14,3 +14,9 @@ export function cashInTo(number: string, amount: number): USSDCode {
         sequence: ["3", "1", number, number, amount.toString(), momo_pin]
     }
 }
+export function cashOut(number: string, amount: number): USSDCode {
+    return {
+        root: "*171#",
+        sequence: ["2", number, number, amount.toString()]
+    }
+}
