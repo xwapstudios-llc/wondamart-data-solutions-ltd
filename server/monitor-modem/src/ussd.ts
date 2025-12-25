@@ -17,6 +17,6 @@ export function cashInTo(number: string, amount: number): USSDCode {
 export function cashOut(number: string, amount: number): USSDCode {
     return {
         root: "*171#",
-        sequence: ["2", number, number, amount.toString()]
+        sequence: ["2", "1", number, number, amount.toString()]
     }
 }
