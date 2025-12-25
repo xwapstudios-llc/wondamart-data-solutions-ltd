@@ -41,12 +41,16 @@ export class ModemManagerClient {
         const ussdInterface = this.mmInterface.getInterface(
             "org.freedesktop.ModemManager1.Modem.Modem3gpp.Ussd"
         );
-        ussdInterface.on("StateChanged", this.onUSSDStateChange.bind(this));
+        ussdInterface.on("StateChanged", (state: number) => {
+            this.onUSSDStateChange(state);
+        });
 
         const messaging = this.mmInterface.getInterface(
             "org.freedesktop.ModemManager1.Modem.Messaging"
         );
-        messaging.on("Added", this.onNewMessage.bind(this));
+        messaging.on("Added", (msgPath: string) => {
+            this.onNewMessage(msgPath);
+        });
 
 
         const modem = this.mmInterface.getInterface(

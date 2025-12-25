@@ -22,7 +22,7 @@ async function main() {
         console.log(`Found ${messages.length} messages.`);
         console.log(messages);
 
-        await mm.cancelUSSD();
+        // await mm.cancelUSSD();
 
         // for (const msg of messages) {
         //     const message = await mm.readSMS(msg);
