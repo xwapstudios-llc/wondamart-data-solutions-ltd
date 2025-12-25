@@ -1,5 +1,6 @@
-import {ModemManagerClient} from "./mm";
-import {USSDCode} from "@/types";
+import { ModemManagerClient } from "./mm";
+import { ernest_number } from "./types";
+import { check_momo_balance, cashInTo } from "./ussd";
 
 async function main() {
     const mm = new ModemManagerClient();
@@ -37,6 +38,23 @@ async function main() {
         //     await mm.sendSMS(ben_number, JSON.stringify(message, null, 2));
         // }
 
+        mm.navigateUSSDMenu(check_momo_balance).then(async (message) => {
+            const result = JSON.stringify(message, null, 2);
+            console.log("USSD Balance Result:", result);
+            console.log("----------------------------------");
+
+            await new Promise(() =>
+                setTimeout(() => {
+                    console.log(
+                        "Waiting before sending Balance to Ernest........................."
+                    );
+                }, 5000)
+            ); // small delay to avoid overwhelming
+            console.log("Sending SMS notifications...");
+            await mm.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
+        });
+
+
     } catch (err) {
         // @ts-ignore
         console.error("Operation failed:", err.message);
@@ -47,4 +65,3 @@ async function main() {
 }
 
 main().catch(console.error);
-
