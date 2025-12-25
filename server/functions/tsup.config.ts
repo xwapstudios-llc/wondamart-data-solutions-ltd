@@ -16,6 +16,7 @@ export default defineConfig({
     external: [
         "firebase-admin",
         "firebase-functions",
+        "google-auth-library",
         "@grpc/grpc-js",
         "@grpc/proto-loader",
         "process",

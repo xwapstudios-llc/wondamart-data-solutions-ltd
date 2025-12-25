@@ -30,7 +30,7 @@ async function pay_client() {
     headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
-        ...headers
+        ...Object.fromEntries(Object.entries(headers))
     },
 });
 }

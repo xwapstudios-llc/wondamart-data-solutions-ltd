@@ -22,6 +22,8 @@ async function main() {
         console.log(`Found ${messages.length} messages.`);
         console.log(messages);
 
+        await mm.cancelUSSD();
+
         // for (const msg of messages) {
         //     const message = await mm.readSMS(msg);
         //     console.log("SMS Message:", message);
@@ -38,21 +40,21 @@ async function main() {
         //     await mm.sendSMS(ben_number, JSON.stringify(message, null, 2));
         // }
 
-        mm.navigateUSSDMenu(check_momo_balance).then(async (message) => {
-            const result = JSON.stringify(message, null, 2);
-            console.log("USSD Balance Result:", result);
-            console.log("----------------------------------");
+        const message = await mm.navigateUSSDMenu(check_momo_balance);
 
-            await new Promise(() =>
-                setTimeout(() => {
-                    console.log(
-                        "Waiting before sending Balance to Ernest........................."
-                    );
-                }, 5000)
-            ); // small delay to avoid overwhelming
-            console.log("Sending SMS notifications...");
-            await mm.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
-        });
+        const result = JSON.stringify(message, null, 2);
+        console.log("USSD Balance Result:", result);
+        console.log("----------------------------------");
+
+        await new Promise(() =>
+            setTimeout(() => {
+                console.log(
+                    "Waiting before sending Balance to Ernest........................."
+                );
+            }, 5000)
+        ); // small delay to avoid overwhelming
+        console.log("Sending SMS notifications...");
+        await mm.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
 
 
     } catch (err) {
