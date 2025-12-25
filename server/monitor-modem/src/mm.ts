@@ -76,7 +76,7 @@ export class ModemManagerClient {
     async onNewMessage(msgPath: string) {
         console.log("New SMS at:", msgPath);
         const message = await this.readSMS(msgPath);
-        // console.log("SMS Content:", result);
+        console.log("NEW SMS Status:", message.status);
 
         // Only notify for incoming messages (State: 1=RECEIVING, 2=RECEIVED)
         if (message.status === 1 || message.status === 2) {
