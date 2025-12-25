@@ -144,6 +144,8 @@ export class ModemManagerClient {
             await this.cancelUSSD();
             // Small delay to allow ModemManager to process the cancellation
             await new Promise((resolve) => setTimeout(resolve, 1000));
+        } else {
+            console.log("Modem state == 1. Skipping cancel ussd...........................")
         }
     }
 
