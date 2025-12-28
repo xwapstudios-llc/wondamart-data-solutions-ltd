@@ -10,7 +10,7 @@ import {type UserInfoDocument, type UserRegistrationRequest, type UserWalletDocu
 import {doc, getDoc, Timestamp, updateDoc} from "firebase/firestore";
 import {sendEmailVerification} from "firebase/auth"
 import {auth} from "@common/lib/auth";
-import {HTTPResponse} from "@common/types/request";
+import type {HTTPResponse} from "@common/types/request";
 
 const ClUser = {
     create: async (data: UserRegistrationRequest): Promise<void> => {

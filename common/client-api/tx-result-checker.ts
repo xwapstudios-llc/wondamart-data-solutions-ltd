@@ -7,7 +7,7 @@ import { Functions } from "@common/lib/fn";
 import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
 import { type TxResultChecker, type TxResultCheckerQuery, type TxResultCheckerRequest } from "@common/types/result-checker";
-import {HTTPResponse} from "@common/types/request";
+import type {HTTPResponse} from "@common/types/request";
 
 const createQuery = (q: TxResultCheckerQuery): Query => {
     let Q = buildTxQuery(q);

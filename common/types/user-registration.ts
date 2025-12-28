@@ -1,5 +1,5 @@
 import { type Tx } from "./tx";
-import {UserRegistrationRequest} from "@common/types/user";
+import type {UserRegistrationRequest} from "@common/types/user";
 
 //
 // Database Type
