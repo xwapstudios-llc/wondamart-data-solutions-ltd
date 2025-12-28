@@ -17,7 +17,7 @@ const MoMoDepositView: React.FC<MoMoDepositViewProps> = ({
                                                          }) => {
     return (
         <div className={cn(className, "space-y-4")} {...props}>
-            <Notice className={"p-4 border rounded-md bg-secondary/25"}>
+            <Notice>
                 <NoticeHeading>Notice</NoticeHeading>
                 <NoticeContent>
                     <NoticeItem>
