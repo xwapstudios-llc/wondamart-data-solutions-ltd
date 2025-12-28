@@ -1,6 +1,4 @@
 import { ModemManagerClient } from "./mm";
-import { ernest_number } from "./types";
-import { check_momo_balance, cashInTo, cashOut } from "./ussd";
 
 async function main() {
     const mm = new ModemManagerClient();
@@ -40,7 +38,7 @@ async function main() {
         //     await mm.sendSMS(ben_number, JSON.stringify(message, null, 2));
         // }
 
-        let message = "";
+        // let message = "";
         // message = await mm.navigateUSSDMenu(cashInTo("0542956247", 3680));
         // console.log("USSD Balance Result:", message);
         // console.log("----------------------------------");
