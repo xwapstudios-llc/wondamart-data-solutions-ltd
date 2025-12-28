@@ -45,7 +45,7 @@ app.post("/buy/data-bundle", async (req, res) => {
             "invalid-data",
             "The requested data is missing uid or id or type"
         )
-        return res.status(response.status).json(response);
+        return res.status(response.code).json(response);
     }
     if (tx.type != "data-bundle") {
         await TxFn.update_status_failed(tx.id);
@@ -53,7 +53,7 @@ app.post("/buy/data-bundle", async (req, res) => {
             "rejected",
             "The request is not a data bundle."
         )
-        return res.status(response.status).json(response);
+        return res.status(response.code).json(response);
     }
 
     // Start processing
@@ -66,7 +66,7 @@ app.post("/buy/data-bundle", async (req, res) => {
             "invalid-data",
             "The request does not have a valid data bundle id."
         )
-        return res.status(response.status).json(response);
+        return res.status(response.code).json(response);
     }
     if (!data.network || data.network.length < 3) {
         await TxFn.update_status_failed(tx.id);
@@ -74,7 +74,7 @@ app.post("/buy/data-bundle", async (req, res) => {
             "invalid-data",
             "The request does not have a valid network id."
         )
-        return res.status(response.status).json(response);
+        return res.status(response.code).json(response);
     }
 
     const commonSettings = await CommonSettingsFn.read_dataBundles();
@@ -83,7 +83,7 @@ app.post("/buy/data-bundle", async (req, res) => {
             "aborted",
             "Data Bundle is not available"
         )
-        return res.status(response.status).json(response);
+        return res.status(response.code).json(response);
     }
 
     const dataBundle = await DataBundleFn.read_DataBundleDoc(data.bundleId);
@@ -92,7 +92,7 @@ app.post("/buy/data-bundle", async (req, res) => {
             "aborted",
             "Data Bundle is not available"
         )
-        return res.status(response.status).json(response);
+        return res.status(response.code).json(response);
     }
 
     try {
@@ -108,7 +108,7 @@ app.post("/buy/data-bundle", async (req, res) => {
                         "failed",
                         "Failed to place order. Reason: " + result.message
                     )
-                    return res.status(response.status).json(response);
+                    return res.status(response.code).json(response);
                 }
                 await TxFn.addExtraData(tx.id, {
                     datamart_data: result.data,
@@ -118,7 +118,7 @@ app.post("/buy/data-bundle", async (req, res) => {
                     "ok",
                     "Order places successfully"
                 )
-                return res.status(response.status).json(response);
+                return res.status(response.code).json(response);
             }
 
 
@@ -133,7 +133,7 @@ app.post("/buy/data-bundle", async (req, res) => {
                         "failed",
                         "Failed to place order. Reason: " + result.message
                     )
-                    return res.status(response.status).json(response);
+                    return res.status(response.code).json(response);
                 }
                 if (result.data)
                     await TxFn.addExtraData(tx.id, {
@@ -144,7 +144,7 @@ app.post("/buy/data-bundle", async (req, res) => {
                     "ok",
                     "Order places successfully"
                 )
-                return res.status(response.status).json(response);
+                return res.status(response.code).json(response);
             }
 
 
@@ -156,7 +156,7 @@ app.post("/buy/data-bundle", async (req, res) => {
                         message: "Wondamart is not yet a provider. Please contact admin."
                     }
                 )
-                return res.status(response.status).json(response);
+                return res.status(response.code).json(response);
             }
             default: {
                 const response = httpResponse(
@@ -166,7 +166,7 @@ app.post("/buy/data-bundle", async (req, res) => {
                         message: "Unknown Provider in admin settings. Please contact admin."
                     }
                 )
-                return res.status(response.status).json(response);
+                return res.status(response.code).json(response);
             }
         }
     } catch (e) {
@@ -179,7 +179,7 @@ app.post("/buy/data-bundle", async (req, res) => {
                 message: "An undefined error occurred when placing order. Please contact admin."
             }
         )
-        return res.status(response.status).json(response);
+        return res.status(response.code).json(response);
     }
 });
 
