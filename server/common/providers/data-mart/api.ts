@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import {NetworkId} from "@common/types/data-bundle";
 
 /** =========================
  * Core Types
@@ -191,6 +192,15 @@ export function normalizeGhanaPhone(phone: string): string {
 export function assertCapacity(capacityGb: number): string {
     if (capacityGb <= 0) throw new Error("Capacity must be greater than zero");
     return String(capacityGb);
+}
+
+export function networkID_to_datamart_network(network: NetworkId): DataMartNetwork {
+    switch (network) {
+        case "mtn": return "YELLO"
+        case "telecel": return "TELECEL"
+        case "airteltigo": return "AT_PREMIUM"
+        default: throw new Error("Network ID is required");
+    }
 }
 
 

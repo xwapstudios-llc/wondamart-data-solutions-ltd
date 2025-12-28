@@ -1,10 +1,11 @@
 import axios, { AxiosInstance } from "axios";
+import {NetworkId} from "@common/types/data-bundle";
 
 /** =========================
  * Core Types & Interfaces
  * ========================= */
 
-export type Network = "MTN" | "Telecel" | "AirtelTigo";
+export type HendyLinksNetwork = "MTN" | "Telecel" | "AirtelTigo";
 
 export interface ApiSuccess<T = unknown> {
     success: true;
@@ -30,7 +31,7 @@ export interface CreateOrderByPlanId {
 
 export interface CreateOrderByNetwork {
     recipient_phone: string;
-    network: Network;
+    network: HendyLinksNetwork;
     size_gb: number;
 }
 
@@ -43,7 +44,7 @@ export interface Order {
     amount: number;
     recipient_phone: string;
     plan_name: string;
-    network: Network;
+    network: HendyLinksNetwork;
     size_mb: number;
     created_at: string;
     updated_at: string;
@@ -176,6 +177,15 @@ export function normalizePhone(phone: string): string {
 
 export function assertPositiveAmount(amount: number): void {
     if (amount <= 0) throw new Error("Amount must be greater than zero");
+}
+
+export function networkID_to_hendylinks_network(network: NetworkId): HendyLinksNetwork {
+    switch (network) {
+        case "mtn": return "MTN"
+        case "telecel": return "Telecel"
+        case "airteltigo": return "AirtelTigo"
+        default: throw new Error("Network ID is required");
+    }
 }
 
 async function main() {
