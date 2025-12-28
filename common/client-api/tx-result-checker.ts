@@ -7,6 +7,7 @@ import { Functions } from "@common/lib/fn";
 import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
 import { type TxResultChecker, type TxResultCheckerQuery, type TxResultCheckerRequest } from "@common/types/result-checker";
+import {HTTPResponse} from "@common/types/request";
 
 const createQuery = (q: TxResultCheckerQuery): Query => {
     let Q = buildTxQuery(q);
@@ -18,19 +19,9 @@ const createQuery = (q: TxResultCheckerQuery): Query => {
 const ClTxResultChecker = {
     //
     // Create
-    create: async (data: TxResultCheckerRequest): Promise<void> => {
-        try {
-            await Functions.Request.ResultChecker(data);
-            return Promise.resolve();
-        } catch (error) {
-            console.error("Error calling function:", error);
-            // const code = error.code;
-            // @ts-expect-error : message might not exist on error obj
-            const message = error.message;
-            return Promise.reject(
-                new Error(message || "Failed to request result checker")
-            );
-        }
+    create: async (data: TxResultCheckerRequest): Promise<HTTPResponse> => {
+        const result = await Functions.Request.ResultChecker(data);
+        return Promise.resolve(result.data as HTTPResponse);
     },
     //
     // Read

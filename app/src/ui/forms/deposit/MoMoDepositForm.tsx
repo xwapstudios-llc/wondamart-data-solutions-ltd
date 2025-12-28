@@ -18,6 +18,7 @@ import {Button} from "@/cn/components/ui/button.tsx";
 import {Loader2Icon} from "lucide-react";
 import {ClTxAccountDeposit} from "@common/client-api/tx-account-deposit.ts";
 import Code from "@/ui/components/typography/Code.tsx";
+import type {HTTPResponse} from "@common/types/request.ts";
 
 
 const formSchema = z.object({
@@ -29,7 +30,7 @@ type formValues = z.infer<typeof formSchema>;
 type PaystackDepositFormProps = React.HTMLAttributes<HTMLFormElement>;
 
 const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, children, ...props}) => {
-    const {profile, setError, commonSettings} = useAppStore();
+    const {profile, setError, setHTTPResponse, commonSettings} = useAppStore();
     const [loading, setLoading] = useState(false);
     const form = useForm<formValues>({
         resolver: zodResolver(formSchema) as never,
@@ -40,14 +41,24 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
             setLoading(true);
             if (profile) {
                 try {
-                    await ClTxAccountDeposit.create.momo({
+                    const response = await ClTxAccountDeposit.create.momo({
                         uid: profile.id,
                         phoneNumber: values.phone,
                         amount: values.amount,
                     })
+                    setHTTPResponse(response);
                     form.reset();
                 } catch (err) {
-                    setError(err as string);
+                    if (typeof err === "string") {
+                        setError(err);
+                    } else if (typeof err === "object") {
+                        setHTTPResponse(err as HTTPResponse);
+                    } else {
+                        setError({
+                            title: "Error",
+                            description: JSON.stringify(err)
+                        });
+                    }
                 }
             }
             setLoading(false);

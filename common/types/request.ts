@@ -3,12 +3,13 @@ interface HTTPMessage {
     message: string;
 }
 
-type HTTPStatus =
+export type HTTPResponseStatus =
     "ok"
     | "error"
     | "rejected"
     | "aborted"
     | "cancelled"
+    | "failed"
     | "critical_or_unhandled"
     | "permission-denied"
     | "pending"
@@ -60,6 +61,7 @@ export const httpStatusCode = {
     cancelled: 410,
     rejected: 422,
     aborted: 433,
+    failed: 411,
 
     critical_or_unhandled: 445,
 
@@ -69,13 +71,13 @@ export const httpStatusCode = {
 
 
 export interface HTTPResponse {
-    status: HTTPStatus;
+    status: HTTPResponseStatus;
     data?: any;
     message?: string | HTTPMessage;
     code: number;
 }
 
-export function httpResponse(status: HTTPStatus, message: string | HTTPMessage, data?: unknown | undefined): HTTPResponse {
+export function httpResponse(status: HTTPResponseStatus, message: string | HTTPMessage, data?: unknown | undefined): HTTPResponse {
     return {
         status: status,
         data: data,

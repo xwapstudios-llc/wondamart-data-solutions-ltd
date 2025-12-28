@@ -7,6 +7,7 @@ import { Functions } from "@common/lib/fn";
 import { doc, getDoc, getDocs, query, Query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
 import { type TxAfaBundle, type TxAfaBundleQuery, type TxAfaBundleRequest } from "@common/types/afa-bundle";
+import type {HTTPResponse} from "@common/types/request";
 
 const createQuery = (q: TxAfaBundleQuery): Query => {
     let Q = buildTxQuery(q);
@@ -19,19 +20,9 @@ const createQuery = (q: TxAfaBundleQuery): Query => {
 const ClTxAFABundle = {
     //
     // Create
-    create: async (data: TxAfaBundleRequest): Promise<void> => {
-        try {
-            await Functions.Request.AFABundle(data);
-            return Promise.resolve();
-        } catch (error) {
-            console.error("Error calling function:", error);
-            // const code = error.code;
-            // @ts-expect-error : message might not exist on error obj
-            const message = error.message;
-            return Promise.reject(
-                new Error(message || "Failed to request AFA Bundle")
-            );
-        }
+    create: async (data: TxAfaBundleRequest): Promise<HTTPResponse> => {
+        const result = await Functions.Request.AFABundle(data);
+        return Promise.resolve(result.data as HTTPResponse);
     },
     //
     // Read

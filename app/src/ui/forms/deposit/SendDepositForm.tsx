@@ -17,6 +17,7 @@ import {Input} from "@/cn/components/ui/input.tsx";
 import {Button} from "@/cn/components/ui/button.tsx";
 import {Loader2Icon} from "lucide-react";
 import {ClTxAccountDeposit} from "@common/client-api/tx-account-deposit.ts";
+import type {HTTPResponse} from "@common/types/request.ts";
 
 
 const formSchema = z.object({
@@ -27,7 +28,7 @@ type formValues = z.infer<typeof formSchema>;
 type SendDepositFormProps = React.HTMLAttributes<HTMLFormElement>;
 
 const SendDepositForm: React.FC<SendDepositFormProps> = ({className, children, ...props}) => {
-    const {profile, setError, commonSettings} = useAppStore();
+    const {profile, setError, setHTTPResponse, commonSettings} = useAppStore();
     const [loading, setLoading] = useState(false);
     const form = useForm<formValues>({
         resolver: zodResolver(formSchema) as never,
@@ -38,13 +39,23 @@ const SendDepositForm: React.FC<SendDepositFormProps> = ({className, children, .
             setLoading(true);
             if (profile) {
                 try {
-                    await ClTxAccountDeposit.create.send({
+                    const response = await ClTxAccountDeposit.create.send({
                         uid: profile.id,
                         transactionID: values.transactionID
                     })
                     form.reset();
+                    setHTTPResponse(response);
                 } catch (err) {
-                    setError(err as string); // Todo: where to put error
+                    if (typeof err === "string") {
+                        setError(err);
+                    } else if (typeof err === "object") {
+                        setHTTPResponse(err as HTTPResponse);
+                    } else {
+                        setError({
+                            title: "Error",
+                            description: JSON.stringify(err)
+                        });
+                    }
                 }
             }
             setLoading(false);

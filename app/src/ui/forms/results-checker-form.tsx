@@ -17,6 +17,7 @@ import {
     FormMessage
 } from "@/cn/components/ui/form.tsx";
 import {Loader2Icon} from "lucide-react";
+import type {HTTPResponse} from "@common/types/request.ts";
 
 const resultsSchema = z.object({
     type: z.enum(["BECE", "WASSCE"], "Please select result type"),
@@ -27,7 +28,7 @@ const resultsSchema = z.object({
 type ResultsValues = z.infer<typeof resultsSchema>;
 
 const ResultsCheckerForm: React.FC = () => {
-    const {profile, setError, commonSettings} = useAppStore();
+    const {profile, setError, setHTTPResponse, commonSettings} = useAppStore();
     const resultCheckerDoc = commonSettings.resultChecker;
     const [loading, setLoading] = useState(false);
 
@@ -39,21 +40,30 @@ const ResultsCheckerForm: React.FC = () => {
         },
     });
 
-    const onSubmit = (values: ResultsValues) => {
+    const onSubmit = async (values: ResultsValues) => {
         if (profile) {
             setLoading(true);
-            ClTxResultChecker.create({
-                checkerType: values.type,
-                uid: profile.id,
-                units: values.units,
-            })
-                .then(() => form.reset())
-                .catch((err) => {
-                    setError(err)
+            try {
+                const response = await ClTxResultChecker.create({
+                    checkerType: values.type,
+                    uid: profile.id,
+                    units: values.units,
                 })
-            .finally(() => {
-                setLoading(false);
-            });
+                form.reset();
+                setHTTPResponse(response);
+            } catch (err) {
+                if (typeof err === "string") {
+                    setError(err);
+                } else if (typeof err === "object") {
+                    setHTTPResponse(err as HTTPResponse);
+                } else {
+                    setError({
+                        title: "Error",
+                        description: JSON.stringify(err)
+                    });
+                }
+            }
+            setLoading(false);
         }
     };
 

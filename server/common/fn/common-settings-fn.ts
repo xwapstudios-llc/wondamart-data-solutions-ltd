@@ -76,6 +76,7 @@ const CommonSettingsFn = {
             }
         }
         const dataBundles: CommonDataBundles = {
+            provider: "hendylinks",
             enabled: true,
             mtn: {
                 enabled: true,

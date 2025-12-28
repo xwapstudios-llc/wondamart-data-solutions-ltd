@@ -29,16 +29,21 @@ const OnErrorCard: React.FC<OnErrorCardProps> = ({className, ...props}) => {
             )}
                  {...props}
             >
-                <Button variant={"outline"} className={"absolute top-4 right-4"} onClick={clearError}><XIcon /></Button>
                 {
                     typeof error === "string" ? (
                         <>
+                            <Button variant={"outline"} className={"absolute top-4 right-4"} onClick={clearError}><XIcon /></Button>
                             <TriangleAlertIcon strokeWidth={1.2} className={"size-24"} />
                             {error}
                             <p className={"text-center text-lg"}>{error}</p>
                         </>
                     ) : error && typeof error === "object" ? (
                         <>
+                            {
+                                !error.hideCloseButton && (
+                                    <Button variant={"outline"} className={"absolute top-4 right-4"} onClick={clearError}><XIcon /></Button>
+                                )
+                            }
                             {
                                 error.Icon ? (
                                     <error.Icon strokeWidth={1.2} className={"size-24"} />

@@ -1,7 +1,7 @@
 import { TxDataBundleRequest } from "@common/types/data-bundle.js";
 import { onCall } from "firebase-functions/v2/https";
 import { httpResponse } from "@common/types/request.js";
-import { ThrowCheck } from "./internals/throw-check-fn.js";
+import {ThrowCheck, ThrowCheckFn} from "./internals/throw-check-fn.js";
 import {TxDataBundleFn} from "@common-server/fn/tx/tx-data-bundle-fn.js";
 import {TxFn} from "@common-server/fn/tx/tx-fn.js";
 import { UserFn } from "@common-server/fn/user-fn.js";
@@ -10,8 +10,21 @@ import {TxAfaBundleRequest} from "@common/types/afa-bundle.js";
 import {TxAfaBundleFn} from "@common-server/fn/tx/tx-afa-bundle-fn.js";
 import {TxResultCheckerRequest} from "@common/types/result-checker.js";
 import {TxResultCheckerFn} from "@common-server/fn/tx/tx-result-checker-fn.js";
+import axios from "axios";
+import {api_key} from "@common-server/utils/api_key.js";
 
-const requestDataBundlePurchase = onCall(async (event) => {
+async function api_client() {
+    return axios.create({
+        baseURL: "https://api.wondamartgh.com",
+        timeout: 15000,
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "authorization": `Bearer ${api_key}`
+        },
+    });
+}
+export const requestDataBundlePurchase = onCall(async (event) => {
     // Check if the user is authenticated.
     if (!event.auth) {
         // Throwing an HttpsError so that the client gets a proper error message.
@@ -20,6 +33,9 @@ const requestDataBundlePurchase = onCall(async (event) => {
             "The function must be called while authenticated.",
         );
     }
+
+    // Check if server is active
+    await ThrowCheckFn.isServerActive();
 
     // Sanitize and validate the input data.
     let d = event.data as TxDataBundleRequest;
@@ -48,14 +64,9 @@ const requestDataBundlePurchase = onCall(async (event) => {
 
         // Send Purchase order to Server
         await ServerFn.notify("tx_db");
-
-        await TxFn.update_status_completed(details.id); // Todo: remove;
-
-        return httpResponse(
-            "ok",
-            "Data Bundle order placed successfully",
-            details
-        )
+        const client = await api_client();
+        const response = await client.post("buy/data-bundle", details);
+        return response.data;
     } catch (e) {
         await TxFn.update_status_failed(details.id);
         // if Failed, refund money.
@@ -72,7 +83,6 @@ const requestDataBundlePurchase = onCall(async (event) => {
     // Confirm purchase and update TxStatus
     // Confirming means we need to watch the Tx for updates by admin
 });
-export default requestDataBundlePurchase
 
 export const requestAFABundlePurchase = onCall(async (event) => {
     // Check if the user is authenticated.
@@ -83,6 +93,9 @@ export const requestAFABundlePurchase = onCall(async (event) => {
             "The function must be called while authenticated.",
         );
     }
+
+    // Check if server is active
+    await ThrowCheckFn.isServerActive();
 
     // Sanitize and validate the input data.
     let d = event.data as TxAfaBundleRequest;
@@ -112,14 +125,9 @@ export const requestAFABundlePurchase = onCall(async (event) => {
 
         // Send Purchase order to Server
         await ServerFn.notify("tx_af");
-
-        await TxFn.update_status_completed(details.id); // Todo: remove;
-
-        return httpResponse(
-            "ok",
-            "AFA Bundle order placed successfully",
-            details
-        )
+        const client = await api_client();
+        const response = await client.post("buy/afa-bundle", details);
+        return response.data;
     } catch (e) {
         await TxFn.update_status_failed(details.id);
         // if Failed, refund money.
@@ -147,6 +155,9 @@ export const requestResultCheckerPurchase = onCall(async (event) => {
         );
     }
 
+    // Check if server is active
+    await ThrowCheckFn.isServerActive();
+
     // Sanitize and validate the input data.
     let d = event.data as TxResultCheckerRequest;
 
@@ -166,7 +177,6 @@ export const requestResultCheckerPurchase = onCall(async (event) => {
     // Check balance
     await check.hasEnoughBalance(details.amount);
 
-
     try {
         // Take money from account
         await UserFn.update_sub_UserBalance(details.uid, details.amount);
@@ -175,13 +185,9 @@ export const requestResultCheckerPurchase = onCall(async (event) => {
         // Send Purchase order to Server
         await ServerFn.notify("tx_db");
 
-        await TxFn.update_status_completed(details.id); // Todo: remove;
-
-        return httpResponse(
-            "ok",
-            "Result Checker order placed successfully",
-            details
-        )
+        const client = await api_client();
+        const response = await client.post("buy/result-checker", details);
+        return response.data;
     } catch (e) {
         await TxFn.update_status_failed(details.id);
         // if Failed, refund money.

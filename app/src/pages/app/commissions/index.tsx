@@ -12,7 +12,7 @@ import NoItems from "@/ui/components/cards/NoItems.tsx";
 import {CoinsIcon} from "lucide-react";
 
 const CommissionsIndex: React.FC = () => {
-    const {user} = useAppStore();
+    const {user, setError} = useAppStore();
     const [commissions, setCommissions] = useState<CommissionDoc[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -21,11 +21,13 @@ const CommissionsIndex: React.FC = () => {
             if (commissions.length === 0) {
                 setLoading(true);
                 const c = await ClCommission.readAll(user?.uid ?? "");
-                console.log(c);
                 setCommissions(c);
             }
         }
-        fetch().then().catch(e => console.error(e)).finally(() => setLoading(false));
+        fetch()
+            .then()
+            .catch(() => setError("An Error occurred when fetching commissions. Please try again."))
+            .finally(() => setLoading(false));
     }, [user]);
 
     return (
@@ -36,11 +38,11 @@ const CommissionsIndex: React.FC = () => {
                 {
                     loading ? (
                         <>
-                            <LoadingView className={"h-44"} />
-                            <LoadingView className={"h-44"} />
+                            <LoadingView className={"h-44"}/>
+                            <LoadingView className={"h-44"}/>
                         </>
                     ) : commissions.length > 0 ? (
-                        commissions.map((commission: CommissionDoc) => <CommissionCard com={commission} />)
+                        commissions.map((commission: CommissionDoc) => <CommissionCard com={commission}/>)
                     ) : (
                         <NoItems Icon={CoinsIcon}>
                             No Commissions earned yet. {commissions.length}

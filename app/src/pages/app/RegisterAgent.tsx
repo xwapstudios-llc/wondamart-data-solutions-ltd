@@ -9,15 +9,15 @@ import Code from "@/ui/components/typography/Code";
 import {Loader2Icon} from "lucide-react";
 import {useAppStore} from "@/lib/useAppStore";
 import DisabledNotice from "@/ui/components/cards/DisabledNotice";
+import type {HTTPResponse} from "@common/types/request.ts";
 
 const RegisterAgent: React.FC = () => {
-    const {setError, commonSettings} = useAppStore();
+    const {setError, setHTTPResponse, commonSettings} = useAppStore();
     const settings = commonSettings.userRegistration;
-
 
     const onSubmit = async (values: RegisterValues) => {
         try {
-            await ClientUserAPI.registerAgent({
+            const response = await ClientUserAPI.registerAgent({
                 email: values.email,
                 password: values.password,
                 firstName: values.firstName,
@@ -25,9 +25,18 @@ const RegisterAgent: React.FC = () => {
                 phoneNumber: values.phoneNumber,
                 referredBy: values.referredBy,
             });
-        } catch (e) {
-            console.error("Error registering agent:", e);
-            setError(e as string);
+            setHTTPResponse(response);
+        } catch (err) {
+            if (typeof err === "string") {
+                setError(err);
+            } else if (typeof err === "object") {
+                setHTTPResponse(err as HTTPResponse);
+            } else {
+                setError({
+                    title: "Error",
+                    description: JSON.stringify(err)
+                });
+            }
         }
     }
 

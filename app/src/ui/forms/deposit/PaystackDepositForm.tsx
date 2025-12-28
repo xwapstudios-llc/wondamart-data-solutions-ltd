@@ -23,6 +23,7 @@ import Code from "@/ui/components/typography/Code.tsx";
 import {useNavigate} from "react-router-dom";
 import {R} from "@/app/routes.ts";
 import {toast} from "sonner";
+import type {HTTPResponse} from "@common/types/request.ts";
 
 
 const formSchema = z.object({
@@ -35,7 +36,7 @@ type formValues = z.infer<typeof formSchema>;
 type PaystackDepositFormProps = React.HTMLAttributes<HTMLFormElement>;
 
 const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, children, ...props}) => {
-    const {profile, setError, commonSettings} = useAppStore();
+    const {profile, setError, setHTTPResponse, commonSettings} = useAppStore();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const form = useForm<formValues>({
@@ -81,7 +82,16 @@ const PaystackDepositForm: React.FC<PaystackDepositFormProps> = ({className, chi
                     }
                     form.reset();
                 } catch (err) {
-                    setError(err as string);
+                    if (typeof err === "string") {
+                        setError(err);
+                    } else if (typeof err === "object") {
+                        setHTTPResponse(err as HTTPResponse);
+                    } else {
+                        setError({
+                            title: "Error",
+                            description: JSON.stringify(err)
+                        });
+                    }
                 }
             }
             setLoading(false);

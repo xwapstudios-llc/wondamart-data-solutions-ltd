@@ -39,16 +39,16 @@ const DataBundleFn = {
             { merge: true }
         );
     },
-    async read_DataBundleDoc(uid: string): Promise<DataBundle | undefined> {
-        const ref = dataBundleCollections.doc(uid)
+    async read_DataBundleDoc(id: string): Promise<DataBundle | undefined> {
+        const ref = dataBundleCollections.doc(id)
         const doc = await ref.get();
         if (doc.exists) {
             return doc.data() as DataBundle;
         }
         return undefined;
     },
-    async update_DataBundleDocument(uid: string, data: DataBundleUpdate): Promise<void> {
-        const ref = dataBundleCollections.doc(uid);
+    async update_DataBundleDocument(id: string, data: DataBundleUpdate): Promise<void> {
+        const ref = dataBundleCollections.doc(id);
         const doc = await ref.get();
         if (!doc.exists) {
             throw new Error("Data Bundle doesn't exist");
@@ -58,34 +58,34 @@ const DataBundleFn = {
             updatedAt: Timestamp.now(),
         }, {merge: true});
     },
-    async update_DataBundle_Price(uid: string, price: number): Promise<void> {
-        const dataBundle = await this.read_DataBundleDoc(uid);
+    async update_DataBundle_Price(id: string, price: number): Promise<void> {
+        const dataBundle = await this.read_DataBundleDoc(id);
         if (!dataBundle) throw new Error("Data Bundle doesn't exist");
         dataBundle.price = price;
-        await this.update_DataBundleDocument(uid, dataBundle);
+        await this.update_DataBundleDocument(id, dataBundle);
     },
-    async update_DataBundle_Commission(uid: string, commission: number): Promise<void> {
-        const dataBundle = await this.read_DataBundleDoc(uid);
+    async update_DataBundle_Commission(id: string, commission: number): Promise<void> {
+        const dataBundle = await this.read_DataBundleDoc(id);
         if (!dataBundle) throw new Error("Data Bundle doesn't exist");
         dataBundle.commission = commission;
-        await this.update_DataBundleDocument(uid, dataBundle);
+        await this.update_DataBundleDocument(id, dataBundle);
     },
-    async update_DataBundle_Name(uid: string, name: string): Promise<void> {
-        const dataBundle = await this.read_DataBundleDoc(uid);
+    async update_DataBundle_Name(id: string, name: string): Promise<void> {
+        const dataBundle = await this.read_DataBundleDoc(id);
         if (!dataBundle) throw new Error("Data Bundle doesn't exist");
         dataBundle.name = name;
-        await this.update_DataBundleDocument(uid, dataBundle);
+        await this.update_DataBundleDocument(id, dataBundle);
     },
-    async update_DataBundle_Enabled(uid: string, enabled: boolean): Promise<void> {
-        const dataBundle = await this.read_DataBundleDoc(uid);
+    async update_DataBundle_Enabled(id: string, enabled: boolean): Promise<void> {
+        const dataBundle = await this.read_DataBundleDoc(id);
         if (!dataBundle) throw new Error("Data Bundle doesn't exist");
         dataBundle.enabled = enabled;
-        await this.update_DataBundleDocument(uid, dataBundle);
+        await this.update_DataBundleDocument(id, dataBundle);
     },
-    async delete(uid: string): Promise<void> {
-        const dataBundle = await this.read_DataBundleDoc(uid);
+    async delete(id: string): Promise<void> {
+        const dataBundle = await this.read_DataBundleDoc(id);
         if (!dataBundle) throw new Error("Data Bundle doesn't exist");
-        await dataBundleCollections.doc(uid).delete();
+        await dataBundleCollections.doc(id).delete();
         await DeletedDataBundleFn.create(dataBundle);
     },
     is_valid_providerID(providerId: any) {

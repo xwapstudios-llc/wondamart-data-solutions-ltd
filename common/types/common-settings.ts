@@ -24,6 +24,7 @@ export interface CommonPaymentMethods {
     momo: CommonPaymentMethod;
 }
 
+export type DataBundleProvider = "datamart" | "hendylinks" | "wondamart";
 export interface CommonDataBundles {
     enabled: boolean;
     mtn: {
@@ -35,6 +36,7 @@ export interface CommonDataBundles {
     airteltigo: {
         enabled: boolean;
     },
+    provider: DataBundleProvider;
 }
 export interface CommonSettings {
     afa: CommonAFA,
@@ -78,6 +80,7 @@ export const initialCommonSettings: CommonSettings = {
         }
     },
     dataBundles: {
+        provider: "hendylinks",
         enabled: true,
         mtn: {
             enabled: true

@@ -13,6 +13,9 @@ interface Config {
     nodeEnv: string;
     paystack_key: string;
     paystack_production_key: string;
+
+    hendylinks_api_key: string;
+    datamart_api_key: string;
 }
 
 const config: Config = {
@@ -27,6 +30,9 @@ const config: Config = {
 
     paystack_key: process.env.PAYSTACK_TEST_KEY || 'test',
     paystack_production_key: process.env.PAYSTACK_PRODUCTION_KEY || 'production',
+
+    hendylinks_api_key: process.env.HENDYLINKS_API_KEY || "hendylinks_api_key",
+    datamart_api_key: process.env.DATABASE_API_KEY || 'datamart_api_key',
 };
 
 

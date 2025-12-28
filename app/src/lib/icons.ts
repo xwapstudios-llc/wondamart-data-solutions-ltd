@@ -49,7 +49,7 @@ const toCurrency = (v: number) =>
     `₵ ${v.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,")}`;
 
 const getTxReportText = (tx: Tx): string => {
-    let strData = ``;
+    let strData: string;
     switch (tx.type) {
         case "data-bundle":
             const data = tx.data as TxDataBundleData;
@@ -119,7 +119,7 @@ Phone: ${momo.phoneNumber}
         default:
             strData = ``;
     }
-    const str = `
+    return `
 📋 ORDER DETAILS FOR REPORT
 ━━━━━━━━━━━━━━━━━━━━━
 🔖 Track ID: ${tx.id}
@@ -130,8 +130,7 @@ Phone: ${momo.phoneNumber}
 ${strData}
 📊 Status: ${tx.status.toUpperCase()}
 ━━━━━━━━━━━━━━━━━━━━━
-    `
-    return str;
+    `;
 }
 
 export {

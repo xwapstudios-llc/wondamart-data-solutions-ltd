@@ -18,6 +18,7 @@ import {
     FormMessage
 } from "@/cn/components/ui/form.tsx";
 import {Loader2Icon} from "lucide-react";
+import type {HTTPResponse} from "@common/types/request.ts";
 
 
 const afaSchema = z.object({
@@ -32,7 +33,7 @@ const afaSchema = z.object({
 type AfaValues = z.infer<typeof afaSchema>;
 
 const AfaBundleForm: React.FC = () => {
-    const {profile, setError} = useAppStore();
+    const {profile, setError, setHTTPResponse} = useAppStore();
     const [loading, setLoading] = useState(false);
     const form = useForm<AfaValues>({
         resolver: zodResolver(afaSchema) as never,
@@ -46,22 +47,33 @@ const AfaBundleForm: React.FC = () => {
         },
     });
 
-    const onSubmit = (values: AfaValues) => {
+    const onSubmit = async (values: AfaValues) => {
         setLoading(true);
         if (profile) {
-            ClTxAFABundle.create({
-                date_of_birth: values.date_of_birth,
-                fullName: values.fullName,
-                idNumber: values.idNumber,
-                location: values.location,
-                occupation: values.occupation,
-                phoneNumber: values.phone,
-                uid: profile?.id,
-            })
-                .then(() => form.reset())
-                .catch((err) => {
-                    setError(err);
+            try {
+                const response = await ClTxAFABundle.create({
+                    date_of_birth: values.date_of_birth,
+                    fullName: values.fullName,
+                    idNumber: values.idNumber,
+                    location: values.location,
+                    occupation: values.occupation,
+                    phoneNumber: values.phone,
+                    uid: profile?.id,
                 })
+                form.reset();
+                setHTTPResponse(response);
+            } catch (err) {
+                if (typeof err === "string") {
+                    setError(err);
+                } else if (typeof err === "object") {
+                    setHTTPResponse(err as HTTPResponse);
+                } else {
+                    setError({
+                        title: "Error",
+                        description: JSON.stringify(err)
+                    });
+                }
+            }
         }
         setLoading(false);
     };

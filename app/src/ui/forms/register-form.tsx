@@ -86,7 +86,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                 form.reset();
                 navigate(R.login);
             }
-
         } catch (err) {
             form.setError("confirmPassword", {message: err as string});
             setFetching(false);

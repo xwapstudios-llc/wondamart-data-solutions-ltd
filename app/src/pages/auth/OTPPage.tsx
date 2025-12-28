@@ -12,29 +12,33 @@ const OTPPage: React.FC = () => {
     const {user} = useAppStore();
     const navigate = useNavigate();
 
-    if (txID == undefined || txID == "") {
-        return null
-    }
-
     return (
         <Page>
             <PageContent className={"min-h-[80svh] flex items-center justify-center"}>
-                <OTPForm
-                    length={6}
-                    onVerify={async (otp) => {
-                        await ClTxAccountDeposit.otp.submit({
-                            otp: otp,
-                            txID: txID ?? "",
-                            uid: user?.uid ?? "",
-                        }).then(() => {
-                            // Redirect to app dashboard after successful OTP submission
-                            navigate(R.app.dashboard)
-                        })
-                    }}
-                    // onResend={async () => {
-                    //     await ClTxAccountDeposit.otp.resend(txID ?? "");
-                    // }}
-                />
+                {
+                    (txID == undefined || txID == "") ? (
+                        <div>
+                            Invalid
+                        </div>
+                    ) : (
+                        <OTPForm
+                            length={6}
+                            onVerify={async (otp) => {
+                                await ClTxAccountDeposit.otp.submit({
+                                    otp: otp,
+                                    txID: txID ?? "",
+                                    uid: user?.uid ?? "",
+                                }).then(() => {
+                                    // Redirect to app dashboard after successful OTP submission
+                                    navigate(R.app.dashboard)
+                                })
+                            }}
+                            // onResend={async () => {
+                            //     await ClTxAccountDeposit.otp.resend(txID ?? "");
+                            // }}
+                        />
+                    )
+                }
             </PageContent>
         </Page>
     )

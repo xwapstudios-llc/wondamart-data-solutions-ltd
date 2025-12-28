@@ -11,28 +11,19 @@ import {CommonSettingsFn} from "@common-server/fn/common-settings-fn.js";
 import {TxAccountDepositFn} from "@common-server/fn/tx/tx-account-deposit-fn.js";
 import {ServerFn} from "@common-server/fn/server/server-fn.js";
 import axios from "axios";
-import {GoogleAuth} from "google-auth-library"
+import {api_key} from "@common-server/utils/api_key.js";
 
 
 async function pay_client() {
-    const auth = new GoogleAuth({
-        scopes: "https://www.googleapis.com/auth/cloud-platform",
-    });
-
-    const g_client = await auth.getIdTokenClient(
-        "https://pay.wondamartgh.com"
-    );
-
-    const headers = await g_client.getRequestHeaders();
     return axios.create({
-    baseURL: "https://pay.wondamartgh.com",
-    timeout: 15000,
-    headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        ...Object.fromEntries(Object.entries(headers))
-    },
-});
+        baseURL: "https://pay.wondamartgh.com",
+        timeout: 15000,
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "authorization": `Bearer ${api_key}`
+        },
+    });
 }
 
 export const requestSubmitOTP = onCall(async (event) => {
@@ -63,7 +54,7 @@ export const requestSubmitOTP = onCall(async (event) => {
             "This payment method is no available at the moment."
         )
     }
-    const client =  await pay_client();
+    const client = await pay_client();
     const response = await client.post(
         "/deposit/paystack/submit-otp",
         d
@@ -149,7 +140,7 @@ export const requestDepositPaystack = onCall(async (event) => {
     // Tell server to continue processing the deposit
     await ServerFn.notify("tx_dp_paystack");
 
-    const client =  await pay_client();
+    const client = await pay_client();
     const response = await client.post(
         "/deposit/paystack",
         details
@@ -198,7 +189,7 @@ export const requestDepositSend = onCall(async (event) => {
     const details = await TxAccountDepositFn.createAndCommit.send(d);
     // Tell server to continue processing the deposit
 
-    const client =  await pay_client();
+    const client = await pay_client();
     const response = await client.post(
         "/deposit/send",
         details
@@ -253,7 +244,7 @@ export const requestDepositMoMo = onCall(async (event) => {
     const details = await TxAccountDepositFn.createAndCommit.momo(d);
     // Tell server to continue processing the deposit
 
-    const client =  await pay_client();
+    const client = await pay_client();
     const response = await client.post(
         "/deposit/momo",
         details

@@ -10,6 +10,7 @@ import {type UserInfoDocument, type UserRegistrationRequest, type UserWalletDocu
 import {doc, getDoc, Timestamp, updateDoc} from "firebase/firestore";
 import {sendEmailVerification} from "firebase/auth"
 import {auth} from "@common/lib/auth";
+import {HTTPResponse} from "@common/types/request";
 
 const ClUser = {
     create: async (data: UserRegistrationRequest): Promise<void> => {
@@ -46,14 +47,9 @@ const ClUser = {
             return Promise.reject(err.message || "Failed to verify email");
         }
     },
-    registerAgent: async (data: UserRegistrationRequest): Promise<void> => {
-        try {
-            await Functions.User.registerNewAgent(data);
-            return Promise.resolve();
-        } catch (err) {
-            // @ts-expect-error message might not be available on error
-            return Promise.reject(err.message || "Failed to create user");
-        }
+    registerAgent: async (data: UserRegistrationRequest): Promise<HTTPResponse> => {
+        const result = await Functions.User.registerNewAgent(data);
+        return Promise.resolve(result.data as HTTPResponse);
     },
     readInfo: async (uid: string): Promise<UserInfoDocument | undefined> => {
         const d = await getDoc(doc(db, collections.users, uid));

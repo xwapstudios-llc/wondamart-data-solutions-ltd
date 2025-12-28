@@ -18,16 +18,9 @@ import {
 } from "@common/types/common-settings";
 import {ClCommonSettings} from "@common/client-api/db-common-settings";
 import {collections, db} from "@common/lib/db";
-import type {LucideIcon} from "lucide-react";
-import type {ButtonVariant} from "@/cn/components/ui/button.tsx";
+import type {HTTPResponse} from "@common/types/request.ts";
+import {type AppError, prepareHTTPResponse} from "@/lib/error.ts";
 
-interface AppDetailedError {
-    title?: string;
-    description?: string;
-    Icon?: LucideIcon;
-    actions?: Array<{label: string, variant?: ButtonVariant; action: () => void;}>;
-}
-type AppError = string | null | AppDetailedError;
 
 interface AppState {
     // Utils
@@ -37,6 +30,7 @@ interface AppState {
     // utils
     setLoading: (state: boolean) => void;
     setError: (err: string | AppError) => void;
+    setHTTPResponse: (response: HTTPResponse) => void;
     clearError: () => void;
 
     // Logins and logouts
@@ -79,6 +73,9 @@ export const useAppStore = create<AppState>()(
             },
             setError: (err: string | AppError) => {
                 set({error: err});
+            },
+            setHTTPResponse: (response: HTTPResponse) => {
+                set({error: prepareHTTPResponse(response)})
             },
             clearError: () => {
                 set({error: null});
