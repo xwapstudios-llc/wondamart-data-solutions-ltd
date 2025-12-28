@@ -69,6 +69,15 @@ const TxFn = {
             await UserFn.update_add_recentTransaction(tx.uid, tx.id);
         }
     },
+    addExtraData: async (txID: string, data: any) => {
+        let docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txID);
+        const doc = await docRef.get();
+        if (!doc.exists) throw new Error("Transaction does not exist");
+        await docRef.set({
+            updatedAt: Timestamp.now(),
+            extraData: data,
+        }, {merge: true});
+    },
     // Create an initial transaction document object
     // This does not create the document in Firestore, just returns the object
     initialDoc: async (type: TxType, uid: string): Promise<Omit<Tx, "type">> => {
