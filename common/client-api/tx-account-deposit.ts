@@ -1,12 +1,3 @@
-// Create
-//
-// Read
-//
-
-// Create
-//
-// Read
-//
 import type {
     TxDeposit, TxDepositMoMoRequest,
     TxAccountDepositQuery,
@@ -14,10 +5,11 @@ import type {
     TxDepositSendRequest, TxSubmitOTPRequest
 } from "@common/types/account-deposit";
 import { collections, db } from "@common/lib/db";
-import { Functions } from "@common/lib/fn";
 import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
 import type {HTTPResponse} from "@common/types/request";
+import axios from "axios";
+import {api_key} from "../../server/common/utils/api_key";
 
 const createQuery = (q: TxAccountDepositQuery): Query => {
     let Q = buildTxQuery(q);
@@ -26,30 +18,62 @@ const createQuery = (q: TxAccountDepositQuery): Query => {
     return Q;
 }
 
+async function pay_client() {
+    return axios.create({
+        baseURL: "https://pay.wondamartgh.com",
+        timeout: 15000,
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "authorization": `Bearer ${api_key}`
+        },
+    });
+}
+
 
 const ClTxAccountDeposit = {
     otp: {
         submit: async (data: TxSubmitOTPRequest): Promise<HTTPResponse> => {
-            const result = await Functions.Request.otp.submit(data);
-            return Promise.resolve(result.data as HTTPResponse);
+            const client = await pay_client();
+            const response = await client.post(
+                "/deposit/paystack/submit-otp",
+                data
+            );
+            return Promise.resolve(response.data as HTTPResponse);
         },
         // resend: async (txID: string): Promise<HTTPResponse> => {
-        //     const result = await Functions.Request.otp.resend({ txID });
-        //     return Promise.resolve(result.data as HTTPResponse);
+        //     const client = await pay_client();
+        //     const response = await client.post(
+        //         "/deposit/paystack/resend-otp",
+        //         txID
+        //     );
+        //     return Promise.resolve(response.data as HTTPResponse);
         // },
     },
     create: {
         paystack: async (data: TxDepositPaystackRequest): Promise<HTTPResponse> => {
-            const result = await Functions.Request.deposit.paystack(data);
-            return Promise.resolve(result.data as HTTPResponse);
+            const client = await pay_client();
+            const response = await client.post(
+                "/deposit/paystack",
+                data
+            );
+            return Promise.resolve(response.data as HTTPResponse);
         },
         send: async (data: TxDepositSendRequest): Promise<HTTPResponse> => {
-            const result = await Functions.Request.deposit.send(data);
-            return Promise.resolve(result.data as HTTPResponse);
+            const client = await pay_client();
+            const response = await client.post(
+                "/deposit/send",
+                data
+            );
+            return Promise.resolve(response.data as HTTPResponse);
         },
         momo: async (data: TxDepositMoMoRequest): Promise<HTTPResponse> => {
-            const result = await Functions.Request.deposit.momo(data);
-            return Promise.resolve(result.data as HTTPResponse);
+            const client = await pay_client();
+            const response = await client.post(
+                "/deposit/momo",
+                data
+            );
+            return Promise.resolve(response.data as HTTPResponse);
         },
     },
     readOne: async (uid: string): Promise<TxDeposit | undefined> => {

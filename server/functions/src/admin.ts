@@ -4,7 +4,7 @@ import { httpResponse } from "@common/types/request.js";
 
 import { getAuth } from "firebase-admin/auth";
 import {FieldValue} from "firebase-admin/firestore";
-import {ThrowCheck} from "./internals/throw-check-fn.js";
+import {ThrowCheck} from "@common-server/fn/throw-check-fn.js";
 import {UserFn} from "@common-server/fn/user-fn.js";
 const auth = getAuth();
 

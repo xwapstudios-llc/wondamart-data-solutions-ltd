@@ -6,7 +6,7 @@ import {
 import { httpResponse } from "@common/types/request.js";
 import {getAuth} from "firebase-admin/auth";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import {ThrowCheck, ThrowCheckFn} from "./internals/throw-check-fn.js";
+import {ThrowCheck, ThrowCheckFn} from "@common-server/fn/throw-check-fn.js";
 import {UserFn} from "@common-server/fn/user-fn.js";
 import {userCollections, walletsCollections} from "@common-server/fn/collections.js";
 import {CommonSettingsFn} from "@common-server/fn/common-settings-fn.js";

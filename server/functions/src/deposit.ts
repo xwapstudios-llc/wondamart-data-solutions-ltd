@@ -6,7 +6,7 @@ import {
     TxSubmitOTPRequest
 } from "@common/types/account-deposit.js";
 import {httpResponse} from "@common/types/request.js";
-import {ThrowCheck} from "./internals/throw-check-fn.js";
+import {ThrowCheck} from "@common-server/fn/throw-check-fn.js";
 import {CommonSettingsFn} from "@common-server/fn/common-settings-fn.js";
 import {TxAccountDepositFn} from "@common-server/fn/tx/tx-account-deposit-fn.js";
 import {ServerFn} from "@common-server/fn/server/server-fn.js";
@@ -160,7 +160,6 @@ export const requestDepositSend = onCall(async (event) => {
 
     // Sanitize and validate the input data.
     let d = event.data as TxDepositSendRequest;
-
 
     // Do checks
     const check = new ThrowCheck(event.auth.uid);

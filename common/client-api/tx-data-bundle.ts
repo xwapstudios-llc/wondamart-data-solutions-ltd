@@ -3,6 +3,7 @@ import { collections, db } from "@common/lib/db";
 import { Functions } from "@common/lib/fn";
 import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
+import type {HTTPResponse} from "@common/types/request";
 
 const createQuery = (q: TxDataBundleQuery): Query => {
     let Q = buildTxQuery(q);
@@ -15,19 +16,9 @@ const createQuery = (q: TxDataBundleQuery): Query => {
 const ClTxDataBundle = {
     //
     // Create
-    create: async (data: TxDataBundleRequest): Promise<void> => {
-        try {
-            await Functions.Request.DataBundle(data);
-            return Promise.resolve();
-        } catch (error) {
-            console.error("Error calling function:", error);
-            // const code = error.code;
-            // @ts-expect-error : message might not exist on error obj
-            const message = error.message;
-            return Promise.reject(
-                new Error(message || "Failed to request data bundle")
-            );
-        }
+    create: async (data: TxDataBundleRequest): Promise<HTTPResponse> => {
+        const result = await Functions.Request.DataBundle(data);
+        return Promise.resolve(result.data as HTTPResponse);
     },
     //
     // Read

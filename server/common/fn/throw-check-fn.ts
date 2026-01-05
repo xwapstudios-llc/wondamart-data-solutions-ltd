@@ -1,8 +1,8 @@
 import {getAuth, UserRecord} from "firebase-admin/auth";
 import {UserClaims, UserWalletDocument} from "@common/types/user.js";
-import {UserFn} from "@common-server/fn/user-fn.js";
+import {UserFn} from "./user-fn.js";
 import {httpResponse} from "@common/types/request.js"
-import {ServerFn} from "@common-server/fn/server/server-fn.js";
+import {ServerFn} from "./server/server-fn.js";
 
 const auth = getAuth();
 

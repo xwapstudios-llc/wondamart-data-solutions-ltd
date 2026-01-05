@@ -1,7 +1,7 @@
 import { TxDataBundleRequest } from "@common/types/data-bundle.js";
 import { onCall } from "firebase-functions/v2/https";
 import { httpResponse } from "@common/types/request.js";
-import {ThrowCheck, ThrowCheckFn} from "./internals/throw-check-fn.js";
+import {ThrowCheck, ThrowCheckFn} from "@common-server/fn/throw-check-fn.js";
 import {TxDataBundleFn} from "@common-server/fn/tx/tx-data-bundle-fn.js";
 import {TxFn} from "@common-server/fn/tx/tx-fn.js";
 import { UserFn } from "@common-server/fn/user-fn.js";
@@ -65,7 +65,7 @@ export const requestDataBundlePurchase = onCall(async (event) => {
         // Send Purchase order to Server
         await ServerFn.notify("tx_db");
         const client = await api_client();
-        const response = await client.post("buy/data-bundle", details);
+        const response = await client.post("/buy/data-bundle", details);
         return response.data;
     } catch (e) {
         await TxFn.update_status_failed(details.id);
@@ -126,7 +126,7 @@ export const requestAFABundlePurchase = onCall(async (event) => {
         // Send Purchase order to Server
         await ServerFn.notify("tx_af");
         const client = await api_client();
-        const response = await client.post("buy/afa-bundle", details);
+        const response = await client.post("/buy/afa-bundle", details);
         return response.data;
     } catch (e) {
         await TxFn.update_status_failed(details.id);
@@ -186,7 +186,7 @@ export const requestResultCheckerPurchase = onCall(async (event) => {
         await ServerFn.notify("tx_db");
 
         const client = await api_client();
-        const response = await client.post("buy/result-checker", details);
+        const response = await client.post("/buy/result-checker", details);
         return response.data;
     } catch (e) {
         await TxFn.update_status_failed(details.id);

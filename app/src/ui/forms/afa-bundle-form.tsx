@@ -62,12 +62,16 @@ const AfaBundleForm: React.FC = () => {
                 })
                 form.reset();
                 setHTTPResponse(response);
+                console.log("Try Complete, res =>", response);
             } catch (err) {
                 if (typeof err === "string") {
                     setError(err);
+                    console.log("error string =>", err);
                 } else if (typeof err === "object") {
                     setHTTPResponse(err as HTTPResponse);
+                    console.log("error object =>", err);
                 } else {
+                    console.log("error else =>", JSON.stringify(err));
                     setError({
                         title: "Error",
                         description: JSON.stringify(err)

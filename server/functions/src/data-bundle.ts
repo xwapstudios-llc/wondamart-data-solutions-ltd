@@ -2,7 +2,7 @@ import { onCall } from "firebase-functions/v2/https";
 import {AdminNewDataBundle} from "@common/types/data-bundle.js";
 import { httpResponse } from "@common/types/request.js";
 import {DataBundleFn} from "@common-server/fn/data-bundle/data-bundle-fn.js";
-import {ThrowCheck} from "./internals/throw-check-fn.js";
+import {ThrowCheck} from "@common-server/fn/throw-check-fn.js";
 
 
 export const createDataBundle = onCall(async (event) => {

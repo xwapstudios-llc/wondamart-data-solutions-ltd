@@ -1,6 +1,6 @@
 import { onCall } from "firebase-functions/v2/https";
 import { httpResponse } from "@common/types/request.js";
-import {ThrowCheck} from "./internals/throw-check-fn.js";
+import {ThrowCheck} from "@common-server/fn/throw-check-fn.js";
 import {CommonSettingsFn} from "@common-server/fn/common-settings-fn.js";
 
 export const initCommonSettings = onCall(async (event) => {

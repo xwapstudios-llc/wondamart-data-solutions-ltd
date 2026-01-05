@@ -15,14 +15,14 @@ const OnErrorCard: React.FC<OnErrorCardProps> = ({className, ...props}) => {
 
     return (
         <div
-            className={"fixed z-50 top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-background/55 backdrop-blur-xs"}
+            className={"fixed z-50 top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-background/75 backdrop-blur-[2px]"}
             onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
             }}
         >
             <div className={cn(
-                "bg-primary/50 backdrop-blur-2xl text-primary-foreground p-4 rounded-md relative",
+                "bg-primary/75 backdrop-blur-2xl text-primary-foreground p-4 rounded-md relative",
                 "flex flex-col items-center justify-center gap-4",
                 "min-w-96 md:min-w-lg min-h-64",
                 className
@@ -74,6 +74,7 @@ const OnErrorCard: React.FC<OnErrorCardProps> = ({className, ...props}) => {
                                                         action.action();
                                                         clearError();
                                                     }}
+                                                    variant={action.variant}
                                                 >
                                                     {action.label}
                                                 </Button>

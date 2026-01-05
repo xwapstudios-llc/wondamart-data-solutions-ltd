@@ -1,14 +1,16 @@
 import express from "express";
 import config from "@common-server/config";
-import {TxDepositPaystackData, TxSubmitOTPRequest} from "@common/types/account-deposit";
+import {TxDepositPaystackData, TxDepositPaystackRequest, TxSubmitOTPRequest} from "@common/types/account-deposit";
 import {test_paystack} from "@/paystack";
 import {charge, currency_to_paystack_amount, networkID_to_paystack_provider,} from "@/paystack/charge";
 import {TxFn} from "@common-server/fn/tx/tx-fn";
 import {UserFn} from "@common-server/fn/user-fn";
 import {HTTPResponse, httpResponse, httpStatusCode} from "@common/types/request";
-import {Tx} from "@common/types/tx";
 import crypto from "crypto";
 import {firebaseOnlyMiddleware} from "@common-server/utils/express";
+import {CommonSettingsFn} from "@common-server/fn/common-settings-fn";
+import {ThrowCheck} from "@common-server/fn/throw-check-fn.js";
+import {TxAccountDepositFn} from "@common-server/fn/tx/tx-account-deposit-fn";
 
 const app = express();
 app.use(express.json());
@@ -16,15 +18,35 @@ app.use(express.json());
 const port = config.port_pay;
 const host = config.host_server;
 
-
-app.use(firebaseOnlyMiddleware);
+app.use("/deposit", firebaseOnlyMiddleware);
 
 app.get("/", (req, res) => {
     res.send("Hello World! from pay.wondamart.com");
 });
 
 app.post("/deposit/paystack", async (req, res) => {
-    const tx = req.body as Tx;
+
+    // Sanitize and validate the input data.
+    let d = req.body as TxDepositPaystackRequest;
+
+    // Do checks
+    const check = new ThrowCheck(d.uid);
+    await check.init();
+    check.isUser();
+    check.isUserDisabled();
+    // check.isActivated();
+
+    // Read settings
+    const paymentSettings = await CommonSettingsFn.read_paymentMethods();
+    if (!paymentSettings.paystack.enabled) {
+        return httpResponse(
+            "aborted",
+            "This payment method is no available at the moment."
+        )
+    }
+
+    // Start a transaction document
+    const tx = await TxAccountDepositFn.createAndCommit.paystack(d);
 
     if (!tx?.id || !tx?.amount || !tx?.uid) {
         const http_res = httpResponse(
@@ -67,7 +89,27 @@ app.post("/deposit/paystack", async (req, res) => {
 });
 
 app.post("/deposit/paystack/submit-otp", async (req, res) => {
-    const {txID, otp} = req.body as TxSubmitOTPRequest;
+
+    // Sanitize and validate the input data.
+    let d = req.body as TxSubmitOTPRequest;
+
+    // Do checks
+    const check = new ThrowCheck(d.uid);
+    await check.init();
+    check.isUser();
+    check.isUserDisabled();
+    // check.isActivated();
+
+    // Read settings
+    const paymentSettings = await CommonSettingsFn.read_paymentMethods();
+    if (!paymentSettings.paystack.enabled) {
+        throw httpResponse(
+            "aborted",
+            "This payment method is no available at the moment."
+        )
+    }
+
+    const {txID, otp} = d;
 
     console.log("-----------------------------------------------")
     console.log("paystack/submit-otp data:", req.body);
