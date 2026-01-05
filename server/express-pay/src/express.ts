@@ -29,12 +29,15 @@ app.post("/deposit/paystack", async (req, res) => {
     // Sanitize and validate the input data.
     let d = req.body as TxDepositPaystackRequest;
 
+    console.log("Received: deposit > ", d);
     // Do checks
     const check = new ThrowCheck(d.uid);
     await check.init();
     check.isUser();
     check.isUserDisabled();
     // check.isActivated();
+
+    console.log("Finished throw checks");
 
     // Read settings
     const paymentSettings = await CommonSettingsFn.read_paymentMethods();
@@ -45,8 +48,11 @@ app.post("/deposit/paystack", async (req, res) => {
         )
     }
 
+    console.log("Finished payment method checks");
     // Start a transaction document
     const tx = await TxAccountDepositFn.createAndCommit.paystack(d);
+
+    console.log("Finished creating tx > ", tx);
 
     if (!tx?.id || !tx?.amount || !tx?.uid) {
         const http_res = httpResponse(
