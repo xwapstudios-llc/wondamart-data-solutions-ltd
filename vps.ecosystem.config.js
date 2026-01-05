@@ -3,9 +3,9 @@ const user = "xwapstudios";
 module.exports = {
     apps: [
         {
-            name: "express-pay",
+            name: "pay",
             script: "pnpm",
-            args: "run start:express-pay",
+            args: "run start:pay",
 
             // Hard requirements
             cwd: `/home/${user}/wondamart-data-solutions-ltd`,

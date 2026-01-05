@@ -11,7 +11,7 @@ import {firebaseOnlyMiddleware} from "@common-server/utils/express";
 import {CommonSettingsFn} from "@common-server/fn/common-settings-fn";
 import {ThrowCheck} from "@common-server/fn/throw-check-fn.js";
 import {TxAccountDepositFn} from "@common-server/fn/tx/tx-account-deposit-fn";
-import cors from 'cors';
+import {corsOriginMiddleware} from "@common-server/utils/express_origen";
 
 const app = express();
 app.use(express.json());
@@ -19,7 +19,7 @@ app.use(express.json());
 const port = config.port_pay;
 const host = config.host_server;
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use("/", corsOriginMiddleware);
 app.use("/deposit", firebaseOnlyMiddleware);
 
 app.get("/", (req, res) => {

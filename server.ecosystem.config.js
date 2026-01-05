@@ -3,9 +3,9 @@ const user = "wondamart-server";
 module.exports = {
     apps: [
         {
-            name: "monitor-system",
+            name: "monit-system",
             script: "pnpm",
-            args: "run start:monitor-system",
+            args: "run start:monit-system",
 
             // Hard requirements
             cwd: `/home/${user}/wondamart-data-solutions-ltd`,
@@ -28,9 +28,9 @@ module.exports = {
 
 
         {
-            name: "monitor-modem",
+            name: "monit-modem",
             script: "pnpm",
-            args: "run start:monitor-modem",
+            args: "run start:monit-modem",
 
             // Hard requirements
             cwd: `/home/${user}/wondamart-data-solutions-ltd`,

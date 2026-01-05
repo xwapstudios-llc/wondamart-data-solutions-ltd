@@ -14,10 +14,11 @@
         "dotenv": "^17.2.3",
         "express": "^5.2.1",
         "firebase-admin": "^13.6.0",
-        "google-auth-library": "^10.5.0"
+        "cors": "^2.8.5"
     },
     "devDependencies": {
         "tsup": "^8.5.1",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "@types/cors": "^2.8.19"
     }
 }
