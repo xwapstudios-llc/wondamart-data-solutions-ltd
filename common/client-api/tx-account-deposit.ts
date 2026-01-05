@@ -53,10 +53,14 @@ const ClTxAccountDeposit = {
     create: {
         paystack: async (data: TxDepositPaystackRequest): Promise<HTTPResponse> => {
             const client = await pay_client();
+            console.log("Creating client... headers: > ", client.head("/deposit/paystack"));
+
             const response = await client.post(
                 "/deposit/paystack",
                 data
             );
+
+            console.log("Paystack response: data > ", response.data);
             return Promise.resolve(response.data as HTTPResponse);
         },
         send: async (data: TxDepositSendRequest): Promise<HTTPResponse> => {
