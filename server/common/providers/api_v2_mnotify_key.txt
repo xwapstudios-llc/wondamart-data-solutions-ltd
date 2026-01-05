@@ -1,0 +1,8 @@
+API Key: bDXVhXfaMneJxsL2jcJsfDm1a
+Project: wondamart-server
+
+Keep this key secure — do not share it.
+
+Documentation: https://developer.mnotify.com/
+
+Happy coding!
