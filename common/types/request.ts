@@ -77,7 +77,7 @@ export interface HTTPResponse {
     code: number;
 }
 
-export function httpResponse(status: HTTPResponseStatus, message: string | HTTPMessage, data?: unknown | undefined): HTTPResponse {
+export function httpResponse(status: HTTPResponseStatus, message: string | HTTPMessage, data?: any): HTTPResponse {
     return {
         status: status,
         data: data,

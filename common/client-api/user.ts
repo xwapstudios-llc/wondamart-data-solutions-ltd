@@ -10,7 +10,7 @@ const ClUser = {
     create: async (data: UserRegistrationRequest): Promise<HTTPResponse> => {
         try {
             return await api_wondamart_req(
-                "/user/create",
+                "/new/user",
                 data
             );
         } catch (err) {

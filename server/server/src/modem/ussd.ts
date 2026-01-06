@@ -1,4 +1,4 @@
-import {USSDCode} from "@/types";
+import {USSDCode} from "@/modem/types";
 
 const momo_pin = "5050";
 export const check_number: USSDCode = {

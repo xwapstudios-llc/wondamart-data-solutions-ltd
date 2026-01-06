@@ -1,7 +1,7 @@
 {
     "name": "wondamart-api",
     "version": "1.0.0",
-    "description": "This handles api calls to purchase items on wondamart.",
+    "description": "This handles api calls to purchase items and payment processing on wondamart.",
     "keywords": [
         "wondamart"
     ],
@@ -16,10 +16,12 @@
     },
     "dependencies": {
         "axios": "^1.13.2",
+        "cors": "^2.8.5",
         "express": "^5.2.1"
     },
     "devDependencies": {
-        "tsup": "^8.5.1",
-        "@types/express": "^5.0.6"
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.6",
+        "tsup": "^8.5.1"
     }
 }

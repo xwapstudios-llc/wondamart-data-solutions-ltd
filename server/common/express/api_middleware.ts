@@ -2,11 +2,7 @@ import {httpResponse} from "@common/types/request";
 import {api_key} from "./api_key";
 import {MiddlewareHandler} from "./index";
 
-const api_key_middleware: MiddlewareHandler = (
-    req,
-    res,
-    next
-) => {
+const api_middleware: MiddlewareHandler = (req, res, next) => {
     console.log("Headers ----------------------------------")
     console.log(req.headers);
     console.log("-----------------------------------------");
@@ -33,5 +29,5 @@ const api_key_middleware: MiddlewareHandler = (
 }
 
 export {
-    api_key_middleware
+    api_middleware
 }

@@ -1,8 +1,14 @@
 import dbus, {ProxyObject, Variant} from "dbus-next";
-import {ben_number, ernest_number, SMSMessage, USSDCode} from "@/types";
+import {SMSMessage, USSDCode} from "@/modem/types";
+import {getFirestore} from "firebase-admin/firestore";
+
+const db = getFirestore();
 
 type USSDState = 1 | 2 | 3 | 4;
 
+function gen_id(sender: string) {
+    return `${sender}-${Date.now()}`;
+}
 export class ModemManagerClient {
     private systemBus = dbus.systemBus();
     private modemPath: string = "";
@@ -53,9 +59,9 @@ export class ModemManagerClient {
         });
 
 
-        const modem = this.mmInterface.getInterface(
-            "org.freedesktop.ModemManager1.Modem"
-        );
+        // const modem = this.mmInterface.getInterface(
+        //     "org.freedesktop.ModemManager1.Modem"
+        // );
 
 
         console.log("Connected to modem:", this.modemPath);
@@ -70,7 +76,20 @@ export class ModemManagerClient {
             4: "Closing",
         };
         // @ts-ignore
-        console.log(`Modem USSD State Changed: ${states[newState] || newState}`);
+        const stateText = states[newState] || newState;
+        console.log(`Modem USSD State Changed: ${stateText}`);
+        
+        // Log to Firebase
+        try {
+            await db.collection("modem-logs").add({
+                type: "ussd_state_change",
+                state: newState,
+                stateText,
+                timestamp: new Date()
+            });
+        } catch (error) {
+            console.error("Failed to log USSD state change:", error);
+        }
     }
 
     async onNewMessage(msgPath: string) {
@@ -80,23 +99,40 @@ export class ModemManagerClient {
         const message = await this.readSMS(msgPath);
         console.log("\nNEW SMS Status:", message.status, "\n");
 
-        // Only notify for incoming messages (State: 1=RECEIVING, 2=RECEIVED)
-        if (message.status === 3 || message.status === 2) {
-            const result = JSON.stringify(message, null, 2);
-            console.log("--------------------------------------------------------------------------------");
-
-            console.log("Waiting before sending Balance to Ernest.........................");
-            await new Promise((resolve) => setTimeout(resolve, 5000) ); // small delay to avoid overwhelming
-            await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
-
-            console.log("Waiting before sending to Ben.........................");
-            await new Promise((resolve) => setTimeout(resolve, 5000) ); // small delay to avoid overwhelming
-            await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
-
-            console.log("--------------------------------------------------------------------------------");
-        } else {
-            console.log("Ignoring outgoing SMS ------------------------------");
+        // Log to Firebase messages collection
+        const messageId = gen_id(message.number);
+        try {
+            await db.collection("messages").doc(messageId).set({
+                id: messageId,
+                smsPath: msgPath,
+                number: message.number,
+                text: message.text,
+                timestamp: message.timestamp,
+                status: message.status,
+                createdAt: new Date()
+            });
+            console.log("Message logged to Firebase with ID:", messageId);
+        } catch (error) {
+            console.error("Failed to log message to Firebase:", error);
         }
+
+        // // Only notify for incoming messages (State: 1=RECEIVING, 2=RECEIVED)
+        // if (message.status === 3 || message.status === 2) {
+        //     const result = JSON.stringify(message, null, 2);
+        //     console.log("--------------------------------------------------------------------------------");
+        //
+        //     console.log("Waiting before sending Balance to Ernest.........................");
+        //     await new Promise((resolve) => setTimeout(resolve, 5000) ); // small delay to avoid overwhelming
+        //     await this.sendSMS(ernest_number, `NEW MESSAGE RECEIVED:\n${result}`);
+        //
+        //     console.log("Waiting before sending to Ben.........................");
+        //     await new Promise((resolve) => setTimeout(resolve, 5000) ); // small delay to avoid overwhelming
+        //     await this.sendSMS(ben_number, `NEW MESSAGE RECEIVED:\n${result}`);
+        //
+        //     console.log("--------------------------------------------------------------------------------");
+        // } else {
+        //     console.log("Ignoring outgoing SMS ------------------------------");
+        // }
     }
 
     // *** USSD Operations ***
@@ -174,8 +210,7 @@ export class ModemManagerClient {
         const modem = this.mmInterface!.getInterface(
             "org.freedesktop.ModemManager1.Modem.Messaging"
         );
-        const messages: string[] = await modem.List();
-        return messages;
+        return await modem.List();
     }
 
     async readSMS(smsPath: string): Promise<SMSMessage> {
@@ -274,18 +309,18 @@ export class ModemManagerClient {
         return await modem3gpp.OperatorName;
     }
 
-    async waitForReady(timeoutMs: number = 30000) {
-        const startTime = Date.now();
-
-        while (Date.now() - startTime < timeoutMs) {
-            const status = await this.getStatus();
-            if (status.isRegistered) {
-                console.log(`Ready! Signal: ${status.signal}%`);
-                return true;
-            }
-            console.log("Waiting for network registration...");
-            await new Promise((r) => setTimeout(r, 2000));
-        }
-        throw new Error("Modem failed to register within timeout.");
-    }
+    // async waitForReady(timeoutMs: number = 30000) {
+    //     const startTime = Date.now();
+    //
+    //     while (Date.now() - startTime < timeoutMs) {
+    //         const status = await this.getStatus();
+    //         if (status.isRegistered) {
+    //             console.log(`Ready! Signal: ${status.signal}%`);
+    //             return true;
+    //         }
+    //         console.log("Waiting for network registration...");
+    //         await new Promise((r) => setTimeout(r, 2000));
+    //     }
+    //     throw new Error("Modem failed to register within timeout.");
+    // }
 }

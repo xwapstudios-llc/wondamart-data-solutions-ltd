@@ -29,11 +29,9 @@ const datamart_client = new DataMartClient({
 export const buyDataBundle: RouteHandler = async (req, res) => {
     if (!await ThrowCheckFn.isServerActive(res)) return;
 
-    const d = req.body as TxDataBundleRequest;
+    const uid = req.userId!;
+    const d = req.body as Omit<TxDataBundleRequest, 'uid'>;
 
-    if (!d.uid) {
-        return sendResponse(res, httpResponse("invalid-data", "The requested data is missing user id"));
-    }
     if (!d.bundleId) {
         return sendResponse(res, httpResponse("invalid-data", "The request does not have a valid data bundle id."));
     }
@@ -44,7 +42,7 @@ export const buyDataBundle: RouteHandler = async (req, res) => {
         return sendResponse(res, httpResponse("invalid-data", "The request does not have a valid phone number."));
     }
 
-    const check = new ThrowCheck(res, d.uid);
+    const check = new ThrowCheck(res, uid);
     if (!await check.init()) return;
     if (!check.isUser()) return;
     if (!check.isUserDisabled()) return;
@@ -61,7 +59,7 @@ export const buyDataBundle: RouteHandler = async (req, res) => {
     }
 
     let balance_modified = false;
-    const tx = await TxDataBundleFn.createAndCommit(d);
+    const tx = await TxDataBundleFn.createAndCommit({ ...d, uid });
 
     await TxFn.update_status_processing(tx.id);
     if (!await check.hasEnoughBalance(tx.amount, tx)) return;

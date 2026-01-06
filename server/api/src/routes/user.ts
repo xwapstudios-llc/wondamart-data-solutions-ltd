@@ -49,10 +49,8 @@ export const createUser: RouteHandler = async (req, res) => {
 };
 
 export const registerNewAgent: RouteHandler = async (req, res) => {
-    const { uid, ...data } = req.body as UserRegistrationRequest & { uid: string };
-    if (!uid) {
-        return sendResponse(res, httpResponse("unauthenticated", "User ID required"));
-    }
+    const uid = req.userId!;
+    const data = req.body as UserRegistrationRequest;
     const check = new ThrowCheck(res, uid);
     if (!await check.init()) return;
     if (!check.isUser()) return;
@@ -117,10 +115,7 @@ export const registerNewAgent: RouteHandler = async (req, res) => {
 };
 
 export const requestActivateAccount: RouteHandler = async (req, res) => {
-    const { uid } = req.body as { uid: string };
-    if (!uid) {
-        return sendResponse(res, httpResponse("unauthenticated", "User ID required"));
-    }
+    const uid = req.userId!;
 
     const commonUserRegistration = await CommonSettingsFn.read_userRegistration();
     const check = new ThrowCheck(res, uid);
@@ -140,10 +135,7 @@ export const requestActivateAccount: RouteHandler = async (req, res) => {
 };
 
 export const requestEmailVerification: RouteHandler = async (req, res) => {
-    const { uid } = req.body as { uid: string };
-    if (!uid) {
-        return sendResponse(res, httpResponse("unauthenticated", "User ID required"));
-    }
+    const uid = req.userId!;
 
     const check = new ThrowCheck(res, uid);
     if (!await check.init()) return;
@@ -174,20 +166,18 @@ export const requestEmailVerification: RouteHandler = async (req, res) => {
 };
 
 export const updateUserPhoneNumber: RouteHandler = async (req, res) => {
-    const d = req.body as UserPhoneNumberUpdateRequest & { uid: string };
-    if (!d.uid) {
-        return sendResponse(res, httpResponse("unauthenticated", "User ID required"));
-    }
-    if (!d.uid || !d.phoneNumber) {
+    const uid = req.userId!;
+    const d = req.body as UserPhoneNumberUpdateRequest;
+    if (!d.phoneNumber) {
         return sendResponse(res, httpResponse("invalid", "The function must be called with a phoneNumber."));
     }
 
     if (!await ThrowCheckFn.userAlreadyExistsByPhone(res, d.phoneNumber)) return;
 
     const auth = getAuth();
-    const userRecord = await auth.getUser(d.uid).catch(() => null);
+    const userRecord = await auth.getUser(uid).catch(() => null);
     if (!userRecord) {
-        return sendResponse(res, httpResponse("unauthorized", `User with uid ${d.uid} not found.`));
+        return sendResponse(res, httpResponse("unauthorized", `User with uid ${uid} not found.`));
     }
     if (userRecord.phoneNumber === d.phoneNumber) {
         return sendResponse(res, httpResponse("invalid", `The new phone number is the same as the current one.`));
@@ -195,11 +185,11 @@ export const updateUserPhoneNumber: RouteHandler = async (req, res) => {
     const previousPhoneNumber = userRecord.phoneNumber;
 
     try {
-        await UserFn.update_phoneNumber(d.uid, d.phoneNumber);
-        httpResponse("ok", `User ${d.uid} phone number updated successfully`);
+        await UserFn.update_phoneNumber(uid, d.phoneNumber);
+        httpResponse("ok", `User ${uid} phone number updated successfully`);
     } catch (error) {
         if (previousPhoneNumber) {
-            await UserFn.update_phoneNumber(d.uid, previousPhoneNumber);
+            await UserFn.update_phoneNumber(uid, previousPhoneNumber);
         }
         console.error("Error updating phone number:", error);
         sendResponse(res, httpResponse("error", "An unexpected error occurred. Please try again."));
@@ -207,10 +197,7 @@ export const updateUserPhoneNumber: RouteHandler = async (req, res) => {
 };
 
 export const requestDeleteUser: RouteHandler = async (req, res) => {
-    const { uid } = req.body as { uid: string };
-    if (!uid) {
-        return sendResponse(res, httpResponse("invalid", "Target user ID required"));
-    }
+    const uid = req.userId!;
 
     const db = getFirestore();
     const auth = getAuth();

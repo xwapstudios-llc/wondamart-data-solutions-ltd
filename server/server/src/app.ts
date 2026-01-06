@@ -1,4 +1,3 @@
-
 import config from "@common-server/config";
 
 if (config.nodeEnv === "development") {
@@ -9,7 +8,6 @@ if (config.nodeEnv === "development") {
     delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
 }
 import {initializeApp, getApps} from "firebase-admin/app";
-
 
 if (!getApps().length) {
     initializeApp();

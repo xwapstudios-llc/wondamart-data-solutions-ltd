@@ -4,7 +4,6 @@ import {MiddlewareHandler} from "./index";
 const allowedOrigins: string[] = [
     'http://localhost:5173',
     'https://wondamartgh.com',
-    'https://pay.wondamartgh.com',
     'https://api.wondamartgh.com',
     'https://server.wondamartgh.com',
 ];
@@ -18,7 +17,7 @@ const corsOptions: CorsOptions = {
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'user-id', 'user-token'],
     credentials: true,
 };
 

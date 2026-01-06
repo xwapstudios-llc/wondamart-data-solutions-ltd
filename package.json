@@ -4,11 +4,12 @@
     "description": "This is all of wondamart's code in one repo",
     "main": "index.js",
     "scripts": {
-        "emulators": "firebase emulators:start --import=./common/firebase/saved-data --export-on-exit=./common/firebase/saved-data --only auth,firestore,functions",
+        "emulators": "firebase emulators:start --import=./common/firebase/saved-data --export-on-exit=./common/firebase/saved-data --only auth,firestore",
         "App": "echo '--------------- App ----------------'",
         "build:app": "cd app && pnpm i && pnpm run build",
         "dev:app": "cd app && pnpm run dev",
         "start:app": "cd app && pnpm run start",
+
         "Admin": "echo '--------------- Admin ----------------'",
         "build:admin": "cd admin && pnpm i && pnpm run build",
         "dev:admin": "cd admin && pnpm run dev",
@@ -18,24 +19,16 @@
         "build:monit-system": "cd server && pnpm i && cd monit-system && pnpm i && pnpm run build",
         "dev:monit-system": "cd server/monit-system && pnpm run dev",
         "start:monit-system": "cd server/monit-system && pnpm run start",
-        "Server Modem Monitor": "echo '--------------- Server Modem Monitor ----------------'",
-        "build:monit-modem": "cd server && pnpm i && cd monit-modem && pnpm i && pnpm run build",
-        "dev:monit-modem": "cd server/monit-modem && pnpm run dev",
-        "start:monit-modem": "cd server/monit-modem && pnpm run start",
 
-        "Server Express Pay": "echo '--------------- Server Express Pay ----------------'",
-        "build:pay": "cd server && pnpm i && cd pay && pnpm i && pnpm run build",
-        "dev:pay": "cd server/pay && pnpm run dev",
-        "start:pay": "cd server/pay && pnpm run start",
+        "Server": "echo '--------------- Server ----------------'",
+        "build:server": "cd server && pnpm i && cd server && pnpm i && pnpm run build",
+        "dev:server": "cd server/server && pnpm run dev",
+        "start:server": "cd server/server && pnpm run start",
 
         "Server Purchase Data Bundle": "echo '--------------- Server Purchase Data Bundle ----------------'",
         "build:api": "cd server && pnpm i && cd api && pnpm i && pnpm run build",
         "dev:api": "cd server/api && pnpm run dev",
-        "start:api": "cd server/api && pnpm run start",
-
-        "Functions": "echo '--------------- Functions ----------------'",
-        "build:functions": "cd server && pnpm i && cd functions && pnpm i && pnpm run build",
-        "dev:functions": "cd server/functions && pnpm i && pnpm run build:watch"
+        "start:api": "cd server/api && pnpm run start"
     },
     "keywords": [],
     "author": "XWap Studios LLC",

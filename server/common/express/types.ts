@@ -14,6 +14,7 @@ export interface RouteConfig {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     handler: RouteHandler;
     middleware?: MiddlewareHandler[];
+    children?: RouteConfig[];
 }
 
 export interface ExpressAppConfig {

@@ -7,13 +7,15 @@ import { httpResponse } from "@common/types/request";
 import { ThrowCheck } from "@common-server/fn/throw-check-fn";
 import { CommonSettingsFn } from "@common-server/fn/common-settings-fn";
 import { TxAccountDepositFn } from "@common-server/fn/tx/tx-account-deposit-fn";
+import { TxWatcher } from "@common-server/fn/tx/tx-watcher";
 
 export const paystackDeposit: RouteHandler = async (req, res) => {
-    const d = req.body as TxDepositPaystackRequest;
+    const uid = req.userId!;
+    const d = req.body as Omit<TxDepositPaystackRequest, 'uid'>;
 
     console.log("Received: deposit > ", d);
     
-    const check = new ThrowCheck(res, d.uid);
+    const check = new ThrowCheck(res, uid);
     if (!await check.init()) return;
     if (!check.isUser()) return;
     if (!check.isUserDisabled()) return;
@@ -27,7 +29,7 @@ export const paystackDeposit: RouteHandler = async (req, res) => {
 
     console.log("Finished payment method checks");
     
-    const tx = await TxAccountDepositFn.createAndCommit.paystack(d);
+    const tx = await TxAccountDepositFn.createAndCommit.paystack({ ...d, uid });
     console.log("Finished creating tx > ", tx);
 
     if (!tx?.id || !tx?.amount || !tx?.uid) {
@@ -41,6 +43,9 @@ export const paystackDeposit: RouteHandler = async (req, res) => {
 
     try {
         await TxFn.update_status_processing(tx.id);
+        
+        // Add transaction to watcher for auto-fail after 5 minutes
+        TxWatcher.addToWatch(tx.id, 5);
 
         const data = tx.data as any;
         const response = await test_paystack({
@@ -58,6 +63,7 @@ export const paystackDeposit: RouteHandler = async (req, res) => {
     } catch (err: unknown) {
         console.error("Paystack init failed:", err);
         await TxFn.update_status_failed(tx.id);
+        TxWatcher.removeFromWatch(tx.id); // Remove from watcher if failed immediately
         return sendResponse(res, httpResponse("error", {
             title: "Paystack Error",
             message: `An unexpected error happened while requesting a charge to paystack. Please contact admin for support. ${err}`
@@ -66,9 +72,10 @@ export const paystackDeposit: RouteHandler = async (req, res) => {
 };
 
 export const paystackSubmitOTP: RouteHandler = async (req, res) => {
-    const d = req.body as TxSubmitOTPRequest;
+    const uid = req.userId!;
+    const d = req.body as Omit<TxSubmitOTPRequest, 'uid'>;
 
-    const check = new ThrowCheck(res, d.uid);
+    const check = new ThrowCheck(res, uid);
     if (!await check.init()) return;
     if (!check.isUser()) return;
     if (!check.isUserDisabled()) return;
@@ -113,9 +120,10 @@ export const paystackSubmitOTP: RouteHandler = async (req, res) => {
 };
 
 export const sendDeposit: RouteHandler = async (req, res) => {
-    const d = req.body as TxDepositSendRequest;
+    const uid = req.userId!;
+    const d = req.body as Omit<TxDepositSendRequest, 'uid'>;
 
-    const check = new ThrowCheck(res, d.uid);
+    const check = new ThrowCheck(res, uid);
     if (!await check.init()) return;
     if (!check.isUser()) return;
     if (!check.isUserDisabled()) return;
@@ -132,9 +140,10 @@ export const sendDeposit: RouteHandler = async (req, res) => {
 };
 
 export const momoDeposit: RouteHandler = async (req, res) => {
-    const d = req.body as TxDepositMoMoRequest;
+    const uid = req.userId!;
+    const d = req.body as Omit<TxDepositMoMoRequest, 'uid'>;
 
-    const check = new ThrowCheck(res, d.uid);
+    const check = new ThrowCheck(res, uid);
     if (!await check.init()) return;
     if (!check.isUser()) return;
     if (!check.isUserDisabled()) return;

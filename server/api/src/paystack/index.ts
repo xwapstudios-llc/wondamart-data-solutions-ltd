@@ -1,5 +1,5 @@
 import {charge, CreateChargeParams} from "./charge";
-import {PayStackRequestResult} from "./core";
+// import {PayStackRequestResult} from "./core";
 import {HTTPResponse, httpResponse} from "@common/types/request";
 
 const test_paystack = async (p: CreateChargeParams): Promise<HTTPResponse> => {

@@ -1,5 +1,5 @@
 {
-    "name": "monitor-modem",
+    "name": "wondamart-gh-sever",
     "version": "1.0.0",
     "description": "",
     "main": "dist/index.js",
@@ -13,10 +13,12 @@
     "license": "ISC",
     "dependencies": {
         "dbus-next": "^0.10.2",
-        "express": "^5.2.1"
+        "express": "^5.2.1",
+        "firebase-admin": "13.6.0"
     },
     "devDependencies": {
         "@types/node": "^25.0.3",
+        "@types/express": "^5.0.6",
         "tsup": "^8.5.1"
     }
 }

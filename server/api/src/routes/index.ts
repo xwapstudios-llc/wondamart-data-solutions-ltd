@@ -5,3 +5,5 @@ export * from "./admin";
 export * from "./settings";
 export * from "./data-bundles";
 export * from "./tasks";
+export * from "./deposit";
+export * from "./webhooks";

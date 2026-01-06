@@ -3,6 +3,7 @@ import { httpResponse } from "@common/types/request";
 import { TxFn } from "@common-server/fn/tx/tx-fn";
 import { UserFn } from "@common-server/fn/user-fn";
 import { currency_to_paystack_amount } from "@/paystack/charge";
+import { TxWatcher } from "@common-server/fn/tx/tx-watcher";
 import crypto from "crypto";
 
 export const paystackCallback: RouteHandler = async (req, res) => {
@@ -70,6 +71,9 @@ export const paystackWebhook: RouteHandler = async (req, res) => {
 
     await TxFn.update_status_completed(reference);
     await UserFn.update_add_UserBalance(tx.uid, tx.amount);
+    
+    // Remove from watcher since transaction is completed
+    TxWatcher.removeFromWatch(reference);
 
     console.log("Processed Paystack payment for reference:", reference);
     return sendResponse(res, httpResponse("ok", "Payment processed successfully.", {
