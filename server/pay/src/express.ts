@@ -1,7 +1,7 @@
 import { createExpressApp, startServer, asyncHandler, ExpressAppConfig } from "@common-server/express";
 import config from "@common-server/config";
 import { api_key_middleware } from "@common-server/express/api_key_middleware";
-import { pay_origen_middleware } from "@common-server/express/origin_middleware";
+import { origen_middleware } from "@common-server/express/origin_middleware";
 import { home, paystackDeposit, paystackSubmitOTP, paystackCallback, paystackWebhook, sendDeposit, momoDeposit } from "./routes";
 import express from "express";
 
@@ -9,7 +9,7 @@ const appConfig: ExpressAppConfig = {
     port: config.port_pay,
     host: config.host_server,
     name: "pay.wondamartgh.com",
-    middleware: [pay_origen_middleware],
+    middleware: [origen_middleware],
     routes: [
         {
             path: "/",
