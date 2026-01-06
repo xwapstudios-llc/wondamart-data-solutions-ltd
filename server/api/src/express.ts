@@ -13,7 +13,7 @@ const appConfig: ExpressAppConfig = {
     port: config.port_api,
     host: config.host_server,
     name: "api.wondamartgh.com",
-    middleware: [api_key_middleware, origen_middleware],
+    middleware: [origen_middleware, api_key_middleware],
     routes: [
         {
             path: "/",
@@ -113,11 +113,13 @@ const appConfig: ExpressAppConfig = {
     ]
 };
 
-const app = createExpressApp(appConfig);
-startServer(app, appConfig);
-
 setInterval(() => {
     console.log("Checking for failed deposits...");
     /// Make a call to auto-fail-deposits
     autoFailDeposits({} as any, {} as any, () => {});
 }, 1000 * 60 * 60 * 24);
+
+
+const app = createExpressApp(appConfig);
+startServer(app, appConfig);
+

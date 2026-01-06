@@ -22,7 +22,4 @@ const corsOptions: CorsOptions = {
     credentials: true,
 };
 
-const origen_middleware: MiddlewareHandler = cors(corsOptions);
-export {
-    origen_middleware
-}
+export const origen_middleware: MiddlewareHandler = cors(corsOptions);
