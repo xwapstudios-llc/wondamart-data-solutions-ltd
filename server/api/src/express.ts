@@ -6,14 +6,14 @@ import { home, buyDataBundle, buyAfaBundle, buyResultChecker,
     requestUpdateAdmin, requestRevokeAdmin, initCommonSettings, createDataBundle,
     deleteDataBundle, autoFailDeposits } from "./routes";
 import {api_key_middleware} from "@common-server/express/api_key_middleware";
-import {pay_origen_middleware} from "@common-server/express/pay_origin_middleware";
 import {setInterval} from "node:timers";
+import {origen_middleware} from "@common-server/express/origin_middleware";
 
 const appConfig: ExpressAppConfig = {
     port: config.port_api,
     host: config.host_server,
     name: "api.wondamartgh.com",
-    middleware: [api_key_middleware, pay_origen_middleware],
+    middleware: [api_key_middleware, origen_middleware],
     routes: [
         {
             path: "/",

@@ -1,10 +1,3 @@
-// Create
-// Update
-// Read
-// Delete
-// List
-// Search
-
 import { TxUserRegistration } from "@common/types/user-registration";
 import { TxFn } from "./tx-fn";
 import {CommonSettingsFn} from "../common-settings-fn";
@@ -20,6 +13,10 @@ const TxUserRegistrationFn = {
             commission: settings.commission,
             data: {
                 uid: registeredUID,
+                email: "",
+                password: "",
+                firstName: "",
+                phoneNumber: "", // Todo
             }
         };
         return txDetails;

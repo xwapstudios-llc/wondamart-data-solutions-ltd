@@ -4,7 +4,9 @@ import {MiddlewareHandler} from "./index";
 const allowedOrigins: string[] = [
     'http://localhost:5173',
     'https://wondamartgh.com',
-    'https://pay.wondamartgh.com'
+    'https://pay.wondamartgh.com',
+    'https://api.wondamartgh.com',
+    'https://server.wondamartgh.com',
 ];
 
 const corsOptions: CorsOptions = {
@@ -20,7 +22,7 @@ const corsOptions: CorsOptions = {
     credentials: true,
 };
 
-const pay_origen_middleware: MiddlewareHandler = cors(corsOptions);
+const origen_middleware: MiddlewareHandler = cors(corsOptions);
 export {
-    pay_origen_middleware
+    origen_middleware
 }
