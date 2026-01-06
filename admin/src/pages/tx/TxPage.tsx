@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Tx, txStatus, TxStatus, TxType, txTypes} from "@common/types/tx.ts";
-import {AdminTx} from "@common/admin-api/Tx.ts";
+import {AdminTx} from "@common/admin-api/tx.ts";
 import {Timestamp} from "firebase/firestore";
 import Page from "@/ui/components/page/Page.tsx";
 import PageHeader from "@/ui/components/page/PageHeader.tsx";

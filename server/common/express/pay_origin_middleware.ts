@@ -1,4 +1,5 @@
 import cors, {CorsOptions} from "cors";
+import {MiddlewareHandler} from "./index";
 
 const allowedOrigins: string[] = [
     'http://localhost:5173',
@@ -8,8 +9,6 @@ const allowedOrigins: string[] = [
 
 const corsOptions: CorsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-        // If the request has no origin (like Postman or mobile apps), allow it
-        // or check if the origin is in our whitelist
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -18,10 +17,10 @@ const corsOptions: CorsOptions = {
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    credentials: true, // Set to true if you need to send cookies or sessions
+    credentials: true,
 };
 
-const corsOriginMiddleware = cors(corsOptions);
+const pay_origen_middleware: MiddlewareHandler = cors(corsOptions);
 export {
-    corsOriginMiddleware
+    pay_origen_middleware
 }

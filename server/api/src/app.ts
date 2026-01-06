@@ -1,4 +1,3 @@
-
 import config from "@common-server/config";
 
 if (config.nodeEnv === "development") {

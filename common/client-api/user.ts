@@ -1,31 +1,29 @@
-// Create
-//
-// Read
-//
-// Update
-
 import {collections, db} from "@common/lib/db";
-import {Functions} from "@common/lib/fn";
 import {type UserInfoDocument, type UserRegistrationRequest, type UserWalletDocument} from "@common/types/user";
 import {doc, getDoc, Timestamp, updateDoc} from "firebase/firestore";
 import {sendEmailVerification} from "firebase/auth"
 import {auth} from "@common/lib/auth";
 import type {HTTPResponse} from "@common/types/request";
+import {api_wondamart_req} from "@common/lib/api-wondamart";
 
 const ClUser = {
-    create: async (data: UserRegistrationRequest): Promise<void> => {
+    create: async (data: UserRegistrationRequest): Promise<HTTPResponse> => {
         try {
-            await Functions.User.create(data);
-            return Promise.resolve();
+            return await api_wondamart_req(
+                "/user/create",
+                data
+            );
         } catch (err) {
             // @ts-expect-error message might not be available on error
             return Promise.reject(err.message || "Failed to create user");
         }
     },
-    activateAccount: async (): Promise<void> => {
+    activateAccount: async (): Promise<HTTPResponse> => {
         try {
-            await Functions.User.requestActivateAccount();
-            return Promise.resolve();
+            return await api_wondamart_req(
+                "/user/activate",
+                {}
+            );
         } catch (err) {
             // @ts-expect-error message might not be available on error
             return Promise.reject(err.message || "Failed to activate user");
@@ -48,8 +46,10 @@ const ClUser = {
         }
     },
     registerAgent: async (data: UserRegistrationRequest): Promise<HTTPResponse> => {
-        const result = await Functions.User.registerNewAgent(data);
-        return Promise.resolve(result.data as HTTPResponse);
+        return await api_wondamart_req(
+            "/user/register-agent",
+            data
+        );
     },
     readInfo: async (uid: string): Promise<UserInfoDocument | undefined> => {
         const d = await getDoc(doc(db, collections.users, uid));
@@ -79,17 +79,26 @@ const ClUser = {
             });
         }
     },
-    updatePhoneNumber: async (uid: string, phoneNumber: string): Promise<void> => {
+    updatePhoneNumber: async (uid: string, phoneNumber: string): Promise<HTTPResponse> => {
         const ref = doc(db, collections.users, uid);
         const d = await getDoc(ref);
         if (d.exists()) {
-            await Functions.User.updatePhoneNumber({uid, phoneNumber: phoneNumber});
+            return await api_wondamart_req(
+                "/user/update-phone",
+                {
+                    uid: uid,
+                    phoneNumber: phoneNumber
+                }
+            );
         }
+        return Promise.reject("User not found");
     },
-    delete: async (uid: string): Promise<void> => {
+    delete: async (uid: string): Promise<HTTPResponse> => {
         try {
-            await Functions.User.requestDelete(uid);
-            return Promise.resolve();
+            return await api_wondamart_req(
+                "/user/delete",
+                uid
+            );
         } catch (err) {
             // @ts-expect-error message might not be available on error
             return Promise.reject(err.message || "Failed to delete user");

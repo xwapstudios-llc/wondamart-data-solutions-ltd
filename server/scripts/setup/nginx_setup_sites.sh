@@ -2,7 +2,7 @@
 
 # Setup nginx configurations for multiple sites
 SITE_NAMES=("pay" "api" "server")
-LOCAL_HOSTS=("localhost" "10.8.0.2" "10.8.0.2")
+LOCAL_HOSTS=("localhost" "localhost" "10.8.0.2")
 PORTS=("3170" "3180" "3181")
 
 SITES_AVAILABLE_DIR=/etc/nginx/sites-available

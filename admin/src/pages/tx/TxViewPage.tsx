@@ -3,7 +3,7 @@ import Page from "@/ui/components/page/Page.tsx";
 import PageHeader from "@/ui/components/page/PageHeader.tsx";
 import PageContent from "@/ui/components/page/PageContent.tsx";
 import {useParams} from "react-router-dom";
-import {AdminTx} from "@common/admin-api/Tx.ts";
+import {AdminTx} from "@common/admin-api/tx.ts";
 import {Tx} from "@common/types/tx.ts";
 import {Loader2Icon} from "lucide-react";
 import {Skeleton} from "@/cn/components/ui/skeleton.tsx";

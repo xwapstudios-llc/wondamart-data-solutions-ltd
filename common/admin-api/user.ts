@@ -1,16 +1,8 @@
-// Create
-//
-// Read
-//
-// Update
-//
-// Delete
-
 import { ClUser } from "@common/client-api/user";
 import { collections, db } from "@common/lib/db";
 import {collection, doc, getDoc, getDocs, Timestamp, updateDoc} from "firebase/firestore";
 import {UserInfoDocument, AdminRoleClaims} from "@common/types/user";
-import {Functions} from "@common/lib/fn";
+import {api_wondamart_req} from "@common/lib/api-wondamart";
 
 const AdminUser = {
     updateBalance: async (uid: string, amount: number) => {
@@ -61,21 +53,25 @@ const AdminUser = {
         return users;
     },
     makeAdmin: async (uid?: string) => {
-        if (!uid) return;
+        if (!uid) return Promise.reject("Invalid user id");
         try {
-            await Functions.admin.makeAdmin(uid);
-            console.log(`User with UID ${uid} has been made an admin.`);
+            return await api_wondamart_req(
+                "/admin/make-admin",
+                uid
+            );
         } catch (e) {
-            console.error("An error occurred while making user an admin:", e);
+            return Promise.reject("An error occurred while granting admin privileges");
         }
     },
     revokeAdmin: async (uid?: string) => {
-        if (!uid) return;
+        if (!uid) return Promise.reject("Invalid user id");
         try {
-            await Functions.admin.revokeAdmin(uid);
-            console.log(`Admin rights revoked for user with UID ${uid}.`);
+            return await api_wondamart_req(
+                "/admin/revoke-admin",
+                uid
+            );
         } catch (e) {
-            console.error("An error occurred while revoking admin rights:", e);
+            return Promise.reject("An error occurred while revoking admin privileges");
         }
     },
     changeAminRole: async (uid: string, role: AdminRoleClaims) => {

@@ -1,61 +1,53 @@
+import { lazy, Suspense } from "react";
 import "./app.css";
 
 // Routes
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {R} from "@/app/routes.ts";
 
-// Pages
-// Auth
-import LoginPage from "@/pages/LoginPage.tsx";
-import NotFoundPage from "@/pages/NotFoundPage.tsx";
-import SignupPage from "@/pages/SignupPage.tsx";
+// Lazy load pages
+const LoginPage = lazy(() => import("@/pages/LoginPage.tsx"));
+const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.tsx"));
+const SignupPage = lazy(() => import("@/pages/SignupPage.tsx"));
+const VerifyEmailPage = lazy(() => import("@/pages/auth/VerifyEmailPage.tsx"));
+const ForgotPasswordPage = lazy(() => import("@/pages/auth/ForgotPasswordPage.tsx"));
+const ResetPasswordPage = lazy(() => import("@/pages/auth/ResetPasswordPage.tsx"));
+const OTPPage = lazy(() => import("@/pages/auth/OTPPage.tsx"));
+const UserLayout = lazy(() => import("@/ui/layouts/UserLayout"));
+const Dashboard = lazy(() => import("@/pages/app/dashboard"));
+const PurchaseIndex = lazy(() => import("@/pages/app/purchase/index"));
+const DataBundleIndex = lazy(() => import("@/pages/app/purchase/dataBundle/index"));
+const DataBundleMTN = lazy(() => import("@/pages/app/purchase/dataBundle/mtn"));
+const DataBundleTelecel = lazy(() => import("@/pages/app/purchase/dataBundle/telecel"));
+const DataBundleAirtelTigo = lazy(() => import("@/pages/app/purchase/dataBundle/airtelTigo"));
+const AfaBundlePurchase = lazy(() => import("@/pages/app/purchase/afaBundle"));
+const ResultCheckerPurchase = lazy(() => import("@/pages/app/purchase/resultChecker"));
+const HistoryIndex = lazy(() => import("@/pages/app/history/index"));
+const HistoryPurchaseDetail = lazy(() => import("@/pages/app/history/purchases/DetailPage"));
+const HistoryDepositDetail = lazy(() => import("@/pages/app/history/deposits/DetailPage"));
+const Deposit = lazy(() => import("@/pages/app/deposit/index"));
+const CommissionsIndex = lazy(() => import("@/pages/app/commissions/index"));
+const CommissionsDetail = lazy(() => import("@/pages/app/commissions/DetailPage"));
+const NotificationsPage = lazy(() => import("@/pages/app/notifications/index"));
+const UserIndex = lazy(() => import("@/pages/app/user/index"));
+const UserProfile = lazy(() => import("@/pages/app/user/profile"));
+const UserActivate = lazy(() => import("@/pages/app/user/activate"));
+const UserSettings = lazy(() => import("@/pages/app/user/settings/index"));
+const UserSettingsGeneral = lazy(() => import("@/pages/app/user/settings/general"));
+const UserSettingsAccount = lazy(() => import("@/pages/app/user/settings/account"));
+const UserSettingsSecurity = lazy(() => import("@/pages/app/user/settings/security"));
+const RegisterAgent = lazy(() => import("@/pages/app/RegisterAgent.tsx"));
 
-import VerifyEmailPage from "@/pages/auth/VerifyEmailPage.tsx";
-import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage.tsx";
-import ResetPasswordPage from "@/pages/auth/ResetPasswordPage.tsx";
-
-
-import UserLayout from "@/ui/layouts/UserLayout";
-
-import Dashboard from "@/pages/app/dashboard";
-
-// Purchases
-import PurchaseIndex from "@/pages/app/purchase/index";
-import DataBundleIndex from "@/pages/app/purchase/dataBundle/index";
-import DataBundleMTN from "@/pages/app/purchase/dataBundle/mtn";
-import DataBundleTelecel from "@/pages/app/purchase/dataBundle/telecel";
-import DataBundleAirtelTigo from "@/pages/app/purchase/dataBundle/airtelTigo";
-import AfaBundlePurchase from "@/pages/app/purchase/afaBundle";
-import ResultCheckerPurchase from "@/pages/app/purchase/resultChecker";
-
-// History
-import HistoryIndex from "@/pages/app/history/index";
-import HistoryPurchaseDetail from "@/pages/app/history/purchases/DetailPage";
-import HistoryDepositDetail from "@/pages/app/history/deposits/DetailPage";
-
-// Deposit
-import Deposit from "@/pages/app/deposit/index";
-
-// Commissions
-import CommissionsIndex from "@/pages/app/commissions/index";
-import CommissionsDetail from "@/pages/app/commissions/DetailPage";
-
-// Notifications
-import NotificationsPage from "@/pages/app/notifications/index";
-
-// User
-import UserIndex from "@/pages/app/user/index";
-import UserProfile from "@/pages/app/user/profile";
-import UserActivate from "@/pages/app/user/activate";
-import UserSettings from "@/pages/app/user/settings/index";
-import UserSettingsGeneral from "@/pages/app/user/settings/general";
-import UserSettingsAccount from "@/pages/app/user/settings/account";
-import UserSettingsSecurity from "@/pages/app/user/settings/security";
 import {ThemeProvider} from "@/cn/components/theme/theme-provider.tsx";
-import RegisterAgent from "@/pages/app/RegisterAgent.tsx";
-import OTPPage from "@/pages/auth/OTPPage.tsx";
 import {Toaster} from "@/cn/components/ui/sonner.tsx";
 import OnErrorCard from "@/ui/components/cards/OnErrorCard.tsx";
+
+// Loading component
+const PageLoader = () => (
+    <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+);
 
 
 const App = () => {
@@ -63,7 +55,8 @@ const App = () => {
     return (
         <ThemeProvider defaultTheme="dark" storageKey="wondamart-app-ui-theme">
             <BrowserRouter>
-                <Routes>
+                <Suspense fallback={<PageLoader />}>
+                    <Routes>
                     {/*Login Page as default index page*/}
                     <Route index path={R.index} element={<LoginPage/>}/>
                     <Route path={R.login} element={<LoginPage/>}/>
@@ -130,6 +123,7 @@ const App = () => {
                     {/*Not Found Page*/}
                     <Route path={"*"} element={<NotFoundPage/>}/>
                 </Routes>
+                </Suspense>
             </BrowserRouter>
             <Toaster />
             <OnErrorCard />

@@ -3,6 +3,10 @@ import {UserClaims, UserWalletDocument} from "@common/types/user.js";
 import {UserFn} from "./user-fn.js";
 import {httpResponse} from "@common/types/request.js"
 import {ServerFn} from "./server/server-fn.js";
+import {Response} from "express";
+import {sendResponse} from "../express";
+import {Tx} from "@common/types/tx";
+import {TxFn} from "./tx/tx-fn";
 
 const auth = getAuth();
 
@@ -12,156 +16,121 @@ class ThrowCheck {
     user: UserRecord | undefined;
     userClaims: UserClaims | undefined;
     userWallet: UserWalletDocument | undefined;
+    res: Response;
 
-    constructor(uid: string) {
+    constructor(res: Response, uid: string) {
         this.uid = uid;
+        this.res = res;
     }
 
-    async init() {
-        const user = await auth.getUser(this.uid);
-        this.uid = user.uid;
-        this.email = user.email;
-        this.user = user;
-        this.userClaims = user.customClaims;
-    }
-
-    _isUser() {
-        return this.user != undefined;
-    }
-
-    isUser(message?: string) {
-        if (!this._isUser()) {
-            throw httpResponse
-            (
-                "unauthenticated",
-                message ? message : "User does not exist",
-            )
+    async init(): Promise<boolean> {
+        try {
+            const user = await auth.getUser(this.uid);
+            this.uid = user.uid;
+            this.email = user.email;
+            this.user = user;
+            this.userClaims = user.customClaims;
+            return true;
+        } catch {
+            sendResponse(this.res, httpResponse("unauthenticated", "User not found"));
+            return false;
         }
     }
 
-    isUserDisabled(message?: string) {
+    isUser(message?: string): boolean {
+        if (!this.user) {
+            sendResponse(this.res, httpResponse("unauthenticated", message || "User does not exist"));
+            return false;
+        }
+        return true;
+    }
+
+    isUserDisabled(message?: string): boolean {
         if (this.user?.disabled) {
-            throw httpResponse
-            (
-                "permission-denied",
-                message ? message : "User is disabled",
-            )
+            sendResponse(this.res, httpResponse("permission-denied", message || "User is disabled"));
+            return false;
         }
+        return true;
     }
 
-    _isActivated() {
-        return this.userClaims?.isActivated != undefined && this.userClaims?.isActivated;
-    }
-
-    isActivated(message?: string) {
-        if (!this._isActivated()) {
-            throw httpResponse
-            (
-                "permission-denied",
-                message ? message : "User is not activated to use this service"
-            )
+    isActivated(message?: string): boolean {
+        if (!this.userClaims?.isActivated) {
+            sendResponse(this.res, httpResponse("permission-denied", message || "User is not activated to use this service"));
+            return false;
         }
+        return true;
     }
 
-    isAdmin(message?: string) {
+    isAdmin(message?: string): boolean {
         if (!this.userClaims?.isAdmin) {
-            throw httpResponse
-            (
-                "permission-denied",
-                message ? message : "User is not admin",
-            )
+            sendResponse(this.res, httpResponse("permission-denied", message || "User is not admin"));
+            return false;
         }
+        return true;
     }
 
-    async readWallet(message?: string) {
+    async readWallet(message?: string): Promise<boolean> {
         if (!this.userWallet) {
             this.userWallet = await UserFn.read_UserWallet(this.uid);
         }
         if (!this.userWallet) {
-            throw httpResponse
-            (
-                "aborted",
-                message ? message : "Unable to read user wallet for processing."
-            )
+            sendResponse(this.res, httpResponse("aborted", message || "Unable to read user wallet for processing."));
+            return false;
         }
+        return true;
     }
 
-    async _hasEnoughBalance(amount: number) {
-        if (!this.userWallet) {
-            this.userWallet = await UserFn.read_UserWallet(this.uid);
-            console.log("No wallet, hence reading user wallet > ", this.userWallet);
+    async hasEnoughBalance(amount: number, tx?: Tx, message?: string): Promise<boolean> {
+        if (!await this.readWallet()) return false;
+        
+        if (this.userWallet!.balance < amount) {
+            if (tx) await TxFn.update_status_failed(tx.id);
+            sendResponse(this.res, httpResponse("cancelled", message || "User does not have enough balance"));
+            return false;
         }
-        if (this.userWallet) {
-            console.log("User wallet balance > ", this.userWallet.balance);
-            console.log("User has enough balance : ", this.userWallet.balance >= amount);
-            return this.userWallet.balance >= amount;
-        }
-        console.log("No wallet so returning false");
-        return false;
-    }
-
-    async hasEnoughBalance(amount: number, message?: string) {
-        await this.readWallet();
-        const has_enough = await this._hasEnoughBalance(amount);
-        console.log("Has enough balance, ", has_enough);
-        if (!has_enough) {
-            throw httpResponse
-            (
-                "cancelled",
-                message ? message : "User does not have enough balance"
-            )
-        }
+        return true;
     }
 }
 
 const ThrowCheckFn = {
-    async isUser(uid: string, message?: string) {
-        // Find the user requesting the admin registration;
-        const user = await auth.getUser(uid);
-
-        if (!user) {
-            throw httpResponse
-            (
-                "permission-denied",
-                message ? message : `User with uid:${uid} does not exist.`
-            )
+    async isUser(res: Response, uid: string, message?: string): Promise<boolean> {
+        try {
+            const user = await auth.getUser(uid);
+            return !!user;
+        } catch {
+            sendResponse(res, httpResponse("permission-denied", message || `User with uid:${uid} does not exist.`));
+            return false;
         }
     },
-    async userAlreadyExistsByEmail(email: string, message?: string) {
+    
+    async userAlreadyExistsByEmail(res: Response, email: string, message?: string): Promise<boolean> {
         const existingUser = await auth.getUserByEmail(email).catch(() => null);
         if (existingUser) {
-            throw httpResponse
-            (
-                "already-exists",
-                message ? message : `User with email ${email} already exists.`
-            );
+            sendResponse(res, httpResponse("already-exists", message || `User with email ${email} already exists.`));
+            return false;
         }
+        return true;
     },
-    async userAlreadyExistsByPhone(phoneNumber: string, message?: string) {
+    
+    async userAlreadyExistsByPhone(res: Response, phoneNumber: string, message?: string): Promise<boolean> {
         const existingUserByPhone = await auth.getUserByPhoneNumber(UserFn.preparePhoneNumber(phoneNumber) ?? phoneNumber).catch(() => null);
         if (existingUserByPhone) {
-            throw httpResponse
-            (
-                "already-exists",
-                message ? message : `User with phone number ${phoneNumber} already exists.`
-            );
+            sendResponse(res, httpResponse("already-exists", message || `User with phone number ${phoneNumber} already exists.`));
+            return false;
         }
+        return true;
     },
 
-    async isServerActive() {
+    async isServerActive(res: Response): Promise<boolean> {
         if (!await ServerFn.isActive()) {
-            throw httpResponse (
-                "error",
-                {
-                    title: "Server",
-                    message: "Sorry the request could not go through to wondamart servers.",
-                }
-            )
+            sendResponse(res, httpResponse("error", {
+                title: "Server",
+                message: "Sorry the request could not go through to wondamart servers.",
+            }));
+            return false;
         }
+        return true;
     }
-    // claims: {
-    //     isActivated(uid: string) {}
-    // }
 }
 
 export {

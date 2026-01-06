@@ -53,9 +53,9 @@ module.exports = {
 
 
         {
-            name: "express-api",
+            name: "server",
             script: "pnpm",
-            args: "run start:express-api",
+            args: "run start:server",
 
             // Hard requirements
             cwd: `/home/${user}/wondamart-data-solutions-ltd`,

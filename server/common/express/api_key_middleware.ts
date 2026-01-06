@@ -1,12 +1,12 @@
-import { Request, Response, NextFunction } from "express";
 import {httpResponse} from "@common/types/request";
 import {api_key} from "./api_key";
+import {MiddlewareHandler} from "./index";
 
-async function firebaseOnlyMiddleware(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+const api_key_middleware: MiddlewareHandler = (
+    req,
+    res,
+    next
+) => {
     console.log("Headers ----------------------------------")
     console.log(req.headers);
     console.log("-----------------------------------------");
@@ -33,5 +33,5 @@ async function firebaseOnlyMiddleware(
 }
 
 export {
-    firebaseOnlyMiddleware
+    api_key_middleware
 }

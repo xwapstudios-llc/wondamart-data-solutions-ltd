@@ -45,4 +45,3 @@ export async function generateTxID(type: TxType): Promise<string> {
     }
     return id;
 }
-

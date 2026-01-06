@@ -1,13 +1,9 @@
-// Create
-//
-// Read
-//
 import { collections, db } from "@common/lib/db";
-import { Functions } from "@common/lib/fn";
 import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
 import { type TxResultChecker, type TxResultCheckerQuery, type TxResultCheckerRequest } from "@common/types/result-checker";
 import type {HTTPResponse} from "@common/types/request";
+import {api_wondamart_req} from "@common/lib/api-wondamart";
 
 const createQuery = (q: TxResultCheckerQuery): Query => {
     let Q = buildTxQuery(q);
@@ -20,8 +16,10 @@ const ClTxResultChecker = {
     //
     // Create
     create: async (data: TxResultCheckerRequest): Promise<HTTPResponse> => {
-        const result = await Functions.Request.ResultChecker(data);
-        return Promise.resolve(result.data as HTTPResponse);
+        return await api_wondamart_req(
+            "/buy/result-checker",
+            data
+        );
     },
     //
     // Read

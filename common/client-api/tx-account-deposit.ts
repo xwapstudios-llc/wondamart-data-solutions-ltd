@@ -8,8 +8,7 @@ import { collections, db } from "@common/lib/db";
 import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
 import type {HTTPResponse} from "@common/types/request";
-import axios from "axios";
-import {api_key} from "../../server/common/utils/api_key";
+import {pay_wondamart_req} from "@common/lib/pay-wondamart";
 
 const createQuery = (q: TxAccountDepositQuery): Query => {
     let Q = buildTxQuery(q);
@@ -18,66 +17,39 @@ const createQuery = (q: TxAccountDepositQuery): Query => {
     return Q;
 }
 
-async function pay_client() {
-    return axios.create({
-        baseURL: "https://pay.wondamartgh.com",
-        timeout: 15000,
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "authorization": `Bearer ${api_key}`
-        },
-    });
-}
-
-
 const ClTxAccountDeposit = {
     otp: {
         submit: async (data: TxSubmitOTPRequest): Promise<HTTPResponse> => {
-            const client = await pay_client();
-            const response = await client.post(
+            return await pay_wondamart_req(
                 "/deposit/paystack/submit-otp",
                 data
             );
-            return Promise.resolve(response.data as HTTPResponse);
         },
         // resend: async (txID: string): Promise<HTTPResponse> => {
-        //     const client = await pay_client();
-        //     const response = await client.post(
-        //         "/deposit/paystack/resend-otp",
-        //         txID
-        //     );
-        //     return Promise.resolve(response.data as HTTPResponse);
+        //     return await pay_wondamart_req(
+        //             "/deposit/paystack/resend-otp",
+        //             txID
+        //         );
         // },
     },
     create: {
         paystack: async (data: TxDepositPaystackRequest): Promise<HTTPResponse> => {
-            const client = await pay_client();
-            console.log("Creating client... headers: > ", client.head("/deposit/paystack"));
-
-            const response = await client.post(
+            return await pay_wondamart_req(
                 "/deposit/paystack",
                 data
             );
-
-            console.log("Paystack response: data > ", response.data);
-            return Promise.resolve(response.data as HTTPResponse);
         },
         send: async (data: TxDepositSendRequest): Promise<HTTPResponse> => {
-            const client = await pay_client();
-            const response = await client.post(
+            return await pay_wondamart_req(
                 "/deposit/send",
                 data
             );
-            return Promise.resolve(response.data as HTTPResponse);
         },
         momo: async (data: TxDepositMoMoRequest): Promise<HTTPResponse> => {
-            const client = await pay_client();
-            const response = await client.post(
+            return await pay_wondamart_req(
                 "/deposit/momo",
                 data
             );
-            return Promise.resolve(response.data as HTTPResponse);
         },
     },
     readOne: async (uid: string): Promise<TxDeposit | undefined> => {

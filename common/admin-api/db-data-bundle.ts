@@ -1,14 +1,5 @@
-// Create
-//
-// Read
-//
-// Update
-//
-// Delete
-
 import { DataBundles } from "@common/client-api/db-data-bundle";
 import { collections, db } from "@common/lib/db";
-import { Functions } from "@common/lib/fn";
 import type {
     AdminNewDataBundle,
     DataBundle,
@@ -19,6 +10,7 @@ import type {
 import {collection, getDocs, query, Query, Timestamp, where} from "firebase/firestore";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import {gen_bundle_id} from "@common/gen_id";
+import {fbAdminCreateDataBundle, fbAdminDeleteDataBundle} from "../../server/common/fb-fn/data-bundle";
 
 const createQuery = (q: DataBundleQuery, coll?: string): Query => {
     let Q = query(collection(db, coll ? coll : collections.dataBundles));
@@ -32,7 +24,7 @@ const createQuery = (q: DataBundleQuery, coll?: string): Query => {
 };
 
 const AdminDataBundles = {
-    create: async (data: AdminNewDataBundle): Promise<void> => {
+    create: async (data: AdminNewDataBundle, uid: string): Promise<void> => {
         try {
             const id = gen_bundle_id(data);
             const ref = doc(
@@ -42,7 +34,7 @@ const AdminDataBundles = {
             );
             const d = await getDoc(ref);
             if (!d.exists()) {
-                await Functions.DataBundle.create(data);
+                await fbAdminCreateDataBundle(data, uid);
             }
             return Promise.resolve();
         } catch(err) {
@@ -115,12 +107,12 @@ const AdminDataBundles = {
             });
         }
     },
-    delete: async (bID: string): Promise<void> => {
+    delete: async (bID: string, uid: string): Promise<void> => {
         try {
             const ref = doc(db, collections.dataBundles, bID);
             const d = await getDoc(ref);
             if (d.exists()) {
-                await Functions.DataBundle.delete(bID);
+                await fbAdminDeleteDataBundle(bID, uid);
             }
             return Promise.resolve();
         } catch(err) {
