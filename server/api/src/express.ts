@@ -11,7 +11,7 @@ import {setInterval} from "node:timers";
 
 const appConfig: ExpressAppConfig = {
     port: config.port_api,
-    host: config.host_local_server,
+    host: config.host_server,
     name: "api.wondamartgh.com",
     middleware: [api_key_middleware, pay_origen_middleware],
     routes: [
