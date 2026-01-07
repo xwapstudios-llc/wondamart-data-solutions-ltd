@@ -8,23 +8,15 @@ import { TxDataBundleFn } from "@common-server/fn/tx/tx-data-bundle-fn";
 import { TxFn } from "@common-server/fn/tx/tx-fn";
 import { UserFn } from "@common-server/fn/user-fn";
 import {
-    HendyLinksClient,
+    hendylinks_client,
     networkID_to_hendylinks_network,
     normalizePhone
 } from "@common-server/providers/hendy-links/api";
 import {
-    DataMartClient,
+    datamart_client,
     networkID_to_datamart_network,
     normalizeGhanaPhone
 } from "@common-server/providers/data-mart/api";
-import config from "@common-server/config";
-
-const hendylinks_client = new HendyLinksClient({
-    apiKey: config.hendylinks_api_key
-});
-const datamart_client = new DataMartClient({
-    apiKey: config.datamart_api_key
-});
 
 const handler: RouteHandler = async (req, res) => {
     console.log("buyDataBundle", req.body);

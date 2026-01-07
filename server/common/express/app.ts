@@ -1,7 +1,6 @@
 import express, {Express, NextFunction, Request, Response} from "express";
 import {ExpressAppConfig, MiddlewareHandler, RouteConfig, RouteHandler} from "./types";
 
-
 function generateOpenApi(
     routes: RouteConfig[],
     basePath = "",

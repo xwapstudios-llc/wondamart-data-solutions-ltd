@@ -18,78 +18,52 @@ type FilterObject = Omit<TxQuery, "uid">;
 const PAGE_SIZE = 20;
 
 const HistoryIndex: React.FC = () => {
-    const {user} = useAppStore();
+    const { user } = useAppStore();
     const [txes, setTxes] = useState<Tx[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
-    // cursor stores the last seen date.seconds for pagination
-    const cursorRef = useRef<number | undefined>(undefined);
+    const cursorRef = useRef<any | undefined>(undefined);
 
-    // Helper to update the `type` search param (or clear it)
     const setTypeFilter = (type?: FilterType) => {
         const next = new URLSearchParams(searchParams.toString());
-        if (type) {
-            next.set("type", type as string);
-        } else {
-            // clear -> show all
-            next.delete("type");
-        }
-        // reset cursor when changing filter
-        cursorRef.current = undefined;
-        setTxes([]);
+        if (type) next.set("type", type);
+        else next.delete("type");
         setSearchParams(next);
     };
 
-    // Build filter object from current search params
     const buildFilterFromSearchParams = (): FilterObject => {
         const next: FilterObject = {};
         const t = searchParams.get("type");
-        // when t === "purchase" we don't set a server type filter - it's client-side
-        if (t && t !== "purchase") next.type = t as TxType;
+        if (t && t !== "purchase" && t !== "all") next.type = t as TxType;
         return next;
     };
 
-    // Ensure default is "purchase" if no type param is present
-    useEffect(() => {
-        if (!searchParams.has("type")) {
-            const next = new URLSearchParams(searchParams.toString());
-            next.set("type", "purchase");
-            setSearchParams(next, { replace: true });
-        }
-    }, []);
-
-    // Core fetch page logic. If `append` is false we reset list, otherwise append to existing.
     const fetchPage = async (append: boolean = false) => {
         if (!user) return;
-        const tParam = searchParams.get("type") as FilterType | null;
-        const isPurchaseView = tParam === "purchase" || (tParam === null && true); // default handled earlier
+        const tParam = searchParams.get("type") || "purchase";
+        const isPurchaseView = tParam === "purchase";
 
-        if (!append) {
-            setLoading(true);
-            cursorRef.current = undefined;
-            setTxes([]);
-        } else {
-            setLoadingMore(true);
-        }
+        if (append) setLoadingMore(true);
+        else setLoading(true);
 
         try {
             const pageSize = PAGE_SIZE;
+            let finalItems: Tx[] = [];
+            let exhausted = false;
 
             if (isPurchaseView) {
-                // We must fetch server pages and filter out deposits until we collect `pageSize` purchases or server exhausted
-                let collected: Tx[] = append ? [...txes] : [];
-                let localCursor = cursorRef.current; // seconds
-                let exhausted = false;
+                let collected: Tx[] = [];
+                let localCursor = append ? cursorRef.current : undefined;
 
                 while (collected.length < pageSize && !exhausted) {
-                    const serverLimit = pageSize; // fetch in batches of pageSize
-                    const query: TxQuery = { uid: user?.uid ?? "", limit: serverLimit } as any;
-                    if (localCursor) query.startAfter = localCursor;
-                    // Note: buildFilterFromSearchParams returns empty for 'purchase'
-                    Object.assign(query, buildFilterFromSearchParams());
+                    const query: TxQuery = {
+                        uid: user.uid,
+                        limit: pageSize,
+                        startAfter: localCursor
+                    } as any;
 
                     const res = await ClTx.read(query);
                     if (!res || res.length === 0) {
@@ -97,67 +71,55 @@ const HistoryIndex: React.FC = () => {
                         break;
                     }
 
-                    // Append non-deposit items
-                    for (const tx of res) {
-                        if (tx.type !== "deposit") collected.push(tx);
-                    }
+                    const filtered = res.filter(tx => tx.type !== "deposit");
+                    collected.push(...filtered);
 
-                    // update localCursor to last item's date.seconds from server response
-                    const last = res[res.length - 1];
-                    localCursor = last?.date?.seconds ?? undefined;
-
-                    // if server returned fewer than requested then it's exhausted
-                    if (res.length < serverLimit) exhausted = true;
+                    localCursor = res[res.length - 1].date;
+                    if (res.length < pageSize) exhausted = true;
                 }
 
-                // Trim to pageSize
-                const pageItems = collected.slice(0, pageSize);
-                // update cursorRef to last server cursor if we fetched anything
+                finalItems = collected.slice(0, pageSize);
                 cursorRef.current = localCursor;
-
-                // determine hasMore: if we collected less than requested and exhausted then no more; else yes
-                setHasMore(collected.length > pageItems.length || !exhausted);
-
-                if (append) setTxes(page => [...page, ...pageItems]);
-                else setTxes(pageItems);
+                setHasMore(!exhausted || collected.length > pageSize);
             } else {
-                // Specific server-side filter (including deposit or other tx types)
-                const query: TxQuery = { uid: user?.uid ?? "", limit: PAGE_SIZE } as any;
+                const query: TxQuery = {
+                    uid: user.uid,
+                    limit: pageSize,
+                    startAfter: append ? cursorRef.current : undefined
+                } as any;
                 Object.assign(query, buildFilterFromSearchParams());
-                if (cursorRef.current) query.startAfter = cursorRef.current;
 
                 const res = await ClTx.read(query);
-                if (!res) {
-                    setHasMore(false);
-                    if (append) setTxes(page => page);
-                    else setTxes([]);
-                } else {
-                    // update cursor
-                    const last = res[res.length - 1];
-                    cursorRef.current = last?.date?.seconds ?? undefined;
-                    setHasMore(res.length >= PAGE_SIZE);
-
-                    if (append) setTxes(page => [...page, ...res]);
-                    else setTxes(res);
-                }
+                // console.log("length of Tx Found ", res.length)
+                finalItems = res || [];
+                cursorRef.current = finalItems.length > 0 ? finalItems[finalItems.length - 1].date : undefined;
+                setHasMore(finalItems.length === pageSize);
             }
+
+            setTxes(prev => append ? [...prev, ...finalItems] : finalItems);
+            console.log("length of Tx Found ", txes.length)
         } catch (e) {
             console.error(e);
-            if (!append) setTxes([]);
         } finally {
-            if (!append) setLoading(false);
-            else setLoadingMore(false);
+            setLoading(false);
+            setLoadingMore(false);
         }
     };
 
+    // 2. FIXED: Effect synchronization
     useEffect(() => {
-        // reset cursor when filter changes
-        cursorRef.current = undefined;
-        fetchPage(false).then();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user, searchParams]);
+        // Redirect to 'purchase' if no type is set
+        if (!searchParams.has("type")) {
+            setSearchParams({ type: "purchase" }, { replace: true });
+            return;
+        }
 
-    const activeType = (searchParams.get("type") ?? null) as FilterType | null;
+        // Reset cursor and fetch when params change
+        cursorRef.current = undefined;
+        fetchPage(false);
+    }, [user?.uid, searchParams.get("type")]); // Only depend on the specific param
+
+    const activeType = searchParams.get("type") as FilterType;
 
     const TX_TYPES: {label: string; value: FilterType}[] = [
         {label: "Deposit", value: "deposit" as FilterType},

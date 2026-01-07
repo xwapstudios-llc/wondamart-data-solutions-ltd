@@ -1,6 +1,6 @@
 import {collections, db} from "@common/lib/db";
 import { type TxQuery, type TxQueryAdmin } from "@common/types/tx";
-import { collection, Query, query, Timestamp, where, limit, startAfter } from "firebase/firestore";
+import { collection, Query, query, Timestamp, where, limit, startAfter, orderBy } from "firebase/firestore";
 
 const startOfDay = (d: Date | Timestamp): Timestamp => {
     const date = d instanceof Timestamp ? d.toDate() : d;
@@ -24,11 +24,15 @@ export const buildTxQuery = (q: TxQuery): Query => {
 export const buildAdminTxQuery = (q: TxQueryAdmin): Query => {
     let Q = query(collection(db, collections.tx));
 
-    if (q.limit) Q = query(Q, limit(q.limit));
-    if (q.startAfter) Q = query(Q, startAfter(q.startAfter));
     if (q.uid) Q = query(Q, where("uid", "==", q.uid));
     if (q.type) Q = query(Q, where("type", "==", q.type));
     if (q.status) Q = query(Q, where("status", "==", q.status));
+    
+    // Add orderBy for pagination
+    Q = query(Q, orderBy("date", "desc"));
+    
+    if (q.startAfter) Q = query(Q, startAfter(q.startAfter));
+    if (q.limit) Q = query(Q, limit(q.limit));
 
     if (q.amount) {
         if (q.amountCompare) Q = query(Q, where("amount", q.amountCompare, q.amount));

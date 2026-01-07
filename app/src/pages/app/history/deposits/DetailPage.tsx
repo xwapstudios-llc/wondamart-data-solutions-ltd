@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {ClTx} from '@common/client-api/tx';
-import type {Tx} from '@common/types/tx';
-import type {TxDepositData} from '@common/types/account-deposit';
-import {getTxIcon} from '@/lib/icons';
+import type {Tx, TxData} from '@common/types/tx';
+import {getTxIcon, getTxName, toCurrency} from '@/lib/icons';
 import LoadingView from '@/ui/components/views/LoadingView';
+import StatusBadge from "@/ui/components/typography/StatusBadge.tsx";
 
 const HistoryDepositDetail: React.FC = () => {
     const {id} = useParams();
@@ -51,63 +51,41 @@ const HistoryDepositDetail: React.FC = () => {
     );
 
     const Icon = getTxIcon['deposit'] ?? getTxIcon['tx'];
-    const data = tx.data as TxDepositData;
 
     return (
         <div className="p-4 space-y-4">
-            <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                    <Icon className="w-6 h-6" />
+            <div className="flex gap-4 flex-col md:flex-row md:items-center">
+                <div className={"flex items-center justify-center md:flex-row flex-col gap-4"}>
+                    <div className="p-8 w-fit rounded-full bg-primary/50 flex items-center justify-center">
+                        <Icon strokeWidth={1.5} className="size-32" />
+                    </div>
+                    <div>
+                        <StatusBadge size={"lg"} status={tx.status} />
+                        <p className="text-2xl font-semibold self-center">{getTxName[tx.type]}</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 className="text-2xl font-semibold">Deposit {tx.id}</h1>
-                    <p className="text-sm text-muted-foreground">Status: {tx.status}</p>
-                    <p className="text-sm text-muted-foreground">Amount: {tx.amount} — Commission: {tx.commission}</p>
+                <div className="flex flex-col gap-4">
+                    <div>
+                        <div className="text-xs text-muted-foreground">Transaction ID</div>
+                        <div className="font-medium">{tx.id}</div>
+                    </div>
+                    <div>
+                        <div className="text-xs text-muted-foreground">Amount</div>
+                        <div className="font-medium">{toCurrency(tx.amount)}</div>
+                    </div>
                 </div>
             </div>
 
-            <div className="bg-card p-4 rounded-md">
-                <h2 className="text-lg font-medium mb-2">Deposit Data</h2>
+            <div className="bg-card/50 p-4 rounded-md">
+                <h2 className="text-lg font-medium mb-2">Deposit Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {Object.entries(tx.data as Record<string, any>).map(([k, v]) => (
-                        <div key={k} className="p-2 border rounded">
+                    {Object.entries(tx.data as TxData).map(([k, v]) => (
+                        <div key={k} className="p-2">
                             <div className="text-xs text-muted-foreground">{k}</div>
                             <div className="font-medium">{String(v)}</div>
                         </div>
                     ))}
                 </div>
-            </div>
-
-            <div className="bg-card p-4 rounded-md">
-                <h2 className="text-lg font-medium mb-2">Deposit Details</h2>
-                {data?.type === 'paystack' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <div className="p-2 border rounded">
-                            <div className="text-xs text-muted-foreground">Phone</div>
-                            <div className="font-medium">{(data as any).phoneNumber}</div>
-                        </div>
-                        <div className="p-2 border rounded">
-                            <div className="text-xs text-muted-foreground">Email</div>
-                            <div className="font-medium">{(data as any).email}</div>
-                        </div>
-                        <div className="p-2 border rounded">
-                            <div className="text-xs text-muted-foreground">Network</div>
-                            <div className="font-medium">{(data as any).network}</div>
-                        </div>
-                    </div>
-                )}
-                {data?.type === 'send' && (
-                    <div className="p-2 border rounded">
-                        <div className="text-xs text-muted-foreground">Transaction ID</div>
-                        <div className="font-medium">{(data as any).transactionID}</div>
-                    </div>
-                )}
-                {data?.type === 'momo' && (
-                    <div className="p-2 border rounded">
-                        <div className="text-xs text-muted-foreground">Phone</div>
-                        <div className="font-medium">{(data as any).phoneNumber}</div>
-                    </div>
-                )}
             </div>
         </div>
     );

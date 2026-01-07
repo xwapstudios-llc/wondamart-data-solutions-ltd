@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import {NetworkId} from "@common/types/data-bundle";
+import config from "../../config";
 
 /** =========================
  * Core Types
@@ -106,7 +107,7 @@ export interface DataMartClientConfig {
  * DataMart API Client
  * ========================= */
 
-export class DataMartClient {
+class DataMartClient {
     private http: AxiosInstance;
 
     constructor(config: DataMartClientConfig) {
@@ -219,3 +220,7 @@ export function networkID_to_datamart_network(network: NetworkId): DataMartNetwo
 //         throw new Error(result.message);
 //     }
 // }
+
+export const datamart_client = new DataMartClient({
+    apiKey: config.datamart_api_key
+});

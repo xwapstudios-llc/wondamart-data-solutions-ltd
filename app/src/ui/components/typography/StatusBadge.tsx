@@ -5,7 +5,7 @@ import {BoxIcon, CheckCircle2Icon, LoaderIcon, XIcon} from "lucide-react";
 
 interface StatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
     status: TxStatus;
-    size?: "sm" | "md" | "icon";
+    size?: "sm" | "md" | "lg" | "xl" | "icon";
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({status, className, size = "sm", ...props}) => {
@@ -22,12 +22,18 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({status, className, size = "sm"
         pending: <BoxIcon className={"text-blue-600 animate-bounce size-4"} />,
     };
     const Icon = statusIcon[status];
-
+    const sizes: Record<typeof size, string> = {
+        sm: "p-1 pr-1.5 text-xs",
+        md: "px-1.5 py-1 text-sm",
+        lg: "px-2 py-1",
+        xl: "px-2 py-1 text-md",
+        icon: "p-0.5",
+    }
 
     return (
         <span className={cn(
-            size == "md" ? "px-1.5 py-1" : size == "sm" ? "p-1 pr-1.5" : "p-0.5",
-            "text-xs font-medium rounded-full capitalize inline-flex gap-1 items-center",
+            sizes[size],
+            "font-medium rounded-full capitalize inline-flex gap-1 items-center justify-center",
             statusColors[status],
             className
         )}

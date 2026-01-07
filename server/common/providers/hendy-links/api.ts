@@ -1,5 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import {NetworkId} from "@common/types/data-bundle";
+import {RouteHandler} from "../../express";
+import config from "../../config";
 
 /** =========================
  * Core Types & Interfaces
@@ -100,7 +102,7 @@ export interface HendyLinksClientConfig {
  * HendyLinks API Client
  * ========================= */
 
-export class HendyLinksClient {
+class HendyLinksClient {
     private http: AxiosInstance;
 
     constructor(config: HendyLinksClientConfig) {
@@ -204,3 +206,8 @@ export function networkID_to_hendylinks_network(network: NetworkId): HendyLinksN
 //     }
 //
 // }
+
+
+export const hendylinks_client = new HendyLinksClient({
+    apiKey: config.hendylinks_api_key
+});
