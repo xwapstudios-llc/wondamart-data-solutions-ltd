@@ -9,31 +9,31 @@ export type DataMartNetwork = "TELECEL" | "YELLO" | "AT_PREMIUM";
 
 export type ApiStatus = "success" | "error";
 
-export interface ApiSuccess<T> {
+export interface DatamartApiSuccess<T> {
     status: "success";
     data: T;
 }
 
-export interface ApiError {
+export interface DatamartApiError {
     status: "error";
     message: string;
     details?: unknown;
 }
 
-export type ApiResponse<T> = ApiSuccess<T> | ApiError;
+export type DatamartApiResponse<T> = DatamartApiSuccess<T> | DatamartApiError;
 
 /** =========================
  * Purchase
  * ========================= */
 
-export interface PurchasePayload {
+export interface DatamartPurchasePayload {
     phoneNumber: string;
     network: DataMartNetwork;
     capacity: string; // GB as string per API contract
     gateway?: "wallet";
 }
 
-export interface PurchaseResult {
+export interface DatamartPurchaseResult {
     purchaseId: string;
     transactionReference: string;
     network: DataMartNetwork;
@@ -48,20 +48,20 @@ export interface PurchaseResult {
  * Data Packages
  * ========================= */
 
-export interface DataPackage {
+export interface DatamartDataPackage {
     capacity: string;
     mb: string;
     price: string;
     network: DataMartNetwork;
 }
 
-export type AllNetworkPackages = Record<DataMartNetwork, DataPackage[]>;
+export type DatamartAllNetworkPackages = Record<DataMartNetwork, DatamartDataPackage[]>;
 
 /** =========================
  * Transactions
  * ========================= */
 
-export interface Transaction {
+export interface DatamartTransaction {
     _id: string;
     userId: string;
     type: "purchase" | string;
@@ -73,8 +73,8 @@ export interface Transaction {
     updatedAt: string;
 }
 
-export interface TransactionsResponse {
-    transactions: Transaction[];
+export interface DatamartTransactionsResponse {
+    transactions: DatamartTransaction[];
     pagination: {
         currentPage: number;
         totalPages: number;
@@ -86,7 +86,7 @@ export interface TransactionsResponse {
  * Referral Bonus
  * ========================= */
 
-export interface ReferralBonusResult {
+export interface DatamartReferralBonusResult {
     bonusClaimed: number;
     processedBonuses: string[];
     newWalletBalance: number;
@@ -129,9 +129,9 @@ export class DataMartClient {
      * ========================= */
 
     async purchaseData(
-        payload: PurchasePayload
-    ): Promise<ApiResponse<PurchaseResult>> {
-        const { data } = await this.http.post<ApiResponse<PurchaseResult>>(
+        payload: DatamartPurchasePayload
+    ): Promise<DatamartApiResponse<DatamartPurchaseResult>> {
+        const { data } = await this.http.post<DatamartApiResponse<DatamartPurchaseResult>>(
             "/purchase",
             { ...payload, gateway: payload.gateway ?? "wallet" }
         );
@@ -144,9 +144,9 @@ export class DataMartClient {
 
     async getDataPackages(
         network?: DataMartNetwork
-    ): Promise<ApiResponse<DataPackage[] | AllNetworkPackages>> {
+    ): Promise<DatamartApiResponse<DatamartDataPackage[] | DatamartAllNetworkPackages>> {
         const { data } = await this.http.get<
-            ApiResponse<DataPackage[] | AllNetworkPackages>
+            DatamartApiResponse<DatamartDataPackage[] | DatamartAllNetworkPackages>
         >("/data-packages", { params: network ? { network } : undefined });
         return data;
     }
@@ -158,8 +158,8 @@ export class DataMartClient {
     async getTransactions(
         page = 1,
         limit = 20
-    ): Promise<ApiResponse<TransactionsResponse>> {
-        const { data } = await this.http.get<ApiResponse<TransactionsResponse>>(
+    ): Promise<DatamartApiResponse<DatamartTransactionsResponse>> {
+        const { data } = await this.http.get<DatamartApiResponse<DatamartTransactionsResponse>>(
             "/transactions",
             { params: { page, limit } }
         );
@@ -170,8 +170,8 @@ export class DataMartClient {
      * Referral Bonus
      * ========================= */
 
-    async claimReferralBonus(): Promise<ApiResponse<ReferralBonusResult>> {
-        const { data } = await this.http.post<ApiResponse<ReferralBonusResult>>(
+    async claimReferralBonus(): Promise<DatamartApiResponse<DatamartReferralBonusResult>> {
+        const { data } = await this.http.post<DatamartApiResponse<DatamartReferralBonusResult>>(
             "/claim-referral-bonus"
         );
         return data;
@@ -204,18 +204,18 @@ export function networkID_to_datamart_network(network: NetworkId): DataMartNetwo
 }
 
 
-async function main() {
-    const datamart = new DataMartClient({
-        apiKey: process.env.DATAMART_API_KEY!,
-    });
-
-    const result = await datamart.purchaseData({
-        phoneNumber: normalizeGhanaPhone("0551234567"),
-        network: "TELECEL",
-        capacity: assertCapacity(5),
-    });
-
-    if (result.status === "error") {
-        throw new Error(result.message);
-    }
-}
+// async function main() {
+//     const datamart = new DataMartClient({
+//         apiKey: process.env.DATAMART_API_KEY!,
+//     });
+//
+//     const result = await datamart.purchaseData({
+//         phoneNumber: normalizeGhanaPhone("0551234567"),
+//         network: "TELECEL",
+//         capacity: assertCapacity(5),
+//     });
+//
+//     if (result.status === "error") {
+//         throw new Error(result.message);
+//     }
+// }

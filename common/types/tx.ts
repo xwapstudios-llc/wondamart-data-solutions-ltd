@@ -58,7 +58,7 @@ export function getTxTypeFromTxID(txID: string) {
 }
 
 
-export interface Tx {
+export interface Tx<T = any> {
     id: string;
     uid: string;
     status: TxStatus;
@@ -71,6 +71,8 @@ export interface Tx {
     date: Timestamp;
     updatedAt?: Timestamp;
     finishedAt?: Timestamp;
+    hendyLinks?: T;
+    datamart?: T;
 }
 
 export interface TxQuery {

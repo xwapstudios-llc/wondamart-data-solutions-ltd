@@ -1,7 +1,7 @@
 import { RouteHandler, sendResponse, RouteConfig } from "@common-server/express";
 import { httpResponse } from "@common/types/request";
 import { TxDataBundleData, TxDataBundleRequest } from "@common/types/data-bundle";
-import { ThrowCheck, ThrowCheckFn } from "@common-server/fn/throw-check-fn";
+import { ThrowCheck } from "@common-server/fn/throw-check-fn";
 import { CommonSettingsFn } from "@common-server/fn/common-settings-fn";
 import { DataBundleFn } from "@common-server/fn/data-bundle/data-bundle-fn";
 import { TxDataBundleFn } from "@common-server/fn/tx/tx-data-bundle-fn";
@@ -92,10 +92,7 @@ const handler: RouteHandler = async (req, res) => {
                 if (result.status === "error") {
                     return sendResponse(res, httpResponse("failed", "Failed to place order. Reason: " + result.message));
                 }
-                await TxFn.addExtraData(tx.id, {
-                    datamart_data: result.data,
-                    datamart_id: result.data.transactionReference
-                });
+                await TxFn.addDatamartData(tx.id, result.data);
                 console.log("Complete @buyDataBundle - Provider datamart.")
                 return sendResponse(res, httpResponse("ok", "Order placed successfully"));
             }
@@ -113,10 +110,7 @@ const handler: RouteHandler = async (req, res) => {
                     return sendResponse(res, httpResponse("failed", "Failed to place order. Reason: " + result.message));
                 }
                 if (result.data) {
-                    await TxFn.addExtraData(tx.id, {
-                        hendylinks_data: result.data,
-                        hendylinks_id: result.data.order_id
-                    });
+                    await TxFn.addHendyLinksData(tx.id, result.data);
                 }
                 console.log("Complete @buyDataBundle - Provider hendylinks.")
                 return sendResponse(res, httpResponse("ok", "Order placed successfully"));

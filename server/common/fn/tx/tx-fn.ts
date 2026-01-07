@@ -12,6 +12,8 @@ import {Timestamp} from "firebase-admin/firestore";
 import {generateTxID} from "../../utils/uid-gen";
 import {TxCommissionFn} from "./tx-commission";
 import {UserFn} from "../user-fn";
+import {HendyLinksCreateOrderResponse} from "../../providers/hendy-links/api";
+import {DatamartPurchaseResult} from "../../providers/data-mart/api";
 
 const TxFn = {
     read(txID: string): Promise<Tx> {
@@ -77,6 +79,36 @@ const TxFn = {
             updatedAt: Timestamp.now(),
             extraData: data,
         }, {merge: true});
+    },
+    addHendyLinksData: async (txID: string, data: HendyLinksCreateOrderResponse) => {
+        let docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txID);
+        const doc = await docRef.get();
+        if (!doc.exists) throw new Error("Transaction does not exist");
+        await docRef.set({
+            updatedAt: Timestamp.now(),
+            hendyLinks: data,
+            hendyLinksTxId: data.order_id.toString(),
+        }, {merge: true});
+    },
+    readHendyLinksData: async (hendyLinksTxId: string) => {
+        let query = await txCollections.where("hendyLinksTxId", "==", hendyLinksTxId).get();
+        if (query.empty) return undefined;
+        return query.docs[0].data() as Tx<HendyLinksCreateOrderResponse>
+    },
+    addDatamartData: async (txID: string, data: DatamartPurchaseResult) => {
+        let docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txID);
+        const doc = await docRef.get();
+        if (!doc.exists) throw new Error("Transaction does not exist");
+        await docRef.set({
+            updatedAt: Timestamp.now(),
+            datamart: data,
+            datamartTxId: data.purchaseId,
+        }, {merge: true});
+    },
+    readDatamartData: async (datamartTxId: string) => {
+        let query = await txCollections.where("datamartTxId", "==", datamartTxId).get();
+        if (query.empty) return undefined;
+        return query.docs[0].data() as Tx<DatamartPurchaseResult>
     },
     // Create an initial transaction document object
     // This does not create the document in Firestore, just returns the object

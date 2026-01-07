@@ -7,37 +7,37 @@ import {NetworkId} from "@common/types/data-bundle";
 
 export type HendyLinksNetwork = "MTN" | "Telecel" | "AirtelTigo";
 
-export interface ApiSuccess<T = unknown> {
+export interface HendyLinksApiSuccess<T = unknown> {
     success: true;
     message?: string;
     data?: T;
 }
 
-export interface ApiError {
+export interface HendyLinksApiError {
     success: false;
     message: string;
 }
 
-export type ApiResponse<T = unknown> = ApiSuccess<T> | ApiError;
+export type HendyLinksApiResponse<T = unknown> = HendyLinksApiSuccess<T> | HendyLinksApiError;
 
 /** =========================
  * Orders
  * ========================= */
 
-export interface CreateOrderByPlanId {
+export interface HendyLinksCreateOrderByPlanId {
     recipient_phone: string;
     data_plan_id: number;
 }
 
-export interface CreateOrderByNetwork {
+export interface HendyLinksCreateOrderByNetwork {
     recipient_phone: string;
     network: HendyLinksNetwork;
     size_gb: number;
 }
 
-export type CreateOrderPayload = CreateOrderByPlanId | CreateOrderByNetwork;
+export type HendyLinksCreateOrderPayload = HendyLinksCreateOrderByPlanId | HendyLinksCreateOrderByNetwork;
 
-export interface Order {
+export interface HendyLinksOrder {
     id: number;
     status: "processing" | "completed" | "failed";
     message: string;
@@ -50,11 +50,11 @@ export interface Order {
     updated_at: string;
 }
 
-export interface CreateOrderResponse {
+export interface HendyLinksCreateOrderResponse {
     order_id: number;
 }
 
-export interface GetOrdersParams {
+export interface HendyLinksGetOrdersParams {
     limit?: number;
     offset?: number;
 }
@@ -63,12 +63,12 @@ export interface GetOrdersParams {
  * Wallet
  * ========================= */
 
-export interface BalanceResponse {
+export interface HendyLinksBalanceResponse {
     balance: number;
     currency?: string;
 }
 
-export interface DepositPayload {
+export interface HendyLinksDepositPayload {
     amount: number;
 }
 
@@ -76,10 +76,10 @@ export interface DepositPayload {
  * Webhooks
  * ========================= */
 
-export interface WebhookPayload {
+export interface HendyLinksWebhookPayload {
     event: "order.status_changed";
     timestamp: string;
-    order: Order;
+    order: HendyLinksOrder;
     user: {
         name: string;
         phone: string;
@@ -123,9 +123,9 @@ export class HendyLinksClient {
      * ========================= */
 
     async createOrder(
-        payload: CreateOrderPayload
-    ): Promise<ApiResponse<CreateOrderResponse>> {
-        const { data } = await this.http.post<ApiResponse<CreateOrderResponse>>(
+        payload: HendyLinksCreateOrderPayload
+    ): Promise<HendyLinksApiResponse<HendyLinksCreateOrderResponse>> {
+        const { data } = await this.http.post<HendyLinksApiResponse<HendyLinksCreateOrderResponse>>(
             "/api/orders",
             payload
         );
@@ -133,9 +133,9 @@ export class HendyLinksClient {
     }
 
     async getOrders(
-        params?: GetOrdersParams
-    ): Promise<ApiResponse<Order[]>> {
-        const { data } = await this.http.get<ApiResponse<Order[]>>(
+        params?: HendyLinksGetOrdersParams
+    ): Promise<HendyLinksApiResponse<HendyLinksOrder[]>> {
+        const { data } = await this.http.get<HendyLinksApiResponse<HendyLinksOrder[]>>(
             "/api/orders",
             { params }
         );
@@ -146,17 +146,17 @@ export class HendyLinksClient {
      * Wallet
      * ========================= */
 
-    async getBalance(): Promise<ApiResponse<BalanceResponse>> {
-        const { data } = await this.http.get<ApiResponse<BalanceResponse>>(
+    async getBalance(): Promise<HendyLinksApiResponse<HendyLinksBalanceResponse>> {
+        const { data } = await this.http.get<HendyLinksApiResponse<HendyLinksBalanceResponse>>(
             "/api/balance"
         );
         return data;
     }
 
     async deposit(
-        payload: DepositPayload
-    ): Promise<ApiResponse<null>> {
-        const { data } = await this.http.post<ApiResponse<null>>(
+        payload: HendyLinksDepositPayload
+    ): Promise<HendyLinksApiResponse<null>> {
+        const { data } = await this.http.post<HendyLinksApiResponse<null>>(
             "/api/deposit",
             payload
         );
@@ -188,19 +188,19 @@ export function networkID_to_hendylinks_network(network: NetworkId): HendyLinksN
     }
 }
 
-async function main() {
-    const client = new HendyLinksClient({
-        apiKey: process.env.HENDYLINKS_API_KEY!,
-    });
-
-    const order = await client.createOrder({
-        recipient_phone: normalizePhone("0241234567"),
-        network: "MTN",
-        size_gb: 5,
-    });
-
-    if (!order.success) {
-        throw new Error(order.message);
-    }
-
-}
+// async function main() {
+//     const client = new HendyLinksClient({
+//         apiKey: process.env.HENDYLINKS_API_KEY!,
+//     });
+//
+//     const order = await client.createOrder({
+//         recipient_phone: normalizePhone("0241234567"),
+//         network: "MTN",
+//         size_gb: 5,
+//     });
+//
+//     if (!order.success) {
+//         throw new Error(order.message);
+//     }
+//
+// }
