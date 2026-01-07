@@ -29,6 +29,8 @@ const TxDataBundleFn = {
             data: {
                 network: data.networkId,
                 bundleId: data.bundleId,
+                dataPackage: bundle.dataPackage,
+                validityPeriod: bundle.validityPeriod,
                 phoneNumber: data.phoneNumber,
             }
         }

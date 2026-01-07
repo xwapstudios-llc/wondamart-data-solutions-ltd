@@ -18,7 +18,6 @@ export interface DataBundleQuery {
     validityPeriod?: ValidityPeriod;
 }
 export interface TxDataBundleQuery extends TxQuery {
-    type: "data-bundle",
     network?: NetworkId,
     bundleId?: string,
     phoneNumber?: string,
@@ -44,6 +43,8 @@ export interface TxDataBundleData {
     network: NetworkId;
     bundleId: string;
     phoneNumber: string;
+    dataPackage: DataPackage;
+    validityPeriod: ValidityPeriod;
 }
 export interface TxDataBundle extends Tx {
     type: 'data-bundle';

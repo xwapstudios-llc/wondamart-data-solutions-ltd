@@ -4,7 +4,6 @@ import { type Tx, type TxQuery } from "./tx";
 //  SubType
 export type ResultCheckerType = 'BECE' | 'WASSCE';
 export interface TxResultCheckerQuery extends TxQuery {
-    type: "result-checker",
     checkerType?: ResultCheckerType,
     units?: number,
 }

@@ -1,8 +1,7 @@
 import dataBundle from './data-bundle';
 import afaBundle from './afa-bundle';
 import resultChecker from './result-checker';
-import {notFoundHandler, RouteConfig, user_middleware} from "@common-server/express";
-import routes from "@/routes";
+import {RouteConfig, user_middleware} from "@common-server/express";
 import {origen_middleware} from "@common-server/express/origin_middleware";
 import {api_middleware} from "@common-server/express/api_middleware";
 

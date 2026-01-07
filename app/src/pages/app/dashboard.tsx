@@ -12,7 +12,6 @@ import TxMiniCardSync from "@/ui/components/cards/tx/TxMiniCardSync.tsx";
 import DashboardSection from "@/ui/components/cards/dashboard/DashboardSection.tsx";
 import NoItems from "@/ui/components/cards/NoItems.tsx";
 import ActivityHighlights from "@/ui/components/cards/dashboard/ActivityHighlights.tsx";
-import OverviewGraph from "@/ui/components/OverviewGraph.tsx";
 import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
 
 const Dashboard: React.FC = () => {
@@ -60,12 +59,8 @@ const Dashboard: React.FC = () => {
             {
                 claims?.isActivated ? (
                     <>
-                        <OverviewGraph className={"mt-1"} />
-
                         {/*Activity*/}
-                        <DashboardSection title={"Activity"}>
-                            <ActivityHighlights />
-                        </DashboardSection>
+                        <ActivityHighlights />
 
                         {/*Recent Purchases*/}
                         <DashboardSection

@@ -3,7 +3,6 @@ import { type Tx, type TxQuery } from "./tx";
 //
 //  SubType
 export interface TxAfaBundleQuery extends TxQuery {
-    type: "afa-bundle",
     phoneNumber?: string,
     idNumber?: string,
     date_of_birth?: string,

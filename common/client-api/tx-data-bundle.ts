@@ -7,6 +7,7 @@ import {wondamart_api_client} from "@common/lib/api-wondamart";
 
 const createQuery = (q: TxDataBundleQuery): Query => {
     let Q = buildTxQuery(q);
+    Q = query(Q, where("type", "==", "data-bundle"));
     if (q.network) Q = query(Q, where("data.network", "==", q.network));
     if (q.bundleId) Q = query(Q, where("data.bundleId", "==", q.bundleId));
     if (q.phoneNumber) Q = query(Q, where("data.phoneNumber", "==", q.phoneNumber));

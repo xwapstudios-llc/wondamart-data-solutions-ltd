@@ -9,7 +9,7 @@ import {
 } from "@/cn/components/ui/dropdown-menu.tsx";
 
 interface ActivityHighlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
-    title: string;
+    title?: string;
     Icon?: LucideIcon;
     iconClassName?: string;
     subTitle?: string;
@@ -17,29 +17,32 @@ interface ActivityHighlightCardProps extends React.HTMLAttributes<HTMLDivElement
         label: string;
         Icon?: LucideIcon;
         action: () => void;
-    }[]
+    }[],
+    childrenClassName?: string;
 }
 
-const ActivityHighlightCard: React.FC<ActivityHighlightCardProps> = ({
-                                                                         className,
-                                                                         title,
-                                                                         Icon = TrendingUpIcon,
-    iconClassName,
-    children,
-                                                                         subTitle,
-                                                                         actions,
-                                                                         ...props
-}) => {
+const ActivityHighlightCard: React.FC<ActivityHighlightCardProps> =
+    ({className,
+         title,
+         Icon = TrendingUpIcon,
+         iconClassName,
+         children,
+         subTitle,
+         actions,
+         childrenClassName,
+         ...props }) => {
     return (
         <div className={cn(
-            "h-fit min-w-40 rounded-md bg-secondary/50 shrink-0 p-2 space-y-6",
+            "h-fit min-w-36 rounded-md bg-secondary/50 shrink-0 p-2",
             className
         )}
              {...props}
         >
             <div className={"flex items-center justify-between"}>
                 <div className={"flex gap-2 items-center"}>
-                    <Icon strokeWidth={1.5} className={cn("p-1.5 rounded-full bg-primary size-9", iconClassName)}/>
+                    <div className={cn("p-2 rounded-full bg-primary ", iconClassName)}>
+                        <Icon strokeWidth={1.5} className={cn("size-6")}/>
+                    </div>
                     <h4 className={"font-semibold"}>{title}</h4>
                 </div>
                 {
@@ -62,14 +65,17 @@ const ActivityHighlightCard: React.FC<ActivityHighlightCardProps> = ({
                     )
                 }
             </div>
-            <div>
+            <div className={cn(
+                childrenClassName,
+                "text-right -mt-4"
+            )}>
                 {children}
-                {
-                    subTitle && (
-                        <p className={"text-xs opacity-75"}>{subTitle}</p>
-                    )
-                }
             </div>
+            {
+                subTitle && (
+                    <p className={"text-xs opacity-75 text-right"}>{subTitle}</p>
+                )
+            }
         </div>
     )
 }
