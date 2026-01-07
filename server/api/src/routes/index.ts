@@ -8,7 +8,7 @@ import newRoutes from "@/routes/new";
 import callbacks from "@/routes/callback";
 
 const postHandler: RouteHandler = async (req, res) => {
-    res.send("Hello World! " + req.body.name);
+    res.send("Hello World from wondamart!");
 };
 
 const home: RouteConfig = {
