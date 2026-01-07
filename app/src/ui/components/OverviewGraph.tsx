@@ -44,7 +44,7 @@ const OverviewGraph = ({ className, loading = false, data = [], ...props }: Over
                 loading ? <Skeleton className={"h-32 w-full rounded-md"} /> :
                 <div className={`h-32 w-full`}>
                     <ChartContainer config={chartConfig} className={"w-full h-full"}>
-                        <LineChart data={data} margin={{left: -45, right: 0}}>
+                        <LineChart data={data} margin={{left: -45, right: 10}}>
                             <CartesianGrid strokeDasharray="3 3" className="stroke-muted"/>
                             <XAxis
                                 dataKey="periodName"

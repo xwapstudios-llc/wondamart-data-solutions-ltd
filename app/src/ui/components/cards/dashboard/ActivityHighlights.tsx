@@ -126,26 +126,51 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
                 return total;
             }
 
-            // Now i need to iterate over the period to find the transactions in that time and push them to the Graph data.
             const periods = Number(selectedPeriod);
-            for (let i = 0; i < periods; i++) {
-                const now = new Date();
-                const from = new Date(now);
-                from.setDate(now.getDate() - i);
+            const now = new Date();
+            
+            // Determine interval based on period
+            let intervalHours: number;
+            let totalIntervals: number;
+            
+            if (periods === 1) {
+                // 24 hours: 2-hour intervals
+                intervalHours = 2;
+                totalIntervals = 12;
+            } else if (periods === 3) {
+                // 3 days: 6-hour intervals
+                intervalHours = 6;
+                totalIntervals = 12; // 3 days * 4 intervals per day
+            } else {
+                // 7+ days: 1-day intervals
+                intervalHours = 24;
+                totalIntervals = periods;
+            }
 
-                const periodName = `${from.getDate()}/${from.getMonth() + 1}`;
-                let mtnTotal = getTotal(mtn.filter((tx) => {
+            for (let i = totalIntervals - 1; i >= 0; i--) {
+                const intervalStart = new Date(now);
+                intervalStart.setHours(now.getHours() - (i + 1) * intervalHours, 0, 0, 0);
+                
+                const intervalEnd = new Date(now);
+                intervalEnd.setHours(now.getHours() - i * intervalHours, 0, 0, 0);
+
+                let periodName: string;
+                if (intervalHours === 2) {
+                    periodName = `${intervalStart.getHours()}:00`;
+                } else if (intervalHours === 6) {
+                    periodName = `${intervalStart.getDate()}/${intervalStart.getMonth() + 1} ${intervalStart.getHours()}:00`;
+                } else {
+                    periodName = `${intervalStart.getDate()}/${intervalStart.getMonth() + 1}`;
+                }
+
+                const filterTxInInterval = (txs: Tx[]) => txs.filter((tx) => {
                     const date = tx.date.toDate();
-                    return date.getDate() === from.getDate() && date.getMonth() === from.getMonth() && date.getFullYear() === from.getFullYear();
-                }));
-                let telecelTotal = getTotal(telecel.filter((tx) => {
-                    const date = tx.date.toDate();
-                    return date.getDate() === from.getDate() && date.getMonth() === from.getMonth() && date.getFullYear() === from.getFullYear();
-                }));
-                let airteltigoTotal = getTotal(airteltigo.filter((tx) => {
-                    const date = tx.date.toDate();
-                    return date.getDate() === from.getDate() && date.getMonth() === from.getMonth() && date.getFullYear() === from.getFullYear();
-                }));
+                    return date >= intervalStart && date < intervalEnd;
+                });
+
+                const mtnTotal = getTotal(filterTxInInterval(mtn));
+                const telecelTotal = getTotal(filterTxInInterval(telecel));
+                const airteltigoTotal = getTotal(filterTxInInterval(airteltigo));
 
                 data.push({
                     periodName,
@@ -155,7 +180,7 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
                 });
             }
 
-            setGraphData(data.reverse());
+            setGraphData(data);
             console.log("Graph data: ", data);
         }
         function calculateBundleGB() {
