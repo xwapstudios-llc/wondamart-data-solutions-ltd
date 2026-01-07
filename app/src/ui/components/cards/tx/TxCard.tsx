@@ -28,7 +28,7 @@ interface TxCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const TxCard: React.FC<TxCardProps> = ({tx, className, ...props}) => {
     const navigate = useNavigate();
-    const href = tx.type == "deposit" ? R.app.history.deposits.id(tx.id) : R.app.history.purchases.id(tx.id);
+    const href = R.app.history.id(tx.id);
     const Icon = getTxIcon[tx.type];
 
     return (

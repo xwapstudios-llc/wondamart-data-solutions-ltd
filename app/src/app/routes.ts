@@ -45,6 +45,7 @@ const R = {
         // User purchase history
         history: {
             index: "/app/history",
+            id: (id: string) => `/app/history/${id}`,
 
             // Purchase history
             purchases: {
@@ -52,15 +53,9 @@ const R = {
                 dataBundles: "/app/history?type=data-bundle",
                 afaBundles: "/app/history?type=afa-bundle",
                 resultCheckers: "/app/history?type=result-checker",
-
-                id: (id: string) => `/app/history/purchases/${id}`,
             },
-
             // Deposit history
-            deposits: {
-                index: "/app/history?type=deposit",
-                id: (id: string) => `/app/history/deposits/${id}`,
-            },
+            deposits: "/app/history?type=deposit",
         },
 
         // Deposit funds

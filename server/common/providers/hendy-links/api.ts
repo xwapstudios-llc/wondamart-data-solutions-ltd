@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from "axios";
 import {NetworkId} from "@common/types/data-bundle";
-import {RouteHandler} from "../../express";
 import config from "../../config";
 
 /** =========================

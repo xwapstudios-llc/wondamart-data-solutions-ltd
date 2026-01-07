@@ -28,7 +28,7 @@ const CommissionObjCard: React.FC<CommissionObjCardProps> = ({obj, variant = "lg
                 <span className={"font-semibold self-start"}>{txName}</span>
                 {
                     variant === "lg" && (
-                        <Link to={R.app.history.purchases.id(obj.txID)} className={"dark:opacity-60 opacity-90 text-xs self-start"}>
+                        <Link to={R.app.history.id(obj.txID)} className={"dark:opacity-60 opacity-90 text-xs self-start"}>
                             {obj.txID}
                         </Link>
                     )

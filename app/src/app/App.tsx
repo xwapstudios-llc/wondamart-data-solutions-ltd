@@ -23,8 +23,7 @@ const DataBundleAirtelTigo = lazy(() => import("@/pages/app/purchase/dataBundle/
 const AfaBundlePurchase = lazy(() => import("@/pages/app/purchase/afaBundle"));
 const ResultCheckerPurchase = lazy(() => import("@/pages/app/purchase/resultChecker"));
 const HistoryIndex = lazy(() => import("@/pages/app/history/index"));
-const HistoryPurchaseDetail = lazy(() => import("@/pages/app/history/purchases/DetailPage"));
-const HistoryDepositDetail = lazy(() => import("@/pages/app/history/deposits/DetailPage"));
+const HistoryDetail = lazy(() => import("@/pages/app/history/DetailPage.tsx"));
 const Deposit = lazy(() => import("@/pages/app/deposit/index"));
 const CommissionsIndex = lazy(() => import("@/pages/app/commissions/index"));
 const CommissionsDetail = lazy(() => import("@/pages/app/commissions/DetailPage"));
@@ -94,8 +93,7 @@ const App = () => {
 
                         {/* History */}
                         <Route path={R.app.history.index} element={<HistoryIndex/>}/>
-                        <Route path={R.app.history.purchases.id(":id")} element={<HistoryPurchaseDetail/>}/>
-                        <Route path={R.app.history.deposits.id(":id")} element={<HistoryDepositDetail/>}/>
+                        <Route path={R.app.history.id(":id")} element={<HistoryDetail/>}/>
 
                         {/* Deposit */}
                         <Route path={R.app.deposit} element={<Deposit/>}/>

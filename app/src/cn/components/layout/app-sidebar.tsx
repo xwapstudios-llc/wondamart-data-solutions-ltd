@@ -74,7 +74,7 @@ const data = {
                 },
                 {
                     title: "Deposits",
-                    url: R.app.history.deposits.index,
+                    url: R.app.history.deposits,
                 },
                 {
                     title: "Data Bundles",

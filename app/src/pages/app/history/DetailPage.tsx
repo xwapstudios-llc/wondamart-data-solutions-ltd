@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
-import {ClTx} from '@common/client-api/tx';
-import type {Tx, TxData} from '@common/types/tx';
-import {getTxIcon, getTxName, getTxReportText, toCurrency} from '@/lib/icons';
-import LoadingView from '@/ui/components/views/LoadingView';
+import {ClTx} from '@common/client-api/tx.ts';
+import type {Tx, TxData} from '@common/types/tx.ts';
+import {getTxIcon, getTxName, getTxReportText, toCurrency} from '@/lib/icons.ts';
+import LoadingView from '@/ui/components/views/LoadingView.tsx';
 import StatusBadge from "@/ui/components/typography/StatusBadge.tsx";
 import {toast} from "sonner";
 import {Button} from "@/cn/components/ui/button.tsx";
 import {ClockCheckIcon, ClockPlusIcon, CoinsIcon, DollarSignIcon, type LucideIcon, PencilIcon} from "lucide-react";
 import {Timestamp} from "firebase/firestore";
 import OopsView from "@/ui/components/views/OopsView.tsx";
-import { cn } from "@/cn/lib/utils";
+import { cn } from "@/cn/lib/utils.ts";
 
 
 const formatDate = (ts: Timestamp) => {
