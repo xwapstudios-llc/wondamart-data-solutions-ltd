@@ -6,6 +6,8 @@ import {TxFn} from "@common-server/fn/tx/tx-fn";
 import {currency_to_paystack_amount} from "@/paystack/charge";
 import {UserFn} from "@common-server/fn/user-fn";
 import {TxWatcher} from "@common-server/fn/tx/tx-watcher";
+import {mnotifyClient} from "@common-server/providers/mnotify/api";
+import {TxDepositPaystackData} from "@common/types/account-deposit";
 
 export const handler: RouteHandler = async (req, res) => {
     const signature = req.headers["x-paystack-signature"] as string;
@@ -68,6 +70,13 @@ export const handler: RouteHandler = async (req, res) => {
     // Remove from watcher since transaction is completed
     TxWatcher.removeFromWatch(reference);
 
+    let data = tx.data as TxDepositPaystackData;
+    mnotifyClient.sendSms({
+        recipients: [data.phoneNumber],
+        message: `Your deposit of ${tx.amount} was successful. Thank you for using Wondamart Data Solutions.`
+    }).catch(err => {
+        console.error("Failed to send SMS notification:", err);
+    })
     console.log("Processed Paystack payment for reference:", reference);
     return sendResponse(res, httpResponse("ok", "Payment processed successfully.", {
         reference: reference

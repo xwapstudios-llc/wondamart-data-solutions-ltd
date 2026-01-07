@@ -1,5 +1,6 @@
 // src/services/mnotify.ts
 import axios, { AxiosInstance } from "axios";
+import config from "../../config";
 
 export interface SendSmsPayload {
     recipients: string[];
@@ -17,14 +18,14 @@ export interface MnotifyResponse {
     data?: unknown;
 }
 
-export class MnotifyClient {
+class MnotifyClient {
     private client: AxiosInstance;
     private apiKey: string;
     private senderId: string;
 
     constructor() {
-        this.apiKey = process.env.MNOTIFY_API_KEY as string;
-        this.senderId = process.env.MNOTIFY_SENDER_ID as string;
+        this.apiKey = config.mnotify_api_key;
+        this.senderId = config.mnotify_sender_id;
 
         if (!this.apiKey) {
             throw new Error("MNOTIFY_API_KEY is missing");
@@ -42,7 +43,7 @@ export class MnotifyClient {
     async sendSms(payload: SendSmsPayload): Promise<MnotifyResponse> {
         const body = {
             recipient: payload.recipients,
-            sender: payload.sender ?? this.senderId,
+            sender: payload.sender ?? "Wondamart Data Solutions Ltd.",
             message: payload.message,
             is_schedule: payload.is_schedule ?? false,
             schedule_date: payload.schedule_date,
@@ -64,3 +65,5 @@ export class MnotifyClient {
         return response.data;
     }
 }
+
+export const mnotifyClient = new MnotifyClient();

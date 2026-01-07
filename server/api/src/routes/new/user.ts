@@ -5,6 +5,7 @@ import {ThrowCheckFn} from "@common-server/fn/throw-check-fn";
 import {UserFn} from "@common-server/fn/user-fn";
 import {getAuth} from "firebase-admin/auth";
 import {userCollections, walletsCollections} from "@common-server/fn/collections";
+import {mnotifyClient} from "@common-server/providers/mnotify/api";
 
 const handler: RouteHandler = async (req, res) => {
     const d = req.body as UserRegistrationRequest;
@@ -20,6 +21,12 @@ const handler: RouteHandler = async (req, res) => {
 
     try {
         await UserFn.createAccount(d);
+        mnotifyClient.sendSms({
+            recipients: [d.phoneNumber],
+            message: `Your account has been created. Please deposit and activate your account. Thank you for using Wondamart Data Solutions.`
+        }).catch(err => {
+            console.error("Failed to send SMS notification:", err);
+        })
         sendResponse(res, httpResponse("ok", `User ${d.email} account created successfully`));
     } catch (err) {
         const auth = getAuth();

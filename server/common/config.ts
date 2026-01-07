@@ -15,6 +15,9 @@ interface Config {
 
     hendylinks_api_key: string;
     datamart_api_key: string;
+
+    mnotify_api_key: string;
+    mnotify_sender_id: string;
 }
 
 const config: Config = {
@@ -31,6 +34,9 @@ const config: Config = {
 
     hendylinks_api_key: process.env.HENDYLINKS_API_KEY || "hendylinks_api_key",
     datamart_api_key: process.env.DATABASE_API_KEY || 'datamart_api_key',
+
+    mnotify_api_key: process.env.MNOTIFY_API_KEY || 'mnotify_api_key',
+    mnotify_sender_id: process.env.MNOTIFY_SENSER_ID || 'mnotify_sender_id',
 };
 
 

@@ -1,5 +1,5 @@
 import {RouteConfig, RouteHandler, sendResponse} from "@common-server/express";
-import {TxDepositPaystackRequest} from "@common/types/account-deposit";
+import {TxDepositPaystackData, TxDepositPaystackRequest} from "@common/types/account-deposit";
 import {ThrowCheck} from "@common-server/fn/throw-check-fn";
 import {CommonSettingsFn} from "@common-server/fn/common-settings-fn";
 import {httpResponse} from "@common/types/request";
@@ -8,6 +8,7 @@ import {TxFn} from "@common-server/fn/tx/tx-fn";
 import {TxWatcher} from "@common-server/fn/tx/tx-watcher";
 import {test_paystack} from "@/paystack";
 import {currency_to_paystack_amount, networkID_to_paystack_provider} from "@/paystack/charge";
+import {mnotifyClient} from "@common-server/providers/mnotify/api";
 
 export const handler: RouteHandler = async (req, res) => {
     const uid = req.userId!;
@@ -47,7 +48,7 @@ export const handler: RouteHandler = async (req, res) => {
         // Add transaction to watcher for auto-fail after 5 minutes
         TxWatcher.addToWatch(tx.id, 5);
 
-        const data = tx.data as any;
+        const data = tx.data as TxDepositPaystackData;
         const response = await test_paystack({
             amount: currency_to_paystack_amount(tx.amount) * 1.02,
             currency: "GHS",
@@ -59,11 +60,24 @@ export const handler: RouteHandler = async (req, res) => {
             reference: tx.id,
         });
 
+        mnotifyClient.sendSms({
+            recipients: [data.phoneNumber],
+            message: `We have received your paystack deposit request of ${tx.amount}. Please conform on your phone when promoted to complete the transaction.`,
+        }).catch(err => {
+            console.error("Failed to send SMS notification:", err);
+        });
         return sendResponse(res, response);
     } catch (err: unknown) {
         console.error("Paystack init failed:", err);
         await TxFn.update_status_failed(tx.id);
         TxWatcher.removeFromWatch(tx.id); // Remove from watcher if failed immediately
+
+        const data = tx.data as TxDepositPaystackData;
+        await mnotifyClient.sendSms({
+            message: `Sorry your paystack deposit request of ${tx.amount} could not be processed. Please try again later.`,
+            recipients: [data.phoneNumber]
+        });
+
         return sendResponse(res, httpResponse("error", {
             title: "Paystack Error",
             message: `An unexpected error happened while requesting a charge to paystack. Please contact admin for support. ${err}`
