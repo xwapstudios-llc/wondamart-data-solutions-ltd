@@ -2,9 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {ClTx} from '@common/client-api/tx';
 import type {Tx, TxData} from '@common/types/tx';
-import {getTxIcon, getTxName, toCurrency} from '@/lib/icons';
+import {getTxIcon, getTxName, getTxReportText, toCurrency} from '@/lib/icons';
 import LoadingView from '@/ui/components/views/LoadingView';
 import StatusBadge from "@/ui/components/typography/StatusBadge.tsx";
+import {toast} from "sonner";
+import {Button} from "@/cn/components/ui/button.tsx";
 
 const HistoryDepositDetail: React.FC = () => {
     const {id} = useParams();
@@ -60,8 +62,8 @@ const HistoryDepositDetail: React.FC = () => {
                         <Icon strokeWidth={1.5} className="size-32" />
                     </div>
                     <div>
+                        <p className="text-2xl font-semibold self-center mb-2">{getTxName[tx.type]}</p>
                         <StatusBadge size={"lg"} status={tx.status} />
-                        <p className="text-2xl font-semibold self-center">{getTxName[tx.type]}</p>
                     </div>
                 </div>
                 <div className="flex flex-col gap-4">
@@ -86,6 +88,17 @@ const HistoryDepositDetail: React.FC = () => {
                         </div>
                     ))}
                 </div>
+                <Button
+                    className={"mt-1.5 w-full"}
+                    variant={"outline"}
+                    onClick={() => {
+                        navigator.clipboard.writeText(getTxReportText(tx)).then(() => {
+                            toast.success("Transaction details copied to clipboard", {duration: 3000});
+                        })
+                    }}
+                >
+                    Copy details
+                </Button>
             </div>
         </div>
     );

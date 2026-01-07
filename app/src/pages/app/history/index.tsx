@@ -116,7 +116,7 @@ const HistoryIndex: React.FC = () => {
 
         // Reset cursor and fetch when params change
         cursorRef.current = undefined;
-        fetchPage(false);
+        fetchPage(false).then(() => {});
     }, [user?.uid, searchParams.get("type")]); // Only depend on the specific param
 
     const activeType = searchParams.get("type") as FilterType;
@@ -134,9 +134,6 @@ const HistoryIndex: React.FC = () => {
             <PageHeading>History</PageHeading>
             {/*Filter buttons*/}
             <div className={"flex gap-2 overflow-x-auto my-2 hidden-scroll-bar"}>
-                <Button size={"sm"} variant={activeType === null ? "default" : "outline"} onClick={() => setTypeFilter(undefined)}>
-                    All
-                </Button>
                 {TX_TYPES.map((t) => (
                     <Button
                         key={t.value}

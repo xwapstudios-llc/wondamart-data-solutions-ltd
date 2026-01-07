@@ -3,10 +3,12 @@ import {useParams} from 'react-router-dom';
 import {ClTx} from '@common/client-api/tx';
 import {DataBundles} from '@common/client-api/db-data-bundle';
 import type {Tx, TxData} from '@common/types/tx';
-import {getTxIcon, getTxName, toCurrency} from '@/lib/icons';
+import {getTxIcon, getTxName, getTxReportText, toCurrency} from '@/lib/icons';
 import LoadingView from '@/ui/components/views/LoadingView';
 import StatusBadge from "@/ui/components/typography/StatusBadge.tsx";
 import type {DataBundle} from "@common/types/data-bundle.ts";
+import {toast} from "sonner";
+import {Button} from "@/cn/components/ui/button.tsx";
 
 const HistoryPurchaseDetail: React.FC = () => {
     const {id} = useParams();
@@ -71,13 +73,15 @@ const HistoryPurchaseDetail: React.FC = () => {
 
     return (
         <div className="p-4 space-y-4">
-            <div className="flex gap-4 flex-col md:flex-row">
-                <div className={"flex items-center justify-center mx-auto flex-col gap-2"}>
+            <div className="flex gap-4 flex-col md:flex-row md:items-center">
+                <div className={"flex items-center justify-center md:flex-row flex-col gap-4"}>
                     <div className="p-8 w-fit rounded-full bg-primary/50 flex items-center justify-center">
                         <Icon strokeWidth={1.5} className="size-32" />
                     </div>
-                    <StatusBadge size={"lg"} status={tx.status} />
-                    <p className="text-2xl font-semibold self-center">{getTxName[tx.type]}</p>
+                    <div>
+                        <p className="text-2xl font-semibold self-center mb-2">{getTxName[tx.type]}</p>
+                        <StatusBadge size={"lg"} status={tx.status} />
+                    </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div>
@@ -105,6 +109,17 @@ const HistoryPurchaseDetail: React.FC = () => {
                         </div>
                     ))}
                 </div>
+                <Button
+                    className={"mt-1.5 w-full"}
+                    variant={"outline"}
+                    onClick={() => {
+                        navigator.clipboard.writeText(getTxReportText(tx)).then(() => {
+                            toast.success("Transaction details copied to clipboard", {duration: 3000});
+                        })
+                    }}
+                >
+                    Copy details
+                </Button>
             </div>
 
             {tx.type === 'data-bundle' && (
