@@ -3,7 +3,7 @@ import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
 import { type TxResultChecker, type TxResultCheckerQuery, type TxResultCheckerRequest } from "@common/types/result-checker";
 import type {HTTPResponse} from "@common/types/request";
-import {api_wondamart_req} from "@common/lib/api-wondamart";
+import {wondamart_api_client} from "@common/lib/api-wondamart";
 
 const createQuery = (q: TxResultCheckerQuery): Query => {
     let Q = buildTxQuery(q);
@@ -16,7 +16,7 @@ const ClTxResultChecker = {
     //
     // Create
     create: async (data: TxResultCheckerRequest): Promise<HTTPResponse> => {
-        return await api_wondamart_req(
+        return await wondamart_api_client(
             "/buy/result-checker",
             data
         );

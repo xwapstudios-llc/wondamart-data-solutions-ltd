@@ -9,18 +9,38 @@ export interface RouteHandler {
     (req: Request, res: Response, next?: NextFunction): Promise<void> | void;
 }
 
-export interface RouteConfig {
-    path: string;
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+interface OpenApiMeta {
+    summary?: string;
+    description?: string;
+    tags?: string[];
+    operationId?: string;
+
+    requestBody?: any;   // JSON Schema (v3)
+    responses?: Record<string, any>;
+}
+
+type MethodConfig = RouteHandler | {
     handler: RouteHandler;
     middleware?: MiddlewareHandler[];
+    openapi?: OpenApiMeta;
+}
+
+export interface RouteConfig {
+    path: string;
+    middleware?: MiddlewareHandler[];
+    get?: MethodConfig,
+    post?: MethodConfig,
+    put?: MethodConfig,
+    delete?: MethodConfig,
+    patch?: MethodConfig,
     children?: RouteConfig[];
 }
 
 export interface ExpressAppConfig {
-    port: number;
-    host: string;
     name: string;
+    host: string;
+    port: number;
+    defaultHandler?: RouteHandler;
     middleware?: MiddlewareHandler[];
     routes: RouteConfig[];
 }

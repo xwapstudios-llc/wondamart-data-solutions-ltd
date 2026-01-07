@@ -1,20 +1,13 @@
-import { RouteHandler, sendResponse } from "@common-server/express";
-import { httpResponse } from "@common/types/request";
-import { TxFn } from "@common-server/fn/tx/tx-fn";
-import { UserFn } from "@common-server/fn/user-fn";
-import { currency_to_paystack_amount } from "@/paystack/charge";
-import { TxWatcher } from "@common-server/fn/tx/tx-watcher";
+import {RouteConfig, RouteHandler, sendResponse} from "@common-server/express";
 import crypto from "crypto";
+import config from "@common-server/config";
+import {httpResponse} from "@common/types/request";
+import {TxFn} from "@common-server/fn/tx/tx-fn";
+import {currency_to_paystack_amount} from "@/paystack/charge";
+import {UserFn} from "@common-server/fn/user-fn";
+import {TxWatcher} from "@common-server/fn/tx/tx-watcher";
 
-export const paystackCallback: RouteHandler = async (req, res) => {
-    console.log("Received Paystack callback ------------------------------------");
-    console.log(JSON.stringify(req.body, null, 2));
-    console.log("------------------------------------");
-
-    res.sendStatus(200);
-};
-
-export const paystackWebhook: RouteHandler = async (req, res) => {
+export const handler: RouteHandler = async (req, res) => {
     const signature = req.headers["x-paystack-signature"] as string;
 
     console.log("Received Paystack webhook ------------------------------------");
@@ -22,7 +15,7 @@ export const paystackWebhook: RouteHandler = async (req, res) => {
     console.log("------------------------------------");
 
     const hash = crypto
-        .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY!)
+        .createHmac("sha512", config.paystack_production_key)
         .update(req.body)
         .digest("hex");
 
@@ -43,7 +36,7 @@ export const paystackWebhook: RouteHandler = async (req, res) => {
         }));
     }
 
-    const { reference, amount, status, fees } = event.data;
+    const {reference, amount, status, fees} = event.data;
 
     if (status != "success") {
         return sendResponse(res, httpResponse("rejected", "Payment not successful.", {
@@ -71,7 +64,7 @@ export const paystackWebhook: RouteHandler = async (req, res) => {
 
     await TxFn.update_status_completed(reference);
     await UserFn.update_add_UserBalance(tx.uid, tx.amount);
-    
+
     // Remove from watcher since transaction is completed
     TxWatcher.removeFromWatch(reference);
 
@@ -80,3 +73,9 @@ export const paystackWebhook: RouteHandler = async (req, res) => {
         reference: reference
     }));
 };
+
+const paystackWebhook : RouteConfig = {
+    path: "/paystack",
+    post: handler,
+}
+export default paystackWebhook;

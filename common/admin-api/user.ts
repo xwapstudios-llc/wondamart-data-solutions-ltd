@@ -2,7 +2,7 @@ import { ClUser } from "@common/client-api/user";
 import { collections, db } from "@common/lib/db";
 import {collection, doc, getDoc, getDocs, Timestamp, updateDoc} from "firebase/firestore";
 import {UserInfoDocument, AdminRoleClaims} from "@common/types/user";
-import {api_wondamart_req} from "@common/lib/api-wondamart";
+import {wondamart_api_client} from "@common/lib/api-wondamart";
 
 const AdminUser = {
     updateBalance: async (uid: string, amount: number) => {
@@ -55,7 +55,7 @@ const AdminUser = {
     makeAdmin: async (uid?: string) => {
         if (!uid) return Promise.reject("Invalid user id");
         try {
-            return await api_wondamart_req(
+            return await wondamart_api_client(
                 "/admin/make-admin",
                 uid
             );
@@ -66,7 +66,7 @@ const AdminUser = {
     revokeAdmin: async (uid?: string) => {
         if (!uid) return Promise.reject("Invalid user id");
         try {
-            return await api_wondamart_req(
+            return await wondamart_api_client(
                 "/admin/revoke-admin",
                 uid
             );

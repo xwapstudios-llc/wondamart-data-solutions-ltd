@@ -4,12 +4,12 @@ import {doc, getDoc, Timestamp, updateDoc} from "firebase/firestore";
 import {sendEmailVerification} from "firebase/auth"
 import {auth} from "@common/lib/auth";
 import type {HTTPResponse} from "@common/types/request";
-import {api_wondamart_req} from "@common/lib/api-wondamart";
+import {wondamart_api_client} from "@common/lib/api-wondamart";
 
 const ClUser = {
     create: async (data: UserRegistrationRequest): Promise<HTTPResponse> => {
         try {
-            return await api_wondamart_req(
+            return await wondamart_api_client(
                 "/new/user",
                 data
             );
@@ -20,8 +20,8 @@ const ClUser = {
     },
     activateAccount: async (): Promise<HTTPResponse> => {
         try {
-            return await api_wondamart_req(
-                "/user/activate",
+            return await wondamart_api_client(
+                "/user/activate-account",
                 {}
             );
         } catch (err) {
@@ -46,7 +46,7 @@ const ClUser = {
         }
     },
     registerAgent: async (data: UserRegistrationRequest): Promise<HTTPResponse> => {
-        return await api_wondamart_req(
+        return await wondamart_api_client(
             "/user/register-agent",
             data
         );
@@ -83,8 +83,8 @@ const ClUser = {
         const ref = doc(db, collections.users, uid);
         const d = await getDoc(ref);
         if (d.exists()) {
-            return await api_wondamart_req(
-                "/user/update-phone",
+            return await wondamart_api_client(
+                "/user/update-phone-number",
                 {
                     uid: uid,
                     phoneNumber: phoneNumber
@@ -95,7 +95,7 @@ const ClUser = {
     },
     delete: async (uid: string): Promise<HTTPResponse> => {
         try {
-            return await api_wondamart_req(
+            return await wondamart_api_client(
                 "/user/delete",
                 uid
             );

@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config({path: `${process.env.WONDAMART_ROOT}/.env`, debug: true});
 
 interface Config {
-    port_pay: number;
     port_api: number;
     port_server: number;
 
@@ -19,7 +18,6 @@ interface Config {
 }
 
 const config: Config = {
-    port_pay: process.env.PORT_PAY ? parseInt(process.env.PORT_PAY, 10) : 3000,
     port_api: process.env.PORT_API ? parseInt(process.env.PORT_API, 10) : 3001,
     port_server: process.env.PORT_SERVER ? parseInt(process.env.PORT_SERVER, 10) : 3002,
 

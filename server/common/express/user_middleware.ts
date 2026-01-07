@@ -19,6 +19,7 @@ const user_middleware: MiddlewareHandler = async (req, res, next) => {
 
     const auth = getAuth();
     if (!userId) {
+        console.log("No user id found at user_middleware.");
         const response = httpResponse(
             "unauthenticated",
             "User ID header required"
@@ -29,6 +30,7 @@ const user_middleware: MiddlewareHandler = async (req, res, next) => {
     try {
         await auth.verifyIdToken(userToken, true);
     } catch (error) {
+        console.log("Failed to verify auth id token.");
         const response = httpResponse(
             "unauthenticated",
             "User token is not valid"
@@ -40,6 +42,7 @@ const user_middleware: MiddlewareHandler = async (req, res, next) => {
     req.userId = user.uid;
     req.userClaims = user.customClaims as UserClaims || {};
 
+    console.log("User passed middleware");
     next();
 };
 

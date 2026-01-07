@@ -3,6 +3,7 @@ import {MiddlewareHandler} from "./index";
 
 const allowedOrigins: string[] = [
     'http://localhost:5173',
+    'http://localhost:4173',
     'https://wondamartgh.com',
     'https://api.wondamartgh.com',
     'https://server.wondamartgh.com',

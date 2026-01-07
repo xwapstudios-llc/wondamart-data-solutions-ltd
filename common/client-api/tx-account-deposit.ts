@@ -8,7 +8,7 @@ import { collections, db } from "@common/lib/db";
 import { doc, getDoc, getDocs, Query, query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
 import type {HTTPResponse} from "@common/types/request";
-import {api_wondamart_req} from "@common/lib/api-wondamart";
+import {wondamart_api_client} from "@common/lib/api-wondamart";
 
 const createQuery = (q: TxAccountDepositQuery): Query => {
     let Q = buildTxQuery(q);
@@ -20,8 +20,8 @@ const createQuery = (q: TxAccountDepositQuery): Query => {
 const ClTxAccountDeposit = {
     otp: {
         submit: async (data: TxSubmitOTPRequest): Promise<HTTPResponse> => {
-            return await api_wondamart_req(
-                "/deposit/paystack/submit-otp",
+            return await wondamart_api_client(
+                "/deposit/paystack-submit-otp",
                 data
             );
         },
@@ -34,19 +34,19 @@ const ClTxAccountDeposit = {
     },
     create: {
         paystack: async (data: TxDepositPaystackRequest): Promise<HTTPResponse> => {
-            return await api_wondamart_req(
+            return await wondamart_api_client(
                 "/deposit/paystack",
                 data
             );
         },
         send: async (data: TxDepositSendRequest): Promise<HTTPResponse> => {
-            return await api_wondamart_req(
+            return await wondamart_api_client(
                 "/deposit/send",
                 data
             );
         },
         momo: async (data: TxDepositMoMoRequest): Promise<HTTPResponse> => {
-            return await api_wondamart_req(
+            return await wondamart_api_client(
                 "/deposit/momo",
                 data
             );

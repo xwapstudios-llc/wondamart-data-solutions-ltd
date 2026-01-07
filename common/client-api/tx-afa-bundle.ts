@@ -3,7 +3,7 @@ import { doc, getDoc, getDocs, query, Query, where } from "firebase/firestore";
 import { buildTxQuery } from "@common/lib/tx-query";
 import { type TxAfaBundle, type TxAfaBundleQuery, type TxAfaBundleRequest } from "@common/types/afa-bundle";
 import type {HTTPResponse} from "@common/types/request";
-import {api_wondamart_req} from "@common/lib/api-wondamart";
+import {wondamart_api_client} from "@common/lib/api-wondamart";
 
 const createQuery = (q: TxAfaBundleQuery): Query => {
     let Q = buildTxQuery(q);
@@ -17,7 +17,7 @@ const ClTxAFABundle = {
     //
     // Create
     create: async (data: TxAfaBundleRequest): Promise<HTTPResponse> => {
-        return await api_wondamart_req(
+        return await wondamart_api_client(
             "/buy/afa-bundle",
             data
         );

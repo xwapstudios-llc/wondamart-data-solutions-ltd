@@ -1,13 +1,11 @@
 import {
-    getFirestore,
     // connectFirestoreEmulator,
+    getFirestore,
 } from "firebase/firestore";
 import app from "@common/lib/app";
 
 export const db = getFirestore(app);
-// if (process.env["NODE_ENV"] === "development") {
-//     connectFirestoreEmulator(db, "localhost", 8080);
-// }
-export {collections} from "@common/lib/collections";
 
-// ------ References ------
+// connectFirestoreEmulator(db, "localhost", 8080);
+
+export {collections} from "@common/lib/collections";
