@@ -67,7 +67,7 @@ export const createExpressApp = (config: ExpressAppConfig): Express => {
     }
 
     // Default global handler
-    config.defaultHandler ? app.use(asyncHandler(config.defaultHandler)) : app.use(notFoundHandler);
+    // config.defaultHandler ? app.use("/", asyncHandler(config.defaultHandler)) : app.use("/", notFoundHandler);
 
     const setupRoutes = (
         routes: RouteConfig[],

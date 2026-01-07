@@ -7,13 +7,13 @@ import webhooks from "@/routes/webhook";
 import newRoutes from "@/routes/new";
 import callbacks from "@/routes/callback";
 
-const handler: RouteHandler = (req, res) => {
-    res.send("Hello World! from api.wondamart.com");
+const postHandler: RouteHandler = async (req, res) => {
+    res.send("Hello World! " + req.body.name);
 };
 
 const home: RouteConfig = {
     path: "/",
-    get: handler,
+    post: postHandler,
     middleware: [],
     children: [
         buy,

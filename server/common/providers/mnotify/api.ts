@@ -41,29 +41,50 @@ class MnotifyClient {
     }
 
     async sendSms(payload: SendSmsPayload): Promise<MnotifyResponse> {
-        const body = {
-            recipient: payload.recipients,
-            sender: payload.sender ?? "Wondamart Data Solutions Ltd.",
+        const params = new URLSearchParams({
+            key: this.apiKey,
+            recipient: payload.recipients.join(','),
+            sender: payload.sender ?? this.senderId,
             message: payload.message,
-            is_schedule: payload.is_schedule ?? false,
-            schedule_date: payload.schedule_date,
-            schedule_time: payload.schedule_time,
-        };
+            is_schedule: (payload.is_schedule ?? false).toString(),
+            schedule_date: payload.schedule_date ?? '',
+            schedule_time: payload.schedule_time ?? ''
+        });
 
         const response = await this.client.post<MnotifyResponse>(
-            `/sms/quick?key=${this.apiKey}`,
-            body
+            `/sms/quick?${params.toString()}`
         );
 
         return response.data;
     }
 
     async getBalance(): Promise<MnotifyResponse> {
+        const params = new URLSearchParams({ key: this.apiKey });
         const response = await this.client.get<MnotifyResponse>(
-            `/balance?key=${this.apiKey}`
+            `/balance/sms?${params.toString()}`
+        );
+        return response.data;
+    }
+
+    async checkSenderIdStatus(id: string): Promise<MnotifyResponse> {
+        const params = new URLSearchParams({ key: this.apiKey, sender_name: id });
+        const response = await this.client.post<MnotifyResponse>(
+            `/senderid/status?${params.toString()}`
+        );
+        return response.data;
+    }
+
+    async registerSenderId(id: string, purpose: string): Promise<MnotifyResponse> {
+        const params = new URLSearchParams({ key: this.apiKey, sender_name: id, purpose: purpose });
+        const response = await this.client.post<MnotifyResponse>(
+            `/senderid/register?${params.toString()}`
         );
         return response.data;
     }
 }
 
 export const mnotifyClient = new MnotifyClient();
+
+
+`curl --location --request POST 'https://api.mnotify.com/api/senderid/status/?key=bDXVhXfaMneJxsL2jcJsfDm1a&sender_name=wondamart-server' --header 'Content-Type: application/json'
+`
