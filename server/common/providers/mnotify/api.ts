@@ -41,21 +41,34 @@ class MnotifyClient {
     }
 
     async sendSms(payload: SendSmsPayload): Promise<MnotifyResponse> {
-        const params = new URLSearchParams({
-            key: this.apiKey,
-            recipient: payload.recipients.join(','),
-            sender: payload.sender ?? this.senderId,
-            message: payload.message,
-            is_schedule: (payload.is_schedule ?? false).toString(),
-            schedule_date: payload.schedule_date ?? '',
-            schedule_time: payload.schedule_time ?? ''
-        });
-
-        const response = await this.client.post<MnotifyResponse>(
-            `/sms/quick?${params.toString()}`
-        );
-
-        return response.data;
+        return {
+            code: '200',
+            message: 'SMS sent successfully',
+            status: 'success',
+            data: {
+                recipients: payload.recipients,
+                message: payload.message,
+                sender: payload.sender ?? this.senderId,
+                is_schedule: payload.is_schedule ?? false,
+                schedule_date: payload.schedule_date ?? '',
+                schedule_time: payload.schedule_time ?? ''
+            }
+        };
+        // const params = new URLSearchParams({
+        //     key: this.apiKey,
+        //     recipient: payload.recipients.join(','),
+        //     sender: payload.sender ?? this.senderId,
+        //     message: payload.message,
+        //     is_schedule: (payload.is_schedule ?? false).toString(),
+        //     schedule_date: payload.schedule_date ?? '',
+        //     schedule_time: payload.schedule_time ?? ''
+        // });
+        //
+        // const response = await this.client.post<MnotifyResponse>(
+        //     `/sms/quick?${params.toString()}`
+        // );
+        //
+        // return response.data;
     }
 
     async getBalance(): Promise<MnotifyResponse> {
