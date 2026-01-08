@@ -59,7 +59,7 @@ const UserActivate: React.FC = () => {
             return;
         }
         sendEmailVerification(user, {
-            url: `https://wondamartgh.com/${R.auth.verifyEmail(user.email ?? "")}`
+            url: `https://wondamartgh.com${R.auth.verifyEmail(user.email ?? "")}`
         }).then(() => {
             toast.success("Email Verification Sent", {
                 description: "Please check your email for verification link"
