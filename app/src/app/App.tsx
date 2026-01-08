@@ -9,7 +9,6 @@ import {R} from "@/app/routes.ts";
 const LoginPage = lazy(() => import("@/pages/LoginPage.tsx"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.tsx"));
 const SignupPage = lazy(() => import("@/pages/SignupPage.tsx"));
-const VerifyEmailPage = lazy(() => import("@/pages/auth/VerifyEmailPage.tsx"));
 const ForgotPasswordPage = lazy(() => import("@/pages/auth/ForgotPasswordPage.tsx"));
 const ResetPasswordPage = lazy(() => import("@/pages/auth/ResetPasswordPage.tsx"));
 const OTPPage = lazy(() => import("@/pages/auth/OTPPage.tsx"));
@@ -65,7 +64,6 @@ const App = () => {
 
                     {/*Routes group for authentications*/}
                     <>
-                        <Route path={R.auth.verifyEmail(":email")} element={<VerifyEmailPage/>}/>
                         <Route path={R.auth.action} element={<AuthAction/>}/>
                         <Route path={R.auth.forgotPassword} element={<ForgotPasswordPage/>}/>
                         <Route path={R.auth.resetPassword} element={<ResetPasswordPage/>}/>

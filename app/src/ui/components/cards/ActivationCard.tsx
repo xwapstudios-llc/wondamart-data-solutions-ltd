@@ -10,17 +10,20 @@ interface ActivationCardProps extends React.HTMLAttributes<HTMLDivElement> {
     };
     Icon: LucideIcon;
     size?: "xs" | "sm" | "md" | "lg" | "xl";
+    iconClassName?: string;
 }
 
-const ActivationCard: React.FC<ActivationCardProps> = ({
-                                                           cta,
-                                                           title,
-                                                           Icon,
-                                                           size = "xl",
-                                                           className,
-                                                           children,
-                                                           ...props
-                                                       }) => {
+const ActivationCard: React.FC<ActivationCardProps> =
+    ({
+         cta,
+         title,
+         Icon,
+         size = "xl",
+         className,
+         children,
+        iconClassName,
+         ...props
+    }) => {
     const sizeClassNames = {
         xs: "w-58 h-48",
         sm: "w-64 h-56",
@@ -45,7 +48,7 @@ const ActivationCard: React.FC<ActivationCardProps> = ({
              {...props}
         >
             <div className={"space-y-2"}>
-                <Icon size={iconSize[size]} strokeWidth={1}/>
+                <Icon size={iconSize[size]} className={iconClassName} strokeWidth={1}/>
                 <h4 className={"text-4xl font-semibold"}>{title}</h4>
             </div>
             <div className={"space-y-2"}>

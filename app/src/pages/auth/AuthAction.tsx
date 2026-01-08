@@ -1,68 +1,106 @@
 import React, {useEffect, useState} from "react";
 import Page from "@/ui/page/Page.tsx";
-import {useSearchParams} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {wondamart_api_client} from "@common/lib/api-wondamart.ts";
-import {checkActionCode, applyActionCode} from "firebase/auth";
+import {applyActionCode, checkActionCode} from "firebase/auth";
 import {auth} from "@common/lib/auth.ts";
-import PageHeading from "@/ui/page/PageHeading.tsx";
-import PageContent from "@/ui/page/PageContent.tsx";
-import {LoaderIcon} from "lucide-react";
+import {FrownIcon, LoaderIcon} from "lucide-react";
+import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
+import {R} from "@/app/routes.ts";
 
 const AuthAction: React.FC = () => {
     const [sParams] = useSearchParams();
-    const action = sParams.get("action");
     const code = sParams.get("oobCode");
-    const mode = sParams.get("mode");
+    // const mode = sParams.get("mode");
     const [loading, setLoading] = useState(true);
-    const [infos, setInfos] = useState<string>("");
+    const [error, setError] = useState<string | undefined>();
+    const [action, setAction] = useState<string | undefined>();
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function run() {
             if (!code) {
                 // Link broken
-                setInfos("Link broken");
+                setError("LINK_BROKEN");
+                setLoading(false);
                 return;
             }
             try {
                 const info = await checkActionCode(auth, code);
                 if (info.operation === "VERIFY_EMAIL") {
                     await applyActionCode(auth, code);
-                    setInfos("Action Applied")
-                    const res = await wondamart_api_client("/user/auth/complete-email-verification");
-                    setInfos("Email verified. " + JSON.stringify(res));
+                    await wondamart_api_client("/user/auth/complete-email-verification");
+                    setAction("VERIFY_EMAIL");
                 } else {
-                    setInfos("Unknown operation");
+                    setError("UNKNOWN_OPERATION");
                 }
             } catch (e) {
-                setInfos("Error. " + JSON.stringify(e));
+                setError("UNKNOWN_ERROR_OCCURRED");
             }
             setLoading(false);
         }
+
         run().then();
     }, []);
 
-    return (
-        <Page>
-            <PageHeading>Complete</PageHeading>
-            <PageContent>
-                <div>
-                    <p>action: {action}</p>
-                    <p>code: {code}</p>
-                    <p>mode: {mode}</p>
-                </div>
-                <div className={"absolute bottom-2 left-2 right-2 rounded-md border-2 border-card bg-card/75 p-2 min-h-32"}>
-                    {
-                        loading && (
-                            <div className={"text-center"}>
-                                <LoaderIcon className={"animate-spin"}/>
-                                <span>Loading...</span>
-                            </div>
-                        )
-                    }
-                    <p className={"mt-2 text-sm"}>{infos}</p>
-                </div>
+    if (loading) return (
+        <Page className={"flex flex-col gap-8 p-8 items-center justify-center h-svh"}>
+            <ActivationCard
+                className={"w-full md:w-md h-md"}
+                Icon={LoaderIcon}
+                title={"Loading..."}
+                iconClassName={"animate-spin"}
+                cta={{label: "Please wait..."}}
+            />
+        </Page>
+    )
 
-            </PageContent>
+    if (error) return (
+        <Page className={"flex flex-col gap-8 p-8 items-center justify-center h-svh"}>
+            <ActivationCard
+                className={"w-full md:w-md h-md"}
+                Icon={FrownIcon}
+                title={"Oops..."}
+                cta={{label: "Please try again later"}}
+            >
+                <p>{error}</p>
+            </ActivationCard>
+        </Page>
+    )
+
+    if (action && action === "VERIFY_EMAIL") return (
+        <Page className={"flex flex-col gap-8 p-8 items-center justify-center h-svh"}>
+            <ActivationCard
+                className={"w-full md:w-md h-md"}
+                Icon={FrownIcon}
+                title={"Email verified"}
+                cta={{
+                    label: "Go to dashboard", action: () => {
+                        navigate(R.app.dashboard)
+                    }
+                }}
+            >
+                {
+                    auth.currentUser && <p className={"text-xl font-semibold"}>{auth.currentUser.email}</p>
+                }
+                <p>Your email address is verified.</p>
+            </ActivationCard>
+        </Page>
+    )
+
+    return (
+        <Page className={"flex flex-col gap-8 p-8 items-center justify-center h-svh"}>
+            <ActivationCard
+                className={"w-full md:w-md h-md"}
+                Icon={FrownIcon}
+                title={"Oops..."}
+                cta={{label: "Contact Admin", action: () => {
+                    navigate(R.utils.admin)
+                }
+            }}
+            >
+                <p>You are not supposed to see this. If you do, please contact administrators.</p>
+            </ActivationCard>
         </Page>
     )
 }

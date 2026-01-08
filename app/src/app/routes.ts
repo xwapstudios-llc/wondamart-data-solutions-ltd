@@ -13,9 +13,8 @@ const R = {
 
     auth: {
         action: "/auth/action",
-        forgotPassword: "/forgot-password",
-        resetPassword: "/reset-password",
-        verifyEmail:(email: string) => `/auth/verify-email/${email}`,
+        forgotPassword: "/auth/forgot-password",
+        resetPassword: "/auth/reset-password",
         otp: (txID: string) => `/auth/otp/${txID}`,
     },
 
