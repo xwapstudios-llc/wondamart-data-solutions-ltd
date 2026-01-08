@@ -90,8 +90,6 @@ export const useAppStore = create<AppState>()(
                     // onAuthStateChanged will fire and update the store
                     set({loading: false});
                 } catch (err: unknown) {
-                    // @ts-expect-error Unknown but it's a firebase https return
-                    set({error: err.message, loading: false});
                     throw err;
                 }
             },

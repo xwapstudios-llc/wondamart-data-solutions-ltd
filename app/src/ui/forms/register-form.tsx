@@ -56,7 +56,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
             firstName: "",
             lastName: "",
             phoneNumber: "",
-            // referredBy: "",
+            referredBy: "",
             email: "",
             password: "",
             confirmPassword: ""

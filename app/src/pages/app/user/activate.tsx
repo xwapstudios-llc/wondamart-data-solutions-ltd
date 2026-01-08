@@ -9,9 +9,10 @@ import PageHeading from "@/ui/page/PageHeading.tsx";
 import {toast} from "sonner";
 import {R} from "@/app/routes.ts";
 import {useNavigate} from "react-router-dom";
+import { sendEmailVerification } from "firebase/auth";
 
 const UserActivate: React.FC = () => {
-    const {fetchClaims, claims, commonSettings, wallet} = useAppStore()
+    const {fetchClaims, claims, commonSettings, wallet, user} = useAppStore()
     const [loading, setLoading] = useState(false);
     const [loading2, setLoading2] = useState(false);
     const navigate = useNavigate();
@@ -47,9 +48,16 @@ const UserActivate: React.FC = () => {
 
     async function verifyEmail() {
         setLoading2(true);
-        await ClUser.verifyEmail().catch((err) => {
-            toast.error("Email Activation Failed", {
-                description: err.message
+        if (!user) {
+            toast.error("User not found");
+            setLoading2(false);
+            return;
+        }
+        sendEmailVerification(user, {
+            url: `https://wondamartgh.com/auth/verify-email/${user.email}`
+        }).then(() => {
+            toast.success("Email Verification Sent", {
+                description: "Please check your email for verification link"
             });
         });
         await fetchClaims();

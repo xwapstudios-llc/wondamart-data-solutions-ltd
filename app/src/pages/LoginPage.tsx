@@ -13,7 +13,8 @@ const LoginPage: React.FC = () => {
         >
             <div className={"max-w-xl space-y-6"}>
                 <div>
-                    <PageHeading className="text-center">Welcome</PageHeading>
+                    <img src={"/logo/logo.png"} alt={""} className={"size-32 mx-auto"}/>
+                    <PageHeading className="text-center">Wondamart Data Solutions</PageHeading>
                     <PageSubHeading className="text-center">
                         Login to your account
                     </PageSubHeading>

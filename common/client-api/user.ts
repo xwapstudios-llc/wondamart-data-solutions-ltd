@@ -4,16 +4,17 @@ import {doc, getDoc, Timestamp, updateDoc} from "firebase/firestore";
 import {sendEmailVerification} from "firebase/auth"
 import {auth} from "@common/lib/auth";
 import type {HTTPResponse} from "@common/types/request";
-import {wondamart_api_client} from "@common/lib/api-wondamart";
+import {wondamart_api_client, wondamart_api_client_without_token} from "@common/lib/api-wondamart";
 
 const ClUser = {
     create: async (data: UserRegistrationRequest): Promise<HTTPResponse> => {
         try {
-            return await wondamart_api_client(
+            return await wondamart_api_client_without_token(
                 "/new/user",
                 data
             );
         } catch (err) {
+            console.log(err);
             // @ts-expect-error message might not be available on error
             return Promise.reject(err.message || "Failed to create user");
         }
@@ -27,22 +28,6 @@ const ClUser = {
         } catch (err) {
             // @ts-expect-error message might not be available on error
             return Promise.reject(err.message || "Failed to activate user");
-        }
-    },
-    verifyEmail: async (): Promise<void> => {
-        const user = auth.currentUser;
-        if (!user) {
-            return Promise.reject("No authenticated user found");
-        }
-        try {
-            await sendEmailVerification(user, {
-                url: `https://wondamartgh.com/auth/verify-email/${user.email}`
-            });
-            // Toast email verification sent
-            return Promise.resolve();
-        } catch (err) {
-            // @ts-expect-error message might not be available on error
-            return Promise.reject(err.message || "Failed to verify email");
         }
     },
     registerAgent: async (data: UserRegistrationRequest): Promise<HTTPResponse> => {

@@ -28,6 +28,10 @@ const LoginForm: React.FC<LoginFormProps> = ({className, ...props}) => {
 
     const form = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+        },
     });
 
     const onSubmit = async (values: LoginValues) => {

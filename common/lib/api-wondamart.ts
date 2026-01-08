@@ -58,16 +58,25 @@ class WondamartApiClient {
 
         return response.data as HTTPResponse;
     }
+
+    async requestWithoutToken(url: ApiWondamart, data?: any): Promise<HTTPResponse> {
+        const response = await this.axios.post(url, data);
+        return response.data as HTTPResponse;
+    }
 }
 
 let baseUrl = "https://api.wondamartgh.com"
-baseUrl = "http://localhost:3180"
+// baseUrl = "http://localhost:3180"
 
 const wondamart_api = new WondamartApiClient(baseUrl);
 const wondamart_api_client = async (url: ApiWondamart, data?: any): Promise<HTTPResponse> => {
     return wondamart_api.request(url, data);
 }
+const wondamart_api_client_without_token = async (url: ApiWondamart, data?: any): Promise<HTTPResponse> => {
+    return wondamart_api.requestWithoutToken(url, data);
+}
 
 export {
-    wondamart_api_client
+    wondamart_api_client,
+    wondamart_api_client_without_token
 }
