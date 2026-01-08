@@ -30,10 +30,8 @@ const NotificationsPage = lazy(() => import("@/pages/app/notifications/index"));
 const UserIndex = lazy(() => import("@/pages/app/user/index"));
 const UserProfile = lazy(() => import("@/pages/app/user/profile"));
 const UserActivate = lazy(() => import("@/pages/app/user/activate"));
-const UserSettings = lazy(() => import("@/pages/app/user/settings/index"));
-const UserSettingsGeneral = lazy(() => import("@/pages/app/user/settings/general"));
-const UserSettingsAccount = lazy(() => import("@/pages/app/user/settings/account"));
-const UserSettingsSecurity = lazy(() => import("@/pages/app/user/settings/security"));
+const UserSettingsGeneral = lazy(() => import("@/pages/app/user/general.tsx"));
+const UserSettingsSecurity = lazy(() => import("@/pages/app/user/security.tsx"));
 const RegisterAgent = lazy(() => import("@/pages/app/RegisterAgent.tsx"));
 const AuthAction = lazy(() => import("@/pages/auth/AuthAction.tsx"));
 
@@ -109,9 +107,7 @@ const App = () => {
                         <Route path={R.app.user.index} element={<UserIndex/>}/>
                         <Route path={R.app.user.profile} element={<UserProfile/>}/>
                         <Route path={R.app.user.activate} element={<UserActivate/>}/>
-                        <Route path={R.app.user.settings.index} element={<UserSettings/>}/>
                         <Route path={R.app.user.settings.general} element={<UserSettingsGeneral/>}/>
-                        <Route path={R.app.user.settings.account} element={<UserSettingsAccount/>}/>
                         <Route path={R.app.user.settings.security} element={<UserSettingsSecurity/>}/>
 
                         {/*Not found page*/}

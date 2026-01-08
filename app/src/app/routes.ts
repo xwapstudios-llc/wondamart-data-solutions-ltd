@@ -81,9 +81,7 @@ const R = {
 
             // Settings
             settings: {
-                index: "/app/user/settings",
                 general: "/app/user/settings/general",
-                account: "/app/user/settings/account",
                 security: "/app/user/settings/security",
             },
         },

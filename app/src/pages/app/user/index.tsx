@@ -8,7 +8,6 @@ import {
     BellIcon,
     ShieldIcon,
     LockIcon,
-    UserIcon,
     HelpCircleIcon,
     InfoIcon,
     FileTextIcon, LogOutIcon, ShieldCheckIcon, UserPenIcon, HomeIcon
@@ -19,21 +18,33 @@ import SettingsItem from "@/ui/components/user/SettingsItem.tsx";
 import {R} from "@/app/routes.ts";
 import {Button} from "@/cn/components/ui/button.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
+import {useNavigate} from "react-router-dom";
 
 const UserIndex: React.FC = () => {
     const {resolvedTheme, setTheme} = useTheme();
     const {logout} = useAppStore();
+    const navigate = useNavigate();
 
     return (
         <Page>
-            <ProfilePill className={"my-4"}>
-                <div className={"grow flex justify-end"}>
-                    <Button onClick={logout} className={"rounded-full size-12"} variant={"outline"}>
-                        <LogOutIcon className={"text-destructive"} />
-                    </Button>
-                </div>
-            </ProfilePill>
-            <PageContent>
+            <div className={"mt-6 flex flex-col gap-y-2 items-center"}>
+                <ProfilePill className={"w-full"}>
+                    <div className={"grow flex justify-end"}>
+                        <Button onClick={logout} className={"rounded-full size-12"} variant={"outline"}>
+                            <LogOutIcon className={"text-destructive"} />
+                        </Button>
+                    </div>
+                </ProfilePill>
+                <Button
+                    onClick={() => navigate(R.app.deposit)}
+                    variant={"outline"}
+                    className={"w-4/5 py-5 rounded-full"}
+                >
+                    Deposit
+                </Button>
+            </div>
+
+            <PageContent className={"mt-8"}>
                 <div className={"flex items-center justify-between p-4"}>
                     <div className="flex items-center gap-4">
                         <MoonIcon strokeWidth={1.5} className="size-6" />
@@ -56,23 +67,9 @@ const UserIndex: React.FC = () => {
                         User Space
                     </PageSubHeading>
                     <SettingsItem
-                        href={R.app.user.activate}
-                        Icon={ShieldCheckIcon}
-                        label="Activation & Verification"
-                    />
-                    <SettingsItem
                         href={R.app.user.profile}
                         Icon={UserPenIcon}
                         label="Profile"
-                    />
-
-                    <PageSubHeading className={"px-4"}>
-                        Tweaks
-                    </PageSubHeading>
-                    <SettingsItem
-                        href={R.app.user.settings.account}
-                        Icon={UserIcon}
-                        label="Account"
                     />
                     <SettingsItem
                         href={R.app.user.settings.general}
@@ -84,9 +81,14 @@ const UserIndex: React.FC = () => {
                         Icon={ShieldIcon}
                         label="Security"
                     />
+                    <SettingsItem
+                        href={R.app.user.activate}
+                        Icon={ShieldCheckIcon}
+                        label="Activation & Verification"
+                    />
 
                     <PageSubHeading className={"px-4"}>
-                        Legal
+                        Legal & Info
                     </PageSubHeading>
                     <SettingsItem
                         href={R.terms}

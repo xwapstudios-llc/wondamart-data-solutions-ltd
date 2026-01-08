@@ -4,7 +4,7 @@ import {useNavigate, useSearchParams} from "react-router-dom";
 import {wondamart_api_client} from "@common/lib/api-wondamart.ts";
 import {applyActionCode, checkActionCode} from "firebase/auth";
 import {auth} from "@common/lib/auth.ts";
-import {FrownIcon, LoaderIcon} from "lucide-react";
+import {LoaderIcon, MailCheckIcon, TriangleAlertIcon} from "lucide-react";
 import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
 import {R} from "@/app/routes.ts";
 
@@ -59,7 +59,7 @@ const AuthAction: React.FC = () => {
         <Page className={"flex flex-col gap-8 p-8 items-center justify-center h-svh"}>
             <ActivationCard
                 className={"w-full md:w-md h-md"}
-                Icon={FrownIcon}
+                Icon={TriangleAlertIcon}
                 title={"Oops..."}
                 cta={{label: "Please try again later"}}
             >
@@ -72,7 +72,7 @@ const AuthAction: React.FC = () => {
         <Page className={"flex flex-col gap-8 p-8 items-center justify-center h-svh"}>
             <ActivationCard
                 className={"w-full md:w-md h-md"}
-                Icon={FrownIcon}
+                Icon={MailCheckIcon}
                 title={"Email verified"}
                 cta={{
                     label: "Go to dashboard", action: () => {
@@ -92,7 +92,7 @@ const AuthAction: React.FC = () => {
         <Page className={"flex flex-col gap-8 p-8 items-center justify-center h-svh"}>
             <ActivationCard
                 className={"w-full md:w-md h-md"}
-                Icon={FrownIcon}
+                Icon={TriangleAlertIcon}
                 title={"Oops..."}
                 cta={{label: "Contact Admin", action: () => {
                     navigate(R.utils.admin)

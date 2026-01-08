@@ -92,16 +92,12 @@ const data = {
         },
         {
             title: "Settings",
-            url: R.app.user.settings.index,
+            url: R.app.user.index,
             icon: Settings2,
             items: [
                 {
                     title: "General",
                     url: R.app.user.settings.general,
-                },
-                {
-                    title: "Account",
-                    url: R.app.user.settings.account,
                 },
                 {
                     title: "Security",
@@ -156,7 +152,7 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({
                         </div>
                     </SidebarMenuButton>
                 )}
-                <NavUser/>
+                <NavUser />
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.buyMenu} title={"Buy"}/>

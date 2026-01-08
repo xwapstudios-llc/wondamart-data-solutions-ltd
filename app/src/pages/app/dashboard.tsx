@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
     return (
         <Page className={"pt-2 space-y-4"}>
             <div className={"flex gap-4 justify-between"}>
-                <div>
+                <div className={"flex gap-2 items-end"}>
                     <p className={"text-xl"}>Hello,</p>
                     <PageHeading>{profile?.firstName}</PageHeading>
                 </div>

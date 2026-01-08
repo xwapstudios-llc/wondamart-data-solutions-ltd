@@ -227,7 +227,7 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
             </div>
             <OverviewGraph data={graphData} loading={loading} className={"mt-1"} />
 
-            <div className={"flex gap-2 overflow-x-auto"}>
+            <div className={"flex gap-2 overflow-x-auto hidden-scroll-bar"}>
                 <ActivityHighlightCard
                     Icon={getTxIcon["tx"]}
                     subTitle={"Orders made"}

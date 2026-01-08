@@ -1,5 +1,4 @@
-import {BadgeCheck, Bell, ChevronsUpDown, LockIcon, LogOut, Sparkles, User2Icon,} from "lucide-react";
-
+import {Bell, ChevronsUpDown, LockIcon, LogOut, ShieldCheckIcon, User2Icon, UserPenIcon,} from "lucide-react";
 import {Avatar, AvatarFallback, AvatarImage,} from "@/cn/components/ui/avatar";
 import {
     DropdownMenu,
@@ -15,10 +14,16 @@ import {useAppStore} from "@/lib/useAppStore";
 import {useNavigate} from "react-router-dom";
 import {R} from "@/app/routes";
 
+
 export function NavUser() {
     const {user, profile, logout} = useAppStore();
     const {isMobile} = useSidebar();
     const navigate = useNavigate();
+
+    const getInitials = (name: string) => {
+        const names = name.split(" ");
+        return names.map(n => n.charAt(0).toUpperCase()).join("").slice(0, 2);
+    }
 
     return (
         <SidebarMenu>
@@ -35,7 +40,9 @@ export function NavUser() {
                                     alt={"User"}
                                 />
                                 <AvatarFallback className="ring-2 ring-primary">
-                                    <User2Icon/>
+                                    {
+                                        user?.displayName ? getInitials(user.displayName) : <User2Icon className={"text-muted-foreground"}/>
+                                    }
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -63,7 +70,9 @@ export function NavUser() {
                                         alt={"User"}
                                     />
                                     <AvatarFallback className="ring-2 ring-primary">
-                                        <User2Icon/>
+                                        {
+                                            user?.displayName ? getInitials(user.displayName) : <User2Icon className={"text-muted-foreground"}/>
+                                        }
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -79,15 +88,15 @@ export function NavUser() {
                         <DropdownMenuSeparator/>
                         <DropdownMenuGroup>
                             <DropdownMenuItem onClick={() => navigate(R.app.user.activate)}>
-                                <Sparkles/>
+                                <ShieldCheckIcon/>
                                 Account Activation
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator/>
                         <DropdownMenuGroup>
-                            <DropdownMenuItem onClick={() => navigate(R.app.user.settings.account)}>
-                                <BadgeCheck/>
-                                Account
+                            <DropdownMenuItem onClick={() => navigate(R.app.user.profile)}>
+                                <UserPenIcon />
+                                Profile
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => navigate(R.app.user.settings.security)}>
                                 <LockIcon/>
