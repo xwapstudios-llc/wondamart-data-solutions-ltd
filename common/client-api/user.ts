@@ -1,8 +1,6 @@
 import {collections, db} from "@common/lib/db";
 import {type UserInfoDocument, type UserRegistrationRequest, type UserWalletDocument} from "@common/types/user";
 import {doc, getDoc, Timestamp, updateDoc} from "firebase/firestore";
-import {sendEmailVerification} from "firebase/auth"
-import {auth} from "@common/lib/auth";
 import type {HTTPResponse} from "@common/types/request";
 import {wondamart_api_client, wondamart_api_client_without_token} from "@common/lib/api-wondamart";
 
