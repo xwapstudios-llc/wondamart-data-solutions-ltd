@@ -49,7 +49,7 @@ const R = {
 
             // Purchase history
             purchases: {
-                index: "app/history?type=purchase",
+                index: "/app/history?type=purchase",
                 dataBundles: "/app/history?type=data-bundle",
                 afaBundles: "/app/history?type=afa-bundle",
                 resultCheckers: "/app/history?type=result-checker",
