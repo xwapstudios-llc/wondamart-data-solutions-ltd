@@ -36,6 +36,7 @@ const UserSettingsGeneral = lazy(() => import("@/pages/app/user/settings/general
 const UserSettingsAccount = lazy(() => import("@/pages/app/user/settings/account"));
 const UserSettingsSecurity = lazy(() => import("@/pages/app/user/settings/security"));
 const RegisterAgent = lazy(() => import("@/pages/app/RegisterAgent.tsx"));
+const AuthAction = lazy(() => import("@/pages/auth/AuthAction.tsx"));
 
 import {ThemeProvider} from "@/cn/components/theme/theme-provider.tsx";
 import {Toaster} from "@/cn/components/ui/sonner.tsx";
@@ -65,6 +66,7 @@ const App = () => {
                     {/*Routes group for authentications*/}
                     <>
                         <Route path={R.auth.verifyEmail(":email")} element={<VerifyEmailPage/>}/>
+                        <Route path={R.auth.action} element={<AuthAction/>}/>
                         <Route path={R.auth.forgotPassword} element={<ForgotPasswordPage/>}/>
                         <Route path={R.auth.resetPassword} element={<ResetPasswordPage/>}/>
                         <Route path={R.auth.otp(":txID")} element={<OTPPage/>} />

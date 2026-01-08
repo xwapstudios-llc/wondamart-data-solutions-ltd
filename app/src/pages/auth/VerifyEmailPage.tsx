@@ -10,7 +10,7 @@ const VerifyEmailPage: React.FC = () => {
     const {email} = useParams();
 
     return (
-        <Page className={"flex p-8 items-center justify-center h-svh"}>
+        <Page className={"flex flex-col gap-8 p-8 items-center justify-center h-svh"}>
             {
                 claims?.email_verified ? (
                     <>
@@ -23,7 +23,7 @@ const VerifyEmailPage: React.FC = () => {
                             <p className={"text-xl font-semibold"}>{email}</p>
                             <p>Your email address is verified.</p>
                         </ActivationCard>
-                        <div className={"mt-4"}>
+                        <div className={""}>
                             <p className={"text-sm text-muted-foreground"}>You can now close this page.</p>
                         </div>
                     </>

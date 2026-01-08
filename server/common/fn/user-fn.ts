@@ -228,6 +228,17 @@ const UserFn = {
                 updatedAt: Timestamp.now()
             } as UserClaims);
         },
+        read: async (uid: string): Promise<UserClaims | null> => {
+            const user = await auth.getUser(uid);
+            if (!user) {
+                return null;
+            }
+            const credentials = user.customClaims;
+            if (!credentials) {
+                return null;
+            }
+            return credentials;
+        },
         activate: async (uid: string): Promise<void> => {
             await UserFn.claims.update(uid, {
                 isActivated: true,

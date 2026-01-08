@@ -10,6 +10,7 @@ import {toast} from "sonner";
 import {R} from "@/app/routes.ts";
 import {useNavigate} from "react-router-dom";
 import { sendEmailVerification } from "firebase/auth";
+import {wondamart_api_client} from "@common/lib/api-wondamart.ts";
 
 const UserActivate: React.FC = () => {
     const {fetchClaims, claims, commonSettings, wallet, user} = useAppStore()
@@ -58,13 +59,17 @@ const UserActivate: React.FC = () => {
             setLoading2(false);
             return;
         }
-        sendEmailVerification(user, {
-            url: `https://wondamartgh.com${R.auth.verifyEmail(user.email ?? "")}`
-        }).then(() => {
+        try {
+            await wondamart_api_client("/user/auth/start-email-verification");
+            await sendEmailVerification(user);
             toast.success("Email Verification Sent", {
                 description: "Please check your email for verification link"
             });
-        });
+        } catch (e) {
+            toast.error("Email Verification Failed", {
+                description: "Please try again later."
+            });
+        }
         setLoading2(false);
     }
 

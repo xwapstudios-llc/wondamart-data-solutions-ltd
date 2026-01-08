@@ -39,7 +39,7 @@ These Characteristics gives a clear criteria for every data we need.
    - Update Database
 
 **Object**
-- Complete Database type
+- Action Database type
 - Database Collection folder
 - Server CRUD Object
 - Admin CRUD

@@ -12,6 +12,7 @@ const R = {
     faq: "/faq",
 
     auth: {
+        action: "/auth/action",
         forgotPassword: "/forgot-password",
         resetPassword: "/reset-password",
         verifyEmail:(email: string) => `/auth/verify-email/${email}`,

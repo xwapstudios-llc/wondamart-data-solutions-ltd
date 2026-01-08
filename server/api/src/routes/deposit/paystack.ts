@@ -68,7 +68,7 @@ export const handler: RouteHandler = async (req, res) => {
         });
         return sendResponse(res, response);
     } catch (err: unknown) {
-        console.error("Paystack init failed:", err);
+        console.error("Paystack deposit failed:", err);
         await TxFn.update_status_failed(tx.id);
         TxWatcher.removeFromWatch(tx.id); // Remove from watcher if failed immediately
 

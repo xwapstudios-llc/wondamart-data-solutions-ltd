@@ -1,7 +1,7 @@
 import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react-swc"
-import { defineConfig } from "vite"
+import {defineConfig} from "vite"
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -24,9 +24,9 @@ export default defineConfig({
                     'chart-vendor': ['recharts'],
                     'firebase': ['firebase/auth', 'firebase/firestore'],
                     'utils': ['clsx', 'tailwind-merge', 'class-variance-authority'],
-                    
+
                     // App chunks
-                    'auth': ['src/pages/LoginPage', 'src/pages/SignupPage'],
+                    'auth': ['src/pages/LoginPage', 'src/pages/SignupPage', "src/pages/auth/ForgotPasswordPage", "src/pages/auth/AuthAction", "src/pages/auth/OTPPage", "src/pages/auth/ResetPasswordPage", "src/pages/auth/VerifyEmailPage"],
                     'dashboard': ['src/pages/app/dashboard'],
                     'purchase': ['src/pages/app/purchase'],
                     'history': ['src/pages/app/history'],

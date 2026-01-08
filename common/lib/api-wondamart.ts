@@ -4,6 +4,7 @@ import {type HTTPResponse} from "@common/types/request";
 import {auth} from "@common/lib/auth";
 
 type ApiWondamart =
+    | "/"
     | "/buy/data-bundle"
     | "/buy/afa-bundle"
     | "/buy/result-checker"
@@ -16,13 +17,17 @@ type ApiWondamart =
     | "/admin/settings/init"
     | "/user/activate-account"
     | "/user/delete"
-    | "/user/email-verification"
     | "/user/register-agent"
     | "/user/update-phone-number"
+    | "/user/auth/complete-email-verification"
+    | "/user/auth/start-email-verification"
     | "/deposit/momo"
     | "/deposit/send"
     | "/deposit/paystack"
     | "/deposit/paystack-submit-otp"
+    | "/webhooks/hendylinks"
+    | "/webhooks/paystack"
+    | "/callbacks/paystack"
     | "/new/user"
     ;
 
@@ -66,7 +71,7 @@ class WondamartApiClient {
 }
 
 let baseUrl = "https://api.wondamartgh.com"
-// baseUrl = "http://localhost:3180"
+baseUrl = "http://localhost:3180"
 
 const wondamart_api = new WondamartApiClient(baseUrl);
 const wondamart_api_client = async (url: ApiWondamart, data?: any): Promise<HTTPResponse> => {

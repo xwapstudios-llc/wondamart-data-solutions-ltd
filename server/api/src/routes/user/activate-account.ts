@@ -25,6 +25,7 @@ export const handler: RouteHandler = async (req, res) => {
         }).catch(err => {
             console.error("Failed to send SMS notification:", err);
         })
+        return sendResponse(res, httpResponse("ok", "Account activated successfully"));
     } catch (error) {
         if (balance_changed) await UserFn.update_add_UserBalance(check.uid, commonUserRegistration.unitPrice);
         console.error("Error Activating user :", error);
