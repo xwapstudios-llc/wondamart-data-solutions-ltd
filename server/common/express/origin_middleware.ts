@@ -11,9 +11,11 @@ const allowedOrigins: string[] = [
 
 const corsOptions: CorsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (origin && allowedOrigins.includes(origin)) {
+            console.log("ORIGEN ALLOWED;", origin)
             callback(null, true);
         } else {
+            console.log("ORIGEN NOT ALLOWED;", origin)
             callback(new Error('Not allowed by CORS'));
         }
     },
@@ -22,4 +24,12 @@ const corsOptions: CorsOptions = {
     credentials: true,
 };
 
+const allowAllCorsOptions: CorsOptions = {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'user-id', 'user-token'],
+    credentials: false,
+};
+
 export const origen_middleware: MiddlewareHandler = cors(corsOptions);
+export const allow_all_origins_middleware: MiddlewareHandler = cors(allowAllCorsOptions);

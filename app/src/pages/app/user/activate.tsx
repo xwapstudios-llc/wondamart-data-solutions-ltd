@@ -37,12 +37,17 @@ const UserActivate: React.FC = () => {
             setLoading(false);
             return;
         }
-        await ClUser.activateAccount().catch((err) => {
-            toast.error("Activation Failed", {
-                description: err.message
+        try {
+            await ClUser.activateAccount();
+            toast.success("Activation Successful", {
+                description: "You are now activated to use all of wondamart services."
             });
-        });
-        await fetchClaims();
+            await fetchClaims();
+        } catch (e) {
+            toast.error("Activation Failed", {
+                description: "Please try again later."
+            });
+        }
         setLoading(false);
     }
 
@@ -54,13 +59,12 @@ const UserActivate: React.FC = () => {
             return;
         }
         sendEmailVerification(user, {
-            url: `https://wondamartgh.com/auth/verify-email/${user.email}`
+            url: `https://wondamartgh.com/${R.auth.verifyEmail(user.email ?? "")}`
         }).then(() => {
             toast.success("Email Verification Sent", {
                 description: "Please check your email for verification link"
             });
         });
-        await fetchClaims();
         setLoading2(false);
     }
 
