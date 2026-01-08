@@ -71,7 +71,7 @@ class WondamartApiClient {
 }
 
 let baseUrl = "https://api.wondamartgh.com"
-baseUrl = "http://localhost:3180"
+// baseUrl = "http://localhost:3180"
 
 const wondamart_api = new WondamartApiClient(baseUrl);
 const wondamart_api_client = async (url: ApiWondamart, data?: any): Promise<HTTPResponse> => {
