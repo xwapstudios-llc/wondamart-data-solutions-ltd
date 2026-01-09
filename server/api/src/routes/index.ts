@@ -7,9 +7,11 @@ import webhooks from "@/routes/webhook";
 import newRoutes from "@/routes/new";
 import callbacks from "@/routes/callback";
 import {allow_all_origins_middleware} from "@common-server/express/origin_middleware";
+import {CommonSettingsFn} from "@common-server/fn/common-settings-fn";
 
 const postHandler: RouteHandler = async (req, res) => {
-    res.send("Hello World from wondamart!");
+    await CommonSettingsFn.init();
+    res.send("Initialized common settings!");
 };
 
 const home: RouteConfig = {

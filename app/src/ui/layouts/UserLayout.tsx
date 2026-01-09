@@ -8,7 +8,13 @@ import {R} from "@/app/routes.ts";
 import MobileBottomNav from "@/ui/layouts/MobileBottomNav.tsx";
 
 const UserLayout: React.FC = () => {
-    const {subscribeProfile, subscribeWallet, subscribeCommonSettings, user} = useAppStore();
+    const {
+        subscribeProfile,
+        subscribeWallet,
+        subscribeCommonSettings,
+        user,
+        setDeferAppInstallReady,
+    } = useAppStore();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,6 +32,11 @@ const UserLayout: React.FC = () => {
             unsubCommonSettings = subscribeCommonSettings();
         }
 
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            setDeferAppInstallReady(e);
+        });
+
         return () => {
             if (unsub) unsub();
             if (unsubWallet) unsubWallet();
@@ -40,7 +51,7 @@ const UserLayout: React.FC = () => {
                 <NavHeader className={"sticky top-0 bg-background/75 backdrop-blur-xl z-50"}/>
                 <Outlet/>
             </SidebarInset>
-            <MobileBottomNav />
+            <MobileBottomNav/>
         </SidebarProvider>
     )
 }

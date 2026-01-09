@@ -13,10 +13,11 @@ import DashboardSection from "@/ui/components/cards/dashboard/DashboardSection.t
 import NoItems from "@/ui/components/cards/NoItems.tsx";
 import ActivityHighlights from "@/ui/components/cards/dashboard/ActivityHighlights.tsx";
 import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
+import PWAAction from "@/ui/components/PWAAction.tsx";
 
 const Dashboard: React.FC = () => {
     const {profile, wallet, claims} = useAppStore();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     return (
         <Page className={"pt-2 space-y-4"}>
@@ -37,6 +38,7 @@ const Dashboard: React.FC = () => {
                     <BellIcon strokeWidth={1.5}/>
                 </Link>
             </div>
+            <PWAAction />
             <div className={"bg-linear-90 from-secondary/25 to-primary/90 flex items-center justify-between rounded-md gap-4 p-4"}>
                 <div className={"space-y-2"}>
                     <p className={"text-xs opacity-75"}>Current Balance</p>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import Page from "@/ui/page/Page.tsx";
 import PageHeading from "@/ui/page/PageHeading.tsx";
 import PageSubHeading from "@/ui/page/PageSubHeading.tsx";
@@ -6,18 +6,11 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/cn/components/ui/tabs.
 import PaystackDepositView from "@/ui/components/views/deposit/PaystackDepositView.tsx";
 import SendDepositView from "@/ui/components/views/deposit/SendDepositView.tsx";
 import MoMoDepositView from "@/ui/components/views/deposit/MoMoDepositView.tsx";
-import type {CommonPaymentMethods} from '@common/types/common-settings';
-import {ClCommonSettings} from '@common/client-api/db-common-settings';
+import {useAppStore} from "@/lib/useAppStore.ts";
 
 const Deposit: React.FC = () => {
-    const [settings, setSettings] = useState<CommonPaymentMethods | null>(null);
-
-    useEffect(() => {
-        const run = async () => {
-            return await ClCommonSettings.read_paymentMethods();
-        }
-        run().then(r => setSettings(r));
-    });
+    const {commonSettings} = useAppStore();
+    const settings = commonSettings.paymentMethods;
 
     return (
         <Page>
@@ -34,13 +27,13 @@ const Deposit: React.FC = () => {
                         (new)</TabsTrigger>
                 </TabsList>
                 <TabsContent value={"paystack"}>
-                    <PaystackDepositView disabled={settings ? !settings?.paystack.enabled : true}/>
+                    <PaystackDepositView disabled={!settings.paystack.enabled}/>
                 </TabsContent>
                 <TabsContent value={"send"}>
-                    <SendDepositView disabled={settings ? !settings?.send.enabled : true}/>
+                    <SendDepositView disabled={!settings.send.enabled}/>
                 </TabsContent>
                 <TabsContent value={"momo"}>
-                    <MoMoDepositView disabled={settings ? !settings?.momo.enabled : true}/>
+                    <MoMoDepositView disabled={!settings.momo.enabled}/>
                 </TabsContent>
             </Tabs>
         </Page>

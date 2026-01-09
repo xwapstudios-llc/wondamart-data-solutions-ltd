@@ -1,98 +1,91 @@
 import {commonSettingsCollections} from "./collections";
-import {
-    CommonAFA,
-    CommonDataBundles,
-    commonDoc,
-    CommonDocs,
-    CommonPaymentMethods,
-    CommonResultChecker,
-    CommonUserRegistration
-} from "@common/types/common-settings";
+import {CommonSettings} from "@common/types/common-settings";
 
 const CommonSettingsFn = {
-    read: async (doc: CommonDocs) => {
-        const docRef = commonSettingsCollections.doc(doc);
+    read: async () => {
+        const docRef = commonSettingsCollections.doc("all");
         const settings = await docRef.get();
         if (!settings.exists) {
             return null;
         }
-        return settings.data() as Object;
+        return settings.data() as CommonSettings;
     },
     read_afa: async () => {
-        return await CommonSettingsFn.read(commonDoc.afa) as CommonAFA;
+        const all = await CommonSettingsFn.read();
+        return all?.afa
     },
     read_resultChecker: async () => {
-        return await CommonSettingsFn.read(commonDoc.resultChecker) as CommonResultChecker;
+        const all = await CommonSettingsFn.read();
+        return all?.resultChecker
     },
     read_userRegistration: async () => {
-        return await CommonSettingsFn.read(commonDoc.userRegistration) as CommonUserRegistration;
+        const all = await CommonSettingsFn.read();
+        return all?.userRegistration
     },
     read_paymentMethods: async () => {
-        return await CommonSettingsFn.read(commonDoc.paymentMethods) as CommonPaymentMethods;
+        const all = await CommonSettingsFn.read();
+        return all?.paymentMethods
     },
-
     read_dataBundles: async () => {
-        return await CommonSettingsFn.read(commonDoc.dataBundles) as CommonDataBundles;
+        const all = await CommonSettingsFn.read();
+        return all?.dataBundles
     },
-
-    create: async (ref: CommonDocs, obj: any) => {
-        const docRef = commonSettingsCollections.doc(ref);
+    create: async (obj: CommonSettings) => {
+        const docRef = commonSettingsCollections.doc("all");
         await docRef.set({
             ...obj
         }, {merge: true});
     },
     init: async () => {
         // Initialize the settings documents
-        const afa: CommonAFA = {
-            unitPrice: 17,
-            commission: 0.5,
-            enabled: true,
-        }
-        const resultChecker: CommonResultChecker = {
-            unitPrice: 18,
-            commission: 0.2,
-            enabled: true,
-        }
-        const userReg: CommonUserRegistration = {
-            unitPrice: 20,
-            commission: 2,
-            enabled: true,
-        }
-        const paymentMethods: CommonPaymentMethods = {
-            paystack: {
-                name: "Paystack",
+        const all: CommonSettings = {
+            afa: {
+                unitPrice: 17,
+                commission: 0.5,
                 enabled: true,
-                details: "This payment method goes to paystack and may attract charges."
             },
-            send: {
-                name: "Send",
-                enabled: false,
-                details: "This payment method requires user to send money and then claim with the transaction id."
+            resultChecker: {
+                unitPrice: 18,
+                commission: 0.2,
+                enabled: true,
             },
-            momo: {
-                name: "MoMo",
-                enabled: false,
-                details: "This payment method allows user to deposit by allowing cash out and confirming the transaction."
+            userRegistration: {
+                unitPrice: 20,
+                commission: 2,
+                enabled: true,
+            },
+            paymentMethods: {
+                paystack: {
+                    name: "Paystack",
+                    enabled: true,
+                    details: "This payment method goes to paystack and may attract charges."
+                },
+                send: {
+                    name: "Send",
+                    enabled: false,
+                    details: "This payment method requires user to send money and then claim with the transaction id."
+                },
+                momo: {
+                    name: "MoMo",
+                    enabled: false,
+                    details: "This payment method allows user to deposit by allowing cash out and confirming the transaction."
+                }
+            },
+            dataBundles: {
+                provider: "hendylinks",
+                enabled: true,
+                mtn: {
+                    enabled: true,
+                },
+                telecel: {
+                    enabled: true,
+                },
+                airteltigo: {
+                    enabled: true,
+                },
             }
         }
-        const dataBundles: CommonDataBundles = {
-            provider: "hendylinks",
-            enabled: true,
-            mtn: {
-                enabled: true,
-            },
-            telecel: {
-                enabled: true,
-            },
-            airteltigo: {
-                enabled: true,
-            },
-        }
-        await CommonSettingsFn.create(commonDoc.afa, afa);
-        await CommonSettingsFn.create(commonDoc.resultChecker, resultChecker);
-        await CommonSettingsFn.create(commonDoc.userRegistration, userReg);
-        await CommonSettingsFn.create(commonDoc.paymentMethods, paymentMethods);
-        await CommonSettingsFn.create(commonDoc.dataBundles, dataBundles);
+        await CommonSettingsFn.create(all);
     },
 }
 

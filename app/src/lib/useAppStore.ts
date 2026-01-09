@@ -1,21 +1,12 @@
 import {create} from "zustand";
 import {persist} from "zustand/middleware";
 import {onAuthStateChanged, type User} from "firebase/auth";
-import {collection, onSnapshot} from "firebase/firestore";
+import {doc, onSnapshot} from "firebase/firestore";
 import {auth, signInUser, signOutUser} from "@common/lib/auth";
 import type {UserClaims, UserInfoDocument, UserWalletDocument} from "@common/types/user";
 import {type Unsubscribe} from "firebase/database";
 import {ClUser} from "@common/client-api/user";
-import {
-    type CommonAFA,
-    type CommonDataBundles,
-    type CommonDocs,
-    type CommonPaymentMethods,
-    type CommonResultChecker,
-    type CommonSettings,
-    type CommonUserRegistration,
-    initialCommonSettings
-} from "@common/types/common-settings";
+import {type CommonSettings, initialCommonSettings} from "@common/types/common-settings";
 import {ClCommonSettings} from "@common/client-api/db-common-settings";
 import {collections, db} from "@common/lib/db";
 import type {HTTPResponse} from "@common/types/request.ts";
@@ -60,11 +51,26 @@ interface AppState {
     claims: UserClaims | null;
     fetchClaims: () => Promise<void>;
 
+    // PWA
+    appNeedUpdate: boolean;
+    setAppNeedUpdate: (state: boolean) => void;
+    deferAppInstallReady: any;
+    setDeferAppInstallReady: (state: any) => void;
 }
 
 export const useAppStore = create<AppState>()(
     persist(
         (set, get) => ({
+            // PWA
+            appNeedUpdate: false,
+            setAppNeedUpdate: (state: boolean) => {
+                set({appNeedUpdate: state});
+            },
+            deferAppInstallReady: null,
+            setDeferAppInstallReady: (state: any) => {
+                set({deferAppInstallReady: state});
+            },
+
             // utils
             loading: false,
             error: null,
@@ -108,33 +114,11 @@ export const useAppStore = create<AppState>()(
                 set({loading: false, error: null});
             },
             subscribeCommonSettings: () => {
-                const q = collection(db, collections.commonSettings);
+                const q = doc(db, collections.commonSettings, "all");
                 return onSnapshot(q, snapshot => {
                     const commonSettings: CommonSettings = initialCommonSettings;
-                    snapshot.docs.forEach(doc => {
-                        const docID = doc.id as CommonDocs;
-                        switch (docID) {
-                            case "afa":
-                                commonSettings.afa = doc.data() as CommonAFA;
-                                break;
-                            case "result-checker":
-                                commonSettings.resultChecker = doc.data() as CommonResultChecker;
-                                break;
-                            case "user-registration":
-                                commonSettings.userRegistration = doc.data() as CommonUserRegistration;
-                                break;
-                            case "payment-methods":
-                                commonSettings.paymentMethods = doc.data() as CommonPaymentMethods;
-                                break;
-                            case "data-bundles":
-                                commonSettings.dataBundles = doc.data() as CommonDataBundles;
-                                break;
-                            default:
-                                console.log(`Unknown common settings > ${doc.id} :`, doc.data());
-                        }
-                    });
+                    set({commonSettings: snapshot.data() as CommonSettings})
                     console.log("New Common Settings > ", commonSettings);
-                    set({commonSettings: commonSettings});
                 });
             },
 
