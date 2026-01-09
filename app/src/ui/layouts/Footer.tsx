@@ -18,8 +18,7 @@ const Footer: React.FC<FooterProps> = ({className, children, ...props}) => {
                     <span className={"text-xl md:text-2xl text-primary"}>Wondamart Data Solutions</span>
                 </Link>
                 <div className={"flex gap-12 items-start justify-start"}>
-                    <Link to={R.terms}>Terms of Service</Link>
-                    <Link to={R.policy}>Policy</Link>
+                    <Link to={R.termsAndConditions}>Terms of Service</Link>
                     <Link to={R.utils.whatsAppGroup}>Contact Support</Link>
                 </div>
                 <div className={"mt-12 text-sm text-muted-foreground text-center"}>

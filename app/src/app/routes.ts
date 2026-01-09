@@ -4,8 +4,7 @@ const R = {
     signup: "/signup",
 
     // Terms and Conditions
-    terms: "/terms", // Todo: Implement terms and conditions page
-    policy: "/policy",
+    termsAndConditions: "/terms-and-conditions",
 
     help: "/help",
     about: "/about",
@@ -85,6 +84,12 @@ const R = {
                 security: "/app/user/settings/security",
             },
         },
+        // Terms and Conditions
+        termsAndConditions: "/app/terms-and-conditions",
+
+        help: "/app/help",
+        about: "/app/about",
+        faq: "/app/faq",
     },
 
     utils: {

@@ -23,9 +23,7 @@ const SignupPage: React.FC = () => {
                 <div
                     className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
                     By continuing, you agree to our
-                    <Link to={R.terms}>{" "}Terms of Service</Link>
-                    {" "} and
-                    <Link to={R.policy}>{" "}Privacy Policy</Link>.
+                    <Link to={R.termsAndConditions}>{" "}Terms of Service and Conditions</Link>.
                 </div>
             </div>
         </Page>

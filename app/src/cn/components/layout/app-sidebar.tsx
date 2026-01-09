@@ -1,7 +1,15 @@
 "use client";
 
 import * as React from "react";
-import {ArrowUpDownIcon, Bot, CoinsIcon, DollarSignIcon, Settings2, SquareTerminal, UserPlus2Icon,} from "lucide-react";
+import {
+    ArrowUpDownIcon,
+    Bot,
+    CoinsIcon,
+    DollarSignIcon, InfoIcon,
+    SquareTerminal,
+    User2Icon,
+    UserPlus2Icon,
+} from "lucide-react";
 import {NavMain} from "@/cn/components/layout/nav-main.tsx";
 import {NavUser} from "@/cn/components/layout/nav-user.tsx";
 import {
@@ -91,10 +99,14 @@ const data = {
             ],
         },
         {
-            title: "Settings",
+            title: "User",
             url: R.app.user.index,
-            icon: Settings2,
+            icon: User2Icon,
             items: [
+                {
+                    title: "Profile",
+                    url: R.app.user.profile,
+                },
                 {
                     title: "General",
                     url: R.app.user.settings.general,
@@ -102,6 +114,33 @@ const data = {
                 {
                     title: "Security",
                     url: R.app.user.settings.security,
+                },
+                {
+                    title: "Activation & Verification",
+                    url: R.app.user.settings.general,
+                },
+            ],
+        },
+        {
+            title: "Legal & Infos",
+            url: R.app.user.index,
+            icon: InfoIcon,
+            items: [
+                {
+                    title: "Terms & Conditions",
+                    url: R.app.termsAndConditions,
+                },
+                {
+                    title: "Help",
+                    url: R.app.help,
+                },
+                {
+                    title: "About",
+                    url: R.app.about,
+                },
+                {
+                    title: "FAQ",
+                    url: R.app.faq,
                 },
             ],
         },

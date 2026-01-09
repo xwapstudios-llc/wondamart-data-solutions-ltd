@@ -28,7 +28,7 @@ const UserIndex: React.FC = () => {
     return (
         <Page>
             <div className={"mt-6 flex flex-col gap-y-2 items-center"}>
-                <ProfilePill className={"w-full"}>
+                <ProfilePill className={"w-full max-w-3xl"}>
                     <div className={"grow flex justify-end"}>
                         <Button onClick={logout} className={"rounded-full size-12"} variant={"outline"}>
                             <LogOutIcon className={"text-destructive"} />
@@ -38,13 +38,13 @@ const UserIndex: React.FC = () => {
                 <Button
                     onClick={() => navigate(R.app.deposit)}
                     variant={"outline"}
-                    className={"w-4/5 py-5 rounded-full"}
+                    className={"w-4/5 py-5 rounded-full max-w-xl"}
                 >
                     Deposit
                 </Button>
             </div>
 
-            <PageContent className={"mt-8"}>
+            <PageContent className={"mt-8 max-w-3xl mx-auto"}>
                 <div className={"flex items-center justify-between p-4"}>
                     <div className="flex items-center gap-4">
                         <MoonIcon strokeWidth={1.5} className="size-6" />
@@ -63,7 +63,7 @@ const UserIndex: React.FC = () => {
                         label="Notifications"
                     />
 
-                    <PageSubHeading className={"px-4"}>
+                    <PageSubHeading className={"px-4 mt-4"}>
                         User Space
                     </PageSubHeading>
                     <SettingsItem
@@ -87,26 +87,26 @@ const UserIndex: React.FC = () => {
                         label="Activation & Verification"
                     />
 
-                    <PageSubHeading className={"px-4"}>
+                    <PageSubHeading className={"px-4 mt-4"}>
                         Legal & Info
                     </PageSubHeading>
                     <SettingsItem
-                        href={R.terms}
+                        href={R.app.termsAndConditions}
                         Icon={LockIcon}
-                        label="Terms & Privacy"
+                        label="Terms & Conditons"
                     />
                     <SettingsItem
-                        href={R.help}
+                        href={R.app.help}
                         Icon={HelpCircleIcon}
                         label="Help"
                     />
                     <SettingsItem
-                        href={R.about}
+                        href={R.app.about}
                         Icon={InfoIcon}
                         label="About"
                     />
                     <SettingsItem
-                        href={R.faq}
+                        href={R.app.faq}
                         Icon={FileTextIcon}
                         label="FAQ"
                     />
