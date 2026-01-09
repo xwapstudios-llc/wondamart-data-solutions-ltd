@@ -1,12 +1,62 @@
 import {commonSettingsCollections} from "./collections";
 import {CommonSettings} from "@common/types/common-settings";
 
+
+const all: CommonSettings = {
+    afa: {
+        unitPrice: 17,
+        commission: 0.5,
+        enabled: true,
+    },
+    resultChecker: {
+        unitPrice: 18,
+        commission: 0.2,
+        enabled: true,
+    },
+    userRegistration: {
+        unitPrice: 20,
+        commission: 2,
+        enabled: true,
+    },
+    paymentMethods: {
+        paystack: {
+            name: "Paystack",
+            enabled: true,
+            details: "This payment method goes to paystack and may attract charges."
+        },
+        send: {
+            name: "Send",
+            enabled: false,
+            details: "This payment method requires user to send money and then claim with the transaction id."
+        },
+        momo: {
+            name: "MoMo",
+            enabled: false,
+            details: "This payment method allows user to deposit by allowing cash out and confirming the transaction."
+        }
+    },
+    dataBundles: {
+        provider: "hendylinks",
+        enabled: true,
+        mtn: {
+            enabled: true,
+        },
+        telecel: {
+            enabled: true,
+        },
+        airteltigo: {
+            enabled: true,
+        },
+    }
+}
 const CommonSettingsFn = {
     read: async () => {
         const docRef = commonSettingsCollections.doc("all");
         const settings = await docRef.get();
         if (!settings.exists) {
-            return null;
+            console.log("Settings not found, creating...");
+            await CommonSettingsFn.init();
+            return all;
         }
         return settings.data() as CommonSettings;
     },
@@ -38,53 +88,6 @@ const CommonSettingsFn = {
     },
     init: async () => {
         // Initialize the settings documents
-        const all: CommonSettings = {
-            afa: {
-                unitPrice: 17,
-                commission: 0.5,
-                enabled: true,
-            },
-            resultChecker: {
-                unitPrice: 18,
-                commission: 0.2,
-                enabled: true,
-            },
-            userRegistration: {
-                unitPrice: 20,
-                commission: 2,
-                enabled: true,
-            },
-            paymentMethods: {
-                paystack: {
-                    name: "Paystack",
-                    enabled: true,
-                    details: "This payment method goes to paystack and may attract charges."
-                },
-                send: {
-                    name: "Send",
-                    enabled: false,
-                    details: "This payment method requires user to send money and then claim with the transaction id."
-                },
-                momo: {
-                    name: "MoMo",
-                    enabled: false,
-                    details: "This payment method allows user to deposit by allowing cash out and confirming the transaction."
-                }
-            },
-            dataBundles: {
-                provider: "hendylinks",
-                enabled: true,
-                mtn: {
-                    enabled: true,
-                },
-                telecel: {
-                    enabled: true,
-                },
-                airteltigo: {
-                    enabled: true,
-                },
-            }
-        }
         await CommonSettingsFn.create(all);
     },
 }

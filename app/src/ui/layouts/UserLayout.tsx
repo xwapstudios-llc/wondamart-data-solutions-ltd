@@ -13,7 +13,6 @@ const UserLayout: React.FC = () => {
         subscribeWallet,
         subscribeCommonSettings,
         user,
-        setDeferAppInstallReady,
     } = useAppStore();
     const navigate = useNavigate();
 
@@ -31,11 +30,6 @@ const UserLayout: React.FC = () => {
             unsubWallet = subscribeWallet();
             unsubCommonSettings = subscribeCommonSettings();
         }
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            setDeferAppInstallReady(e);
-        });
 
         return () => {
             if (unsub) unsub();

@@ -1,4 +1,4 @@
-import {lazy, Suspense} from "react";
+import {lazy, Suspense, useEffect} from "react";
 import "./app.css";
 
 // Routes
@@ -7,6 +7,7 @@ import {R} from "@/app/routes.ts";
 import {ThemeProvider} from "@/cn/components/theme/theme-provider.tsx";
 import {Toaster} from "@/cn/components/ui/sonner.tsx";
 import OnErrorCard from "@/ui/components/cards/OnErrorCard.tsx";
+import {useAppStore} from "@/lib/useAppStore.ts";
 
 // Lazy load pages
 const LoginPage = lazy(() => import("@/pages/LoginPage.tsx"));
@@ -49,6 +50,13 @@ const PageLoader = () => (
 );
 
 const App = () => {
+    const {setDeferAppInstallReady} = useAppStore();
+    useEffect(() => {
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            setDeferAppInstallReady(e);
+        });
+    }, []);
     return (
         <ThemeProvider defaultTheme="dark" storageKey="wondamart-app-ui-theme">
             <BrowserRouter>

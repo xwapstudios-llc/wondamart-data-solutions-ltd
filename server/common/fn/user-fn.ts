@@ -75,7 +75,7 @@ const UserFn = {
             email: data.email,
             password: data.password,
         });
-        console.log("Phone Number: /", UserFn.preparePhoneNumber(data.phoneNumber), "/");
+        // console.log("Phone Number: /", UserFn.preparePhoneNumber(data.phoneNumber), "/");
         await auth.updateUser(userRecord.uid, {
             // emailVerified: false,
             phoneNumber: UserFn.preparePhoneNumber(data.phoneNumber),
