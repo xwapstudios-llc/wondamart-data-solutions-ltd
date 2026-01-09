@@ -215,7 +215,7 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
     }, [bundleTx, afaTx, rcTx]);
 
     return (
-        <div className={cn("space-y-2", className)} {...props}>
+        <div className={cn("grid gap-y-2", className)} {...props}>
             <div className={"flex justify-between"}>
                 <div className={"flex gap-2 items-center"}>
                     <div className={"p-2 rounded-full bg-primary"}>
@@ -283,6 +283,7 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
                     {rcTx.length} Units
                 </ActivityHighlightCard>
             </div>
+
         </div>
     )
 }

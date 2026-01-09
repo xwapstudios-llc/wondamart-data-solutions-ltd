@@ -20,6 +20,10 @@ interface OverviewProps extends React.HTMLAttributes<HTMLDivElement> {
 const OverviewGraph = ({ className, loading = false, data = [], ...props }: OverviewProps) => {
     const {profile} = useAppStore();
     const chartConfig = {
+        airteltigo: {
+            label: "AT",
+            color: "var(--airteltigo)",
+        },
         mtn: {
             label: "MTN",
             color: "var(--mtn)",
@@ -27,10 +31,6 @@ const OverviewGraph = ({ className, loading = false, data = [], ...props }: Over
         telecel: {
             label: "Telecel",
             color: "var(--telecel)",
-        },
-        airtelTigo: {
-            label: "AirtelTigo",
-            color: "var(--airteltigo)",
         },
     } satisfies ChartConfig
 

@@ -156,8 +156,32 @@
 input:-webkit-autofill {
     @apply bg-input shadow-md;
     /* Your desired color */
-    -webkit-box-shadow: 0 0 0px 1000px var(--color-input) inset !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--color-input) inset !important;
     color: #333 !important; /* Optional: change text color */
+}
+
+/* Custom scrollbar styles */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-muted-foreground) transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--color-muted-foreground);
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: var(--color-foreground);
 }
 
 /*.root {*/

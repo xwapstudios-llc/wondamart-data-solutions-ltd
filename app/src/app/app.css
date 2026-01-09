@@ -15,6 +15,28 @@
     opacity: 0.75;
 }
 
-.hidden-scroll-bar::-webkit-scrollbar {
-    display: none;
+*.hidden-scroll-bar {
+    scrollbar-width: None;
+    scrollbar-color: var(--color-muted-foreground) transparent;
+}
+
+*.hidden-scroll-bar::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+}
+*.hidden-scroll-bar::-webkit-scrollbar-track {
+    background: transparent !important;
+    display: none !important;
+}
+
+*.hidden-scroll-bar::-webkit-scrollbar-thumb {
+    background: transparent !important;
+    border-radius: 0 !important;
+    display: none !important;
+}
+
+*.hidden-scroll-bar::-webkit-scrollbar-thumb:hover {
+    background: transparent !important;
+    display: none !important;
 }
