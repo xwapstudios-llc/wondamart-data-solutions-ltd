@@ -13,7 +13,6 @@ const R = {
     auth: {
         action: "/auth/action",
         forgotPassword: "/auth/forgot-password",
-        resetPassword: "/auth/reset-password",
         otp: (txID: string) => `/auth/otp/${txID}`,
     },
 

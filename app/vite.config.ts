@@ -26,7 +26,7 @@ export default defineConfig({
                     'utils': ['clsx', 'tailwind-merge', 'class-variance-authority'],
 
                     // App chunks
-                    'auth': ['src/pages/LoginPage', 'src/pages/SignupPage', "src/pages/auth/ForgotPasswordPage", "src/pages/auth/AuthAction", "src/pages/auth/OTPPage", "src/pages/auth/ResetPasswordPage"],
+                    'auth': ['src/pages/LoginPage', 'src/pages/SignupPage', "src/pages/auth/ForgotPasswordPage", "src/pages/auth/AuthAction", "src/pages/auth/OTPPage"],
                     'dashboard': ['src/pages/app/dashboard'],
                     'purchase': ['src/pages/app/purchase'],
                     'history': ['src/pages/app/history'],

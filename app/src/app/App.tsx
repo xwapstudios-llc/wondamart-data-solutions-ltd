@@ -13,7 +13,6 @@ const LoginPage = lazy(() => import("@/pages/LoginPage.tsx"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.tsx"));
 const SignupPage = lazy(() => import("@/pages/SignupPage.tsx"));
 const ForgotPasswordPage = lazy(() => import("@/pages/auth/ForgotPasswordPage.tsx"));
-const ResetPasswordPage = lazy(() => import("@/pages/auth/ResetPasswordPage.tsx"));
 const OTPPage = lazy(() => import("@/pages/auth/OTPPage.tsx"));
 const UserLayout = lazy(() => import("@/ui/layouts/UserLayout"));
 const Dashboard = lazy(() => import("@/pages/app/dashboard"));
@@ -71,7 +70,6 @@ const App = () => {
                         <>
                             <Route path={R.auth.action} element={<AuthAction/>}/>
                             <Route path={R.auth.forgotPassword} element={<ForgotPasswordPage/>}/>
-                            <Route path={R.auth.resetPassword} element={<ResetPasswordPage/>}/>
                             <Route path={R.auth.otp(":txID")} element={<OTPPage/>}/>
                         </>
 
