@@ -8,9 +8,10 @@ import {getTxIcon} from "@/lib/icons.ts";
 import TxCard from "@/ui/components/cards/tx/TxCard.tsx";
 import Page from "@/ui/page/Page.tsx";
 import PageHeading from "@/ui/page/PageHeading.tsx";
-import {useSearchParams} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import PageContent from "@/ui/page/PageContent.tsx";
 import {Button} from "@/cn/components/ui/button.tsx";
+import {R} from "@/app/routes.ts";
 
 // purchases is a special filter that represents every tx type except "deposit"
 type FilterType = TxType | "purchase";
@@ -24,15 +25,9 @@ const HistoryIndex: React.FC = () => {
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const cursorRef = useRef<any | undefined>(undefined);
-
-    const setTypeFilter = (type?: FilterType) => {
-        const next = new URLSearchParams(searchParams.toString());
-        if (type) next.set("type", type);
-        else next.delete("type");
-        setSearchParams(next);
-    };
 
     const buildFilterFromSearchParams = (): FilterObject => {
         const next: FilterObject = {};
@@ -139,7 +134,7 @@ const HistoryIndex: React.FC = () => {
                         key={t.value}
                         size={"sm"}
                         variant={activeType === t.value ? "default" : "outline"}
-                        onClick={() => setTypeFilter(t.value)}
+                        onClick={() => navigate(R.app.history.index + "?type=" + t.value, {replace: true})}
                     >
                         {t.label}
                     </Button>

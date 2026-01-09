@@ -5,8 +5,8 @@ import {
     ArrowUpDownIcon,
     Bot,
     CoinsIcon,
-    DollarSignIcon, InfoIcon,
-    SquareTerminal,
+    DollarSignIcon, InfoIcon, Moon,
+    SquareTerminal, Sun,
     User2Icon,
     UserPlus2Icon,
 } from "lucide-react";
@@ -23,8 +23,13 @@ import {
 } from "@/cn/components/ui/sidebar.tsx";
 import {R} from "@/app/routes.ts";
 import {useNavigate} from "react-router-dom";
-import {ModeToggleLg} from "@/cn/components/theme/mode-toggle.tsx";
-import {Button} from "@/cn/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "@/cn/components/ui/dropdown-menu.tsx";
+import {useTheme} from "@/cn/components/theme/theme-provider.tsx";
 
 // This is sample data.
 const data = {
@@ -164,6 +169,7 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({
                                                                     }) => {
     const navigate = useNavigate();
     const {isMobile} = useSidebar();
+    const {setTheme} = useTheme()
 
     return (
         <Sidebar
@@ -202,15 +208,34 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({
                 />
             </SidebarContent>
             <SidebarFooter>
-                <ModeToggleLg className={"w-full"}/>
-                <Button
-                    size={"lg"}
-                    className={"cursor-pointer"}
+                <DropdownMenu>
+                    <DropdownMenuTrigger
+                        className={"cursor-pointer flex gap-2 hover:bg-sidebar-accent px-1.5 py-1 rounded-md items-center"}
+                    >
+                        <Sun className="size-5 basis-5 shrink-0 dark:hidden"/>
+                        <Moon className="size-5 basis-5 shrink-0 hidden dark:inline-block"/>
+                        <span className={"truncate shrink"}>Theme</span>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setTheme("light")}>
+                            Light
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setTheme("dark")}>
+                            Dark
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setTheme("system")}>
+                            System
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <div
+                    className={"cursor-pointer flex gap-2 bg-primary hover:bg-primary/90 px-1.5 py-1 rounded-md items-center"}
                     onClick={() => navigate(R.app.deposit)}
                 >
-                    <DollarSignIcon className="size-5"/>
-                    <span>Deposit</span>
-                </Button>
+                    <DollarSignIcon className="size-5 basis-5 shrink-0"/>
+                    <span className={"truncate shrink"}>Deposit</span>
+                </div>
             </SidebarFooter>
             <SidebarRail/>
         </Sidebar>

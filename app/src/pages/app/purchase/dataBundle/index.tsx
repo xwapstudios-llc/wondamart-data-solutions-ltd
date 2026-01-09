@@ -23,17 +23,17 @@ const DataBundleIndex: React.FC = () => {
                 <WondaButton
                     className={location.pathname === R.app.purchase.dataBundle.mtn ? "outline-2 outline-mtn outline-offset-4 rounded-md" : ""}
                     imgSrc={"/network/mtn.png"} size={80}
-                    onClick={() => navigate(R.app.purchase.dataBundle.mtn)}
+                    onClick={() => navigate(R.app.purchase.dataBundle.mtn, {replace: true})}
                 />
                 <WondaButton
                     className={location.pathname === R.app.purchase.dataBundle.telecel ? "outline-2 outline-telecel outline-offset-4 rounded-md" : ""}
                     imgSrc={"/network/telecel.png"} size={80}
-                    onClick={() => navigate(R.app.purchase.dataBundle.telecel)}
+                    onClick={() => navigate(R.app.purchase.dataBundle.telecel, {replace: true})}
                 />
                 <WondaButton
                     className={location.pathname === R.app.purchase.dataBundle.airtelTigo ? "outline-2 outline-airteltigo outline-offset-4 rounded-md" : ""}
                     imgSrc={"/network/airteltigo.png"} size={80}
-                    onClick={() => navigate(R.app.purchase.dataBundle.airtelTigo)}
+                    onClick={() => navigate(R.app.purchase.dataBundle.airtelTigo, {replace: true})}
                 />
             </div>
             {
