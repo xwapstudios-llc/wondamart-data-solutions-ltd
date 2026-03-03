@@ -22,13 +22,14 @@ const PWAAction: React.FC<PWAActionProps> = ({className, ...props}) => {
         deferAppInstallReady.userChoice.then((choiceResult: { outcome: string; }) => {
             if (choiceResult.outcome === 'accepted') {
                 console.log('User accepted the A2HS prompt');
+                setDeferAppInstallReady(null); // remove prompt
             }
             setDeferAppInstallReady(null);
         });
         setClicked(false);
     }
 
-    // if (deferAppInstallReady || appNeedUpdate)
+    if (deferAppInstallReady || appNeedUpdate)
     return (
         <div className={cn("flex items-center justify-center gap-4", className)} {...props}>
             {
