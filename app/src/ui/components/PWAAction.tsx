@@ -3,7 +3,7 @@ import {cn} from "@/cn/lib/utils.ts";
 import {Button} from "@/cn/components/ui/button.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
 import {registerSW} from "virtual:pwa-register";
-import {ArrowDown} from "lucide-react";
+import {ArrowDown, RotateCwIcon} from "lucide-react";
 import Code from "@/ui/components/typography/Code.tsx";
 
 type PWAActionProps = React.HTMLAttributes<HTMLDivElement>;
@@ -28,7 +28,7 @@ const PWAAction: React.FC<PWAActionProps> = ({className, ...props}) => {
         setClicked(false);
     }
 
-    if (deferAppInstallReady || appNeedUpdate)
+    // if (deferAppInstallReady || appNeedUpdate)
     return (
         <div className={cn("flex items-center justify-center gap-4", className)} {...props}>
             {
@@ -55,7 +55,14 @@ const PWAAction: React.FC<PWAActionProps> = ({className, ...props}) => {
                     <Button onClick={async () => {
                         await updateApp(true);
                         setAppNeedUpdate(false)
-                    }}>Restart App to update Wondamart</Button>
+                    }}>
+                        <span className={"flex gap-2 items-center"}>
+                            <RotateCwIcon />
+                            <span>
+                                <Code>Restart</Code> App to update Wondamart
+                            </span>
+                        </span>
+                    </Button>
                 )
             }
         </div>
