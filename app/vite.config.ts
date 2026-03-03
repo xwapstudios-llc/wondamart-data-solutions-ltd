@@ -22,12 +22,12 @@ export default defineConfig({
                 scope: '/',
                 icons: [
                     {
-                        src: 'icon/pwa-192-192.png',
+                        src: 'logo/pwa-192-192.png',
                         sizes: '192x192',
                         type: 'image/png'
                     },
                     {
-                        src: 'icon/pwa-512-512.png',
+                        src: 'logo/pwa-512-512.png',
                         sizes: '512x512',
                         type: 'image/png'
                     }
