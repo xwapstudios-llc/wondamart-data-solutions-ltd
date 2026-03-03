@@ -12,7 +12,7 @@ export default defineConfig({
             registerType: 'prompt',
             includeAssets: ['favicon.ico', 'logo/*.png'],
             manifest: {
-                name: 'Wondamart Data Solutions',
+                name: 'Wondamart GH',
                 short_name: 'Wondamart',
                 description: 'Digital services platform for data bundles and more',
                 theme_color: '#071026',
