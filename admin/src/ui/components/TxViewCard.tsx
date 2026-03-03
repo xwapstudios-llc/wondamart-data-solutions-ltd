@@ -9,9 +9,9 @@ import {
     Smartphone,
     Package as PackageIcon,
     FileText,
-    CreditCard,
-    DollarSign
+    CreditCard
 } from "lucide-react";
+import {useAppStore} from "@/lib/useAppStore.ts";
 
 interface TxViewCardProps extends React.HTMLAttributes<HTMLDivElement> {
     tx: Tx;
@@ -64,13 +64,14 @@ const formatTs = (ts?: Timestamp) => {
 const TxViewCard: React.FC<TxViewCardProps> = ({className, tx, detailed = false, ...props}) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const {user} = useAppStore();
 
     return (
         <div
             className={cn("cursor-pointer border rounded-lg p-3 shadow-sm bg-card", className)}
             onClick={(e) => {
-                if (location.pathname === R.tx(tx.id)) return;
-                navigate(R.tx(tx.id));
+                if (location.pathname === R.transactions.id(tx.id)) return;
+                navigate(R.transactions.id(tx.id));
                 e.stopPropagation();
             }}
             {...props}
@@ -82,7 +83,7 @@ const TxViewCard: React.FC<TxViewCardProps> = ({className, tx, detailed = false,
                     </div>
                     <div>
                         <div className={"font-medium"}>{tx.type.replace("-", " ")}</div>
-                        <div className={"text-sm text-muted-foreground break-words"}>{tx.id}</div>
+                        <div className={"text-sm text-muted-foreground wrap-break-word"}>{tx.id}</div>
                     </div>
                 </div>
                 <div className={"flex flex-col items-end gap-1"}>
@@ -94,9 +95,9 @@ const TxViewCard: React.FC<TxViewCardProps> = ({className, tx, detailed = false,
             </div>
 
             <div className={"mt-3 text-sm grid grid-cols-2 gap-2"}>
-                <div className={"break-words"}>
+                <div className={"wrap-break-word"}>
                     <Label>User</Label>
-                    <div className={"text-foreground/90"}>{tx.userId}</div>
+                    <div className={"text-foreground/90"}>{user?.uid ?? ""}</div>
                 </div>
 
                 {detailed && (
