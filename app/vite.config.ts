@@ -9,7 +9,7 @@ export default defineConfig({
     plugins: [
 // @ts-ignore
         VitePWA({
-            registerType: 'autoUpdate',
+            registerType: 'prompt',
             includeAssets: ['favicon.ico', 'logo/*.png'],
             manifest: {
                 name: 'Wondamart Data Solutions',
