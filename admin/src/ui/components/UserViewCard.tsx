@@ -5,7 +5,7 @@ import {Label} from "@/cn/components/ui/label.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
 import {Timestamp} from "firebase/firestore";
 import {useNavigate} from "react-router-dom";
-import R from "@/routes.ts";
+import {R} from "@/app/routes.ts";
 
 const UserField: React.FC<{ label: string, value: React.ReactNode }> = ({label, value}) => {
     return (

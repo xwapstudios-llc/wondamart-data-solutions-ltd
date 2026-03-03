@@ -193,7 +193,6 @@ export const useAppStore = create<AppState>()(
                 }
                 set({loading: false});
             },
-
         }),
         {
             name: "wondamart-data-solutions-storage",

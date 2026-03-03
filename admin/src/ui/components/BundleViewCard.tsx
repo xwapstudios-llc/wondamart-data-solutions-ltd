@@ -2,7 +2,7 @@ import React from "react";
 import type {DataBundle, NetworkId} from "@common/types/data-bundle.ts";
 import {ArrowUpDownIcon, MailIcon, PhoneCallIcon} from "lucide-react";
 import {useNavigate, useLocation} from "react-router-dom";
-import R from "@/routes.ts";
+import {R} from "@/app/routes.ts";
 
 interface DataPackageViewProps extends React.HTMLAttributes<HTMLDivElement> {
     bundle: DataBundle;

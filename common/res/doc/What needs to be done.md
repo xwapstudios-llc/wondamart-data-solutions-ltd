@@ -35,7 +35,7 @@
 - [ ] User viewing page (How to display the user for the admin view)
 - [ ] Pay commissions to users monthly
 - [ ] Read and calculate commissions based on user's activities
-- [ ] Paystack account overview
+- [ ] PaystackPaymentPage account overview
 - [ ] Data mart account overview
 
 ## DJ

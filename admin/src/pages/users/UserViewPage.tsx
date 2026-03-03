@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import Page from "@/ui/components/page/Page.tsx";
-import PageHeader from "@/ui/components/page/PageHeader.tsx";
-import PageContent from "@/ui/components/page/PageContent.tsx";
+import PageHeader from "@/ui/page/PageHeader.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 import {cn} from "@/cn/lib/utils.ts";
 import {useNavigate, useParams} from "react-router-dom";
 import {AdminUser} from "@common/admin-api/user.ts";
@@ -9,7 +9,7 @@ import type {UserInfoDocument} from "@common/types/user.ts";
 import {Skeleton} from "@/cn/components/ui/skeleton.tsx";
 import UserViewCard from "@/ui/components/UserViewCard.tsx";
 import {Button} from "@/cn/components/ui/button.tsx";
-import R from "@/routes.ts";
+import {R} from "@/app/routes.ts";
 import {Loader2Icon, PenIcon} from "lucide-react";
 
 type UserViewPageProps = React.HtmlHTMLAttributes<HTMLDivElement>;

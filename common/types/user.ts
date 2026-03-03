@@ -29,21 +29,38 @@ export interface UserFullDocument {
     wallet?: UserWalletDocument
 }
 
-// Credentials
-interface RoleClaim {
-    read?: boolean;
-    create?: boolean;
-    modify?: boolean;
-    delete?: boolean;
-}
 export type AdminRoleClaims = {
-    dataBundles?: RoleClaim;
-    users?: RoleClaim;
-    admins?: RoleClaim;
-    commissions?: RoleClaim;
-    transactions?: RoleClaim;
-    messages?: RoleClaim;
-    server?: RoleClaim;
+    canViewProviders: boolean,
+    canEditProviders: boolean,
+    canViewPayments: boolean,
+    canEditPayments: boolean,
+
+    canViewDataBundles: boolean,
+    canEditDataBundles: boolean,
+    canViewAfaBundles: boolean,
+    canViewResultCheckers: boolean,
+    canEditResultCheckers: boolean,
+
+    canViewServers: boolean,
+    canEditServers: boolean,
+    canViewUsers: boolean,
+    canEditUsers: boolean,
+
+    canViewTransactions: boolean,
+    canEditTransactions: boolean,
+
+    canViewCommissions: boolean,
+    canEditCommissions: boolean,
+    canPayCommissions: boolean,
+
+    canViewMessaging: boolean,
+    canCreateMessaging: boolean,
+
+    canUseModem: boolean,
+
+    canViewAdmins: boolean,
+    canEditAdmins: boolean,
+    canMakeUserAdmin: boolean,
 };
 
 export interface UserClaims {

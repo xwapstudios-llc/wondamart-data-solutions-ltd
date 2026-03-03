@@ -13,7 +13,7 @@ Every purchase may have all or some of these data.
 **Server**
 1. Receive request from client and admin.
 2. Modify database.
-3. Send API requests for(paystack, provider).
+3. SendPaymentPage API requests for(paystack, provider).
 4. Modify database on response of API request.
 5. Respond to client or admin.
 
@@ -52,5 +52,5 @@ These Characteristics gives a clear criteria for every data we need.
 - Result Checker
 
 **Special**
-- Register New Agent
+- Register NewMessagePage Agent
 

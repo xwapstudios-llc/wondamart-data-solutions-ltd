@@ -3,7 +3,7 @@ import type {Tx} from "@common/types/tx.ts";
 import {cn} from "@/cn/lib/utils.ts";
 import {Label} from "@/cn/components/ui/label.tsx";
 import {useNavigate, useLocation} from "react-router-dom";
-import R from "@/routes.ts";
+import {R} from "@/app/routes.ts";
 import type { Timestamp } from "firebase/firestore";
 import {
     Smartphone,
@@ -29,8 +29,6 @@ const typeIcon = (t: Tx['type']) => {
             return <FileText className={baseClass}/>;
         case "deposit":
             return <CreditCard className={baseClass}/>;
-        case "commission-deposit":
-            return <DollarSign className={baseClass}/>;
         default:
             return <FileText className={baseClass}/>;
     }

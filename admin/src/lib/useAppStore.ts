@@ -1,144 +1,206 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import {create} from "zustand";
+import {persist} from "zustand/middleware";
 import {onAuthStateChanged, type User} from "firebase/auth";
-import {onSnapshot} from "firebase/firestore";
-import {auth, signInUser, signOutUser} from "@common/lib/auth.ts";
-import type {UserClaims, UserInfoDocument, UserWalletDocument} from "@common/types/user.ts";
+import {doc, onSnapshot} from "firebase/firestore";
+import {auth, signInUser, signOutUser} from "@common/lib/auth";
+import type {UserClaims, UserInfoDocument, UserWalletDocument} from "@common/types/user";
 import {type Unsubscribe} from "firebase/database";
-import {AdminUser} from "@common/admin-api/user.ts";
+import {ClUser} from "@common/client-api/user";
+import {type CommonSettings, initialCommonSettings} from "@common/types/common-settings";
+import {ClCommonSettings} from "@common/client-api/db-common-settings";
+import {collections, db} from "@common/lib/db";
+import type {HTTPResponse} from "@common/types/request.ts";
+import {type AppError, prepareHTTPResponse} from "@/lib/error.ts";
 
 
 interface AppState {
-    user: User | null;
-    profile: UserInfoDocument | null;
-    wallet: UserWalletDocument | null;
-    claims: UserClaims | null;
+    // Utils
     loading: boolean;
-    error: string | null;
+    error: AppError;
 
     // utils
     setLoading: (state: boolean) => void;
-    setError: (err: string) => void;
+    setError: (err: string | AppError) => void;
+    setHTTPResponse: (response: HTTPResponse) => void;
+    clearError: () => void;
 
-    // actions
+    // Logins and logouts
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
+
+    // Common Settings
+    commonSettings: CommonSettings;
+    fetchCommonSettings: () => Promise<void>;
+    subscribeCommonSettings: () => Unsubscribe | undefined;
+
+    // Auth User
+    user: User | null;
     setUser: (user: User | null) => void;
 
-    // fetching
+    // User Profile
+    profile: UserInfoDocument | null;
     fetchProfile: () => Promise<void>;
-    fetchWallet: () => Promise<void>;
-    fetchClaims: () => Promise<void>;
     subscribeProfile: () => Unsubscribe | undefined;
+
+    // User Wallet
+    wallet: UserWalletDocument | null;
+    fetchWallet: () => Promise<void>;
     subscribeWallet: () => Unsubscribe | undefined;
+
+    // User Claims
+    claims: UserClaims | null;
+    fetchClaims: () => Promise<void>;
+
+    // PWA
+    appNeedUpdate: boolean;
+    setAppNeedUpdate: (state: boolean) => void;
+    deferAppInstallReady: any;
+    setDeferAppInstallReady: (state: any) => void;
 }
 
 export const useAppStore = create<AppState>()(
     persist(
         (set, get) => ({
-            user: null,
-            profile: null,
-            wallet: null,
-            claims: null,
-            loading: false,
-            error: null,
+            // PWA
+            appNeedUpdate: false,
+            setAppNeedUpdate: (state: boolean) => {
+                set({appNeedUpdate: state});
+            },
+            deferAppInstallReady: null,
+            setDeferAppInstallReady: (state: any) => {
+                set({deferAppInstallReady: state});
+            },
 
             // utils
+            loading: false,
+            error: null,
             setLoading: (state: boolean) => {
                 set({loading: state});
             },
-            setError: (err: string) => {
+            setError: (err: string | AppError) => {
                 set({error: err});
             },
+            setHTTPResponse: (response: HTTPResponse) => {
+                set({error: prepareHTTPResponse(response)})
+            },
+            clearError: () => {
+                set({error: null});
+            },
 
-            // login
+            // Logins and logouts
             login: async (email, password) => {
-                set({ loading: true, error: null });
+                set({loading: true, error: null});
                 try {
                     await signInUser(email, password);
                     // ✅ Do NOT set user here
                     // onAuthStateChanged will fire and update the store
-                    set({ loading: false });
+                    set({loading: false});
                 } catch (err: unknown) {
-                    // @ts-expect-error Unknown but it's a firebase https return
-                    set({ error: err.message, loading: false });
                     throw err;
                 }
             },
-
-            // logout
             logout: async () => {
-                set({ loading: true, error: null });
+                set({loading: true, error: null});
                 await signOutUser();
-                set({ user: null, profile: null });
-                set({ loading: false, error: null });
+                set({user: null, profile: null});
+                set({loading: false, error: null});
             },
 
-            // set user manually (for listener)
+            // Common Settings
+            commonSettings: initialCommonSettings,
+            fetchCommonSettings: async () => {
+                set({loading: true, error: null});
+                set({commonSettings: await ClCommonSettings.read_all()})
+                set({loading: false, error: null});
+            },
+            subscribeCommonSettings: () => {
+                const q = doc(db, collections.commonSettings, "all");
+                return onSnapshot(q, snapshot => {
+                    const commonSettings: CommonSettings = initialCommonSettings;
+                    set({commonSettings: snapshot.data() as CommonSettings})
+                    console.log("New Common Settings > ", commonSettings);
+                });
+            },
+
+            // Auth User
+            user: null,
             setUser: (user) => {
-                set({ user })
-                // console.log("User Set")
+                set({user})
             },
 
-            // fetch user profile once
+            // User Profile
+            profile: null,
             fetchProfile: async () => {
-                set({ loading: true, error: null });
+                set({loading: true, error: null});
                 const user = get().user;
                 if (user) {
-                    const doc = await AdminUser.readInfo(user.uid);
+                    const doc = await ClUser.readInfo(user.uid);
                     if (doc) {
-                        set({ profile: doc });
+                        set({profile: doc});
 
                         console.log(`After setting profile: `, get().profile)
                     }
                 }
-                set({ loading: false });
+                set({loading: false});
             },
-            fetchWallet: async () => {
-                set({ loading: true, error: null });
-                const user = get().user;
-                if (user) {
-                    const doc = await AdminUser.readWallet(user.uid);
-                    if (doc) {
-                        set({ wallet: doc });
+            subscribeProfile: (): Unsubscribe | undefined => {
+                // realtime subscription to profile changes
+                const {user} = get();
+                if (!user) return;
+                return onSnapshot(ClUser.getRef(user.uid), (snap) => {
+                    if (snap.exists()) {
+                        set({profile: snap.data() as UserInfoDocument});
                     }
-                }
-                set({ loading: false });
-            },
-            fetchClaims: async () => {
-                set({ loading: true, error: null });
-                const user = get().user;
-                if (user) {
-                    user.getIdTokenResult().then(tokenResult => {
-                        set({claims: tokenResult.claims as UserClaims});
-                    })
-                }
-                set({ loading: false });
+                });
             },
 
-            // realtime subscription to profile changes
-            subscribeProfile: (): Unsubscribe | undefined => {
-                const { user } = get();
+
+            // User Wallet
+            wallet: null,
+            fetchWallet: async () => {
+                set({loading: true, error: null});
+                const user = get().user;
+                if (user) {
+                    const doc = await ClUser.readWallet(user.uid);
+                    if (doc) {
+                        set({wallet: doc});
+                    }
+                }
+                set({loading: false});
+            },
+            subscribeWallet: (): Unsubscribe | undefined => {
+                const {user} = get();
                 if (!user) return;
-                return onSnapshot(AdminUser.getRef(user.uid), (snap) => {
+                return onSnapshot(ClUser.getWalletRef(user.uid), (snap) => {
                     if (snap.exists()) {
-                        set({ profile: snap.data() as UserInfoDocument });
+                        set({wallet: snap.data() as UserWalletDocument});
                     }
                 });
             },
-            subscribeWallet: (): Unsubscribe | undefined => {
-                const { user } = get();
-                if (!user) return;
-                return onSnapshot(AdminUser.getWalletRef(user.uid), (snap) => {
-                    if (snap.exists()) {
-                        set({ wallet: snap.data() as UserWalletDocument });
-                    }
-                });
-            }
+
+            // User Claims
+            claims: {
+                admin: false,
+                isActivated: true,
+            },
+            fetchClaims: async () => {
+                set({loading: true, error: null});
+                const user = get().user;
+                if (user) {
+                    console.log("Fetching claims");
+                    const tokenResult = await user.getIdTokenResult(true);
+                    set({claims: tokenResult.claims as UserClaims});
+                }
+                set({loading: false});
+            },
+
         }),
         {
             name: "wondamart-data-solutions-storage",
-            partialize: (state) => ({user: state.user ? { uid: state.user.uid, email: state.user.email } : null, profile: state.profile}),
+            partialize: (state) => ({
+                user: state.user ? {uid: state.user.uid, email: state.user.email} : null,
+                profile: state.profile
+            }),
         }
     )
 );
@@ -150,8 +212,16 @@ onAuthStateChanged(auth, async (user) => {
         await useAppStore.getState().fetchProfile();
         await useAppStore.getState().fetchWallet();
         await useAppStore.getState().fetchClaims();
-        // console.log("AUTH CHANGED. User True")
+        await useAppStore.getState().fetchCommonSettings();
     } else {
-        useAppStore.setState({wallet: null, profile: null});
+        useAppStore.setState({
+            loading: false,
+            error: null,
+            user: null,
+            profile: null,
+            wallet: null,
+            claims: null,
+            commonSettings: initialCommonSettings,
+        });
     }
 });

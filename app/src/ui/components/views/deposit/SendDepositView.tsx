@@ -29,8 +29,8 @@ const SendDepositView: React.FC<SendDepositViewProps> = ({
             </Notice>
             {disabled ? (
                 <>
-                    <DisabledNotice title="Send Deposit Unavailable">
-                        Send deposits are currently unavailable. Please come
+                    <DisabledNotice title="SendPaymentPage Deposit Unavailable">
+                        SendPaymentPage deposits are currently unavailable. Please come
                         back later or contact administrator.
                     </DisabledNotice>
                 </>
@@ -61,7 +61,7 @@ const SendDepositView: React.FC<SendDepositViewProps> = ({
                                 </Button>
                             </div>
                             <NoticeItem>
-                                Send Money to the number copied. Agent Name:{" "}
+                                SendPaymentPage Money to the number copied. Agent Name:{" "}
                                 <Code>Wondabrain Technologies Ltd.</Code>
                             </NoticeItem>
                             <NoticeItem>

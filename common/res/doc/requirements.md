@@ -103,7 +103,7 @@ Wondamart Data Solutions is an online platform aimed at selling affordable mobil
 * **Referral System**
 
     * Users share unique referral links
-    * New users register via referral link
+    * NewMessagePage users register via referral link
     * Referrer earns points per data purchase by referred users
     * Points redeemable for free data
 * **Benefits**

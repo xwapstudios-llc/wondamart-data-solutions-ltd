@@ -1,11 +1,11 @@
 import React from "react";
 import {Skeleton} from "@/cn/components/ui/skeleton.tsx";
 import {CoinsIcon, DollarSignIcon, Package2Icon, PenBoxIcon, SettingsIcon, User2Icon} from "lucide-react";
-import R from "../routes.ts";
+import R from "../app/routes.ts";
 import MainMenuItem from "@/ui/components/MainMenuItem.tsx";
 import Page from "@/ui/components/page/Page.tsx";
-import PageHeader from "@/ui/components/page/PageHeader.tsx";
-import PageContent from "@/ui/components/page/PageContent.tsx";
+import PageHeader from "@/ui/page/PageHeader.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 
 const HomePage: React.FC = () => {
     return (

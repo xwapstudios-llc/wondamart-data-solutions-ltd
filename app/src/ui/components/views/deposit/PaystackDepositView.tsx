@@ -31,8 +31,8 @@ const PaystackDepositView: React.FC<PaystackDepositViewProps> = ({
             </Notice>
             {children}
             {disabled ? (
-                <DisabledNotice title="Paystack Deposit Unavailable">
-                    Paystack deposits are currently unavailable. Please come
+                <DisabledNotice title="PaystackPaymentPage Deposit Unavailable">
+                    PaystackPaymentPage deposits are currently unavailable. Please come
                     back later or contact administrator.
                 </DisabledNotice>
             ) : (

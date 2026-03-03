@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {cn} from "@/cn/lib/utils.ts";
-import Page from "@/ui/components/page/Page.tsx";
-import PageHeader from "@/ui/components/page/PageHeader.tsx";
-import PageContent from "@/ui/components/page/PageContent.tsx";
+import Page from "@/ui/page/Page.tsx";
+import PageHeader from "@/ui/page/PageHeader.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import type {UserInfoDocument, UserWalletDocument} from "@common/types/user.ts";
 import {AdminUser} from "@common/admin-api/user.ts";
 import {ClUser} from "@common/client-api/user.ts";
 import UpdateUserForm from "@/ui/forms/UpdateUserForm.tsx";
-import R from "@/routes.ts";
+import {R} from "@/app/routes.ts";
 
 type UserEditPageProps = React.HtmlHTMLAttributes<HTMLDivElement>;
 

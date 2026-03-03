@@ -7,8 +7,8 @@ import {AdminDataBundles} from "@common/admin-api/db-data-bundle.ts";
 import Page from "@/ui/components/page/Page.tsx";
 import NewDataBundleForm from "@/ui/forms/NewDataBundleForm.tsx";
 import BundleViewCard from "@/ui/components/BundleViewCard.tsx";
-import PageHeader from "@/ui/components/page/PageHeader.tsx";
-import PageContent from "@/ui/components/page/PageContent.tsx";
+import PageHeader from "@/ui/page/PageHeader.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 import FilterButton from "@/ui/components/FilterButton.tsx";
 
 

@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from "react";
 import Page from "@/ui/components/page/Page.tsx";
-import PageHeader from "@/ui/components/page/PageHeader.tsx";
-import PageContent from "@/ui/components/page/PageContent.tsx";
+import PageHeader from "@/ui/page/PageHeader.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 import {cn} from "@/cn/lib/utils.ts";
 import {useNavigate, useParams} from "react-router-dom";
 import type {DataBundle} from "@common/types/data-bundle.ts";
 import {AdminDataBundles} from "@common/admin-api/db-data-bundle.ts";
 import UpdateDataBundleForm from "@/ui/forms/UpdateDataBundleForm.tsx";
-import R from "@/routes.ts";
+import {R} from "@/app/routes.ts";
 import {Skeleton} from "@/cn/components/ui/skeleton.tsx";
 import {Loader2Icon} from "lucide-react";
 
