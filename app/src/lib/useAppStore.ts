@@ -212,7 +212,8 @@ onAuthStateChanged(auth, async (user) => {
         await useAppStore.getState().fetchWallet();
         await useAppStore.getState().fetchClaims();
         await useAppStore.getState().fetchCommonSettings();
-    } else {
+    }
+    else {
         useAppStore.setState({
             loading: false,
             error: null,

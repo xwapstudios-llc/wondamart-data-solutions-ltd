@@ -15,6 +15,11 @@ import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
 const PurchaseIndex: React.FC = () => {
     const {commonSettings, claims} = useAppStore();
     const navigate = useNavigate();
+
+    if (!claims || !commonSettings) {
+        return "No claims or common settings"
+    }
+
     const dataBundles = commonSettings.dataBundles;
     const resultCheckers = commonSettings.resultChecker;
 

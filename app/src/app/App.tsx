@@ -57,16 +57,17 @@ const App = () => {
             setDeferAppInstallReady(e);
         });
     }, []);
+
     return (
         <ThemeProvider defaultTheme="dark" storageKey="wondamart-app-ui-theme">
             <BrowserRouter>
                 <Suspense fallback={<PageLoader/>}>
                     <Routes>
                         {/*Legal and infos*/}
-                        <Route index path={R.termsAndConditions} element={<TermsAndConditionsPage/>}/>
-                        <Route index path={R.help} element={<HelpPage/>}/>
-                        <Route index path={R.about} element={<AboutPage/>}/>
-                        <Route index path={R.faq} element={<FAQPage/>}/>
+                        <Route path={R.termsAndConditions} element={<TermsAndConditionsPage/>}/>
+                        <Route path={R.help} element={<HelpPage/>}/>
+                        <Route path={R.about} element={<AboutPage/>}/>
+                        <Route path={R.faq} element={<FAQPage/>}/>
 
                         {/*Login Page as default index page*/}
                         <Route index path={R.index} element={<LoginPage/>}/>

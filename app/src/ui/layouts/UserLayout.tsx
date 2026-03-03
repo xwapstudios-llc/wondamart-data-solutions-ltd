@@ -32,9 +32,13 @@ const UserLayout: React.FC = () => {
         }
 
         return () => {
+            console.log("Unsubscribe ... ... 1");
+
             if (unsub) unsub();
             if (unsubWallet) unsubWallet();
             if (unsubCommonSettings) unsubCommonSettings();
+
+            console.log("Unsubscribe ... ... 2");
         };
     }, [subscribeProfile, subscribeWallet, subscribeCommonSettings, user]);
 
