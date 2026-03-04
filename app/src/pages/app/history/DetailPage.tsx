@@ -94,7 +94,7 @@ const HistoryPurchaseDetail: React.FC = () => {
 
     return (
         <div className="p-4 space-y-4">
-            <div className="flex gap-4 flex-col md:flex-row md:items-center">
+            <div className="flex gap-4 flex-col max-w-2xl mx-auto">
                 <div className={"flex items-center justify-center flex-row gap-4"}>
                     <div className="p-6 w-fit rounded-full bg-primary/50 flex items-center justify-center">
                         <Icon strokeWidth={1.5} className="size-24" />
@@ -128,9 +128,23 @@ const HistoryPurchaseDetail: React.FC = () => {
                 <h2 className="text-lg font-medium mb-2">Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     {Object.entries(tx.data as TxData).map(([k, v]) => (
+
                         <div key={k} className="p-2">
                             <div className="text-xs text-muted-foreground">{k}</div>
-                            <div className="font-medium">{String(v)}</div>
+                            {
+                                typeof v == "object" ? (
+                                    <div className={"flex gap-2 border-t"}>
+                                        {
+                                            Object.entries(v).map(([k, v]) => (
+                                                <div key={k} className="p-2">
+                                                    <div className="text-xs text-muted-foreground">{k}</div>
+                                                    <div className="font-medium">{String(v)}</div>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                ) : (<div className="font-medium">{String(v)}</div>)
+                            }
                         </div>
                     ))}
                 </div>

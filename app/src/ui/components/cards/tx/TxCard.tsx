@@ -82,7 +82,8 @@ const TxCard: React.FC<TxCardProps> = ({tx, className, ...props}) => {
                     <Button
                         className={"mt-1.5 w-full"}
                         variant={"outline"}
-                        onClick={() => {
+                        onClick={(e) => {
+                            e.stopPropagation();
                             navigator.clipboard.writeText(getTxReportText(tx)).then(() => {
                                 toast.success("Transaction details copied to clipboard", {duration: 3000});
                             })
