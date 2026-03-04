@@ -16,8 +16,6 @@ interface PasswordChangeData {
 
 const UserSettingsSecurity: React.FC = () => {
     const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
-    const [emailNotifications, setEmailNotifications] = useState(true);
-    
     const passwordForm = useForm<PasswordChangeData>({
         defaultValues: {
             currentPassword: '',
@@ -35,61 +33,60 @@ const UserSettingsSecurity: React.FC = () => {
     };
 
     return (
-        <Page className="p-6 max-w-2xl">
+        <Page className="p-6 max-w-2xl mx-auto">
             <div className="mb-6">
                 <PageHeading className="text-2xl font-semibold">Security</PageHeading>
                 <p className="text-sm text-muted-foreground">Manage your account security settings</p>
             </div>
 
-            <PageContent className="space-y-8">
-                    <Form {...passwordForm}>
-                        <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
-                            <FormField
-                                control={passwordForm.control}
-                                name="currentPassword"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Current Password</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} type="password" />
-                                        </FormControl>
-                                        <FormDescription>Enter your current password</FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={passwordForm.control}
-                                name="newPassword"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>New Password</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} type="password" />
-                                        </FormControl>
-                                        <FormDescription>Must be at least 8 characters long</FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={passwordForm.control}
-                                name="confirmPassword"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Confirm New Password</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} type="password" />
-                                        </FormControl>
-                                        <FormDescription>Re-enter your new password</FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <Button type="submit">Update Password</Button>
-                        </form>
-                    </Form>
-
+            <PageContent className="space-y-8 mx-auto border-2 border-red-500">
+                <Form {...passwordForm}>
+                    <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
+                        <FormField
+                            control={passwordForm.control}
+                            name="currentPassword"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Current Password</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} type="password" />
+                                    </FormControl>
+                                    <FormDescription>Enter your current password</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={passwordForm.control}
+                            name="newPassword"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>New Password</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} type="password" />
+                                    </FormControl>
+                                    <FormDescription>Must be at least 8 characters long</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={passwordForm.control}
+                            name="confirmPassword"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Confirm New Password</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} type="password" />
+                                    </FormControl>
+                                    <FormDescription>Re-enter your new password</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <Button type="submit">Update Password</Button>
+                    </form>
+                </Form>
 
                 <div>
                     <div className="flex items-center justify-between">
@@ -102,25 +99,14 @@ const UserSettingsSecurity: React.FC = () => {
                             onCheckedChange={setTwoFactorEnabled}
                         />
                     </div>
-                    {twoFactorEnabled && (
-                        <div className="mt-4 p-3 bg-muted/30 rounded-lg">
-                            <p className="text-sm">2FA is enabled. Use your authenticator app to generate codes.</p>
-                            <Button variant="outline" size="sm" className="mt-2">View Recovery Codes</Button>
-                        </div>
-                    )}
-                </div>
-
-                <div>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="font-medium">Email Notifications</p>
-                            <p className="text-sm text-muted-foreground">Get notified of suspicious login attempts</p>
-                        </div>
-                        <Switch
-                            checked={emailNotifications}
-                            onCheckedChange={setEmailNotifications}
-                        />
-                    </div>
+                    {
+                        twoFactorEnabled && (
+                            <div className="mt-4 p-3 bg-muted/30 rounded-lg">
+                                <p className="text-sm">2FA is enabled. Use your authenticator app to generate codes.</p>
+                                <Button variant="outline" size="sm" className="mt-2">View Recovery Codes</Button>
+                            </div>
+                        )
+                    }
                 </div>
 
                 <div className="space-y-3">

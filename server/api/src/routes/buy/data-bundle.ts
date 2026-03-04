@@ -85,6 +85,7 @@ const handler: RouteHandler = async (req, res) => {
                     return sendResponse(res, httpResponse("failed", "Failed to place order. Reason: " + result.message));
                 }
                 await TxFn.addDatamartData(tx.id, result.data);
+                await TxFn.update_status_pending(tx.id);
                 console.log("Complete @buyDataBundle - Provider datamart.")
                 return sendResponse(res, httpResponse("ok", "Order placed successfully"));
             }
@@ -101,8 +102,9 @@ const handler: RouteHandler = async (req, res) => {
                 if (!result.success) {
                     return sendResponse(res, httpResponse("failed", "Failed to place order. Reason: " + result.message));
                 }
-                if (result.data) {
-                    await TxFn.addHendyLinksData(tx.id, result.data);
+                await TxFn.addHendyLinksData(tx.id, result);
+                if (result.status === "pending" ) {
+                    await TxFn.update_status_pending(tx.id);
                 }
                 console.log("Complete @buyDataBundle - Provider hendylinks.")
                 return sendResponse(res, httpResponse("ok", "Order placed successfully"));

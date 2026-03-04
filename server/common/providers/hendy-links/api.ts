@@ -52,7 +52,10 @@ export interface HendyLinksOrder {
 }
 
 export interface HendyLinksCreateOrderResponse {
+    success: boolean;
     order_id: number;
+    status: string | "pending";
+    message?: string;
 }
 
 export interface HendyLinksGetOrdersParams {
@@ -125,8 +128,8 @@ class HendyLinksClient {
 
     async createOrder(
         payload: HendyLinksCreateOrderPayload
-    ): Promise<HendyLinksApiResponse<HendyLinksCreateOrderResponse>> {
-        const { data } = await this.http.post<HendyLinksApiResponse<HendyLinksCreateOrderResponse>>(
+    ): Promise<HendyLinksCreateOrderResponse> {
+        const { data } = await this.http.post<HendyLinksCreateOrderResponse>(
             "/api/orders",
             payload
         );

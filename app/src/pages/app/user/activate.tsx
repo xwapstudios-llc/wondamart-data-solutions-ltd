@@ -11,6 +11,7 @@ import {R} from "@/app/routes.ts";
 import {useNavigate} from "react-router-dom";
 import { sendEmailVerification } from "firebase/auth";
 import {wondamart_api_client} from "@common/lib/api-wondamart.ts";
+import PageContent from "@/ui/page/PageContent.tsx";
 
 const UserActivate: React.FC = () => {
     const {fetchClaims, claims, commonSettings, wallet, user} = useAppStore()
@@ -76,7 +77,7 @@ const UserActivate: React.FC = () => {
     return (
         <Page>
             <PageHeading className="mt-4 text-4xl">User Activation</PageHeading>
-            <div className={"mt-8 md:p-4 flex flex-wrap gap-8"}>
+            <PageContent className={"mt-8 md:p-4 flex flex-wrap gap-8"}>
                 {
                     claims?.isActivated ? (
                         <ActivationCard
@@ -131,7 +132,7 @@ const UserActivate: React.FC = () => {
                         </ActivationCard>
                     )
                 }
-            </div>
+            </PageContent>
         </Page>
     );
 };

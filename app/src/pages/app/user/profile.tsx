@@ -35,7 +35,7 @@ const UserProfile: React.FC = () => {
 
     return (
         <Page>
-            <PageContent className="pt-6 max-w-2xl">
+            <PageContent className="pt-6 max-w-2xl mx-auto">
                 <div className="flex flex-col items-center mb-8">
                     <Avatar className="size-32 mb-4">
                         <AvatarImage src={user?.photoURL ?? ""} alt="Profile" />

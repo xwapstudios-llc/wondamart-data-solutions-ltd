@@ -122,7 +122,7 @@ const data = {
                 },
                 {
                     title: "Activation & Verification",
-                    url: R.app.user.settings.general,
+                    url: R.app.user.activate,
                 },
             ],
         },
