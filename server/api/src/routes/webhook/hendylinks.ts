@@ -15,7 +15,7 @@ export const handler: RouteHandler = async (req, res) => {
 
     const hash = crypto
         .createHmac("sha512", config.hendylinks_api_key)
-        .update(req.body)
+        .update(JSON.stringify(req.body))
         .digest("hex");
 
     if (hash !== signature) {
