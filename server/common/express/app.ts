@@ -56,7 +56,11 @@ export const createExpressApp = (config: ExpressAppConfig): Express => {
     const app = express();
 
     // Default middleware
-    app.use(express.json());
+    app.use(express.json({
+        verify: (req: any, res, buf) => {
+            req.rawBody = buf.toString('utf8');
+        }
+    }));
 
     // Global middleware
     if (config.middleware) {
