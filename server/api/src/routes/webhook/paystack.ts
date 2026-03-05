@@ -16,12 +16,11 @@ export const handler: RouteHandler = async (req, res) => {
     console.log(JSON.stringify(req.body, null, 2));
     console.log("------------------------------------");
 
-    const hash = crypto
-        .createHmac("sha256", config.paystack_production_key)
-        .update((req as any).rawBody)
-        .digest("hex");
+    const hmac = crypto.createHmac("sha256", config.paystack_production_key);
+    const digest = Buffer.from(hmac.update((req as any).rawBody).digest('hex'), 'utf8');
+    const checksum = Buffer.from(signature, 'utf8');
 
-    if (hash !== signature) {
+    if (crypto.timingSafeEqual(digest, checksum)) {
         console.warn("Invalid Paystack signature");
         return sendResponse(res, {
             status: "error",
