@@ -8,19 +8,34 @@ import {UserFn} from "@common-server/fn/user-fn";
 import {TxWatcher} from "@common-server/fn/tx/tx-watcher";
 import {mnotifyClient} from "@common-server/providers/mnotify/api";
 import {TxDepositPaystackData} from "@common/types/account-deposit";
+import {Request} from "express";
+
+const verifyPaystackSignature = (req: Request) => {
+    const signature = req.headers["x-paystack-signature"] as string;
+    const apiToken = config.paystack_production_key;
+
+    if (!signature || !apiToken) {
+        return false;
+    }
+
+    // Generate the HMAC SHA256 hash from the raw body
+    const hmac = crypto.createHmac('sha256', apiToken);
+    const hash = hmac.update((req as any).rawBody).digest('hex');
+
+    const expectedSignature = `sha256=${hash}`;
+
+    return crypto.timingSafeEqual(
+        Buffer.from(signature, 'utf8'),
+        Buffer.from(expectedSignature, 'utf8')
+    );
+};
 
 export const handler: RouteHandler = async (req, res) => {
-    const signature = req.headers["x-paystack-signature"] as string;
-
     console.log("Received Paystack webhook ------------------------------------");
     console.log(JSON.stringify(req.body, null, 2));
     console.log("------------------------------------");
 
-    const hmac = crypto.createHmac("sha256", config.paystack_production_key);
-    const digest = Buffer.from(hmac.update((req as any).rawBody).digest('hex'), 'utf8');
-    const checksum = Buffer.from(signature, 'utf8');
-
-    if (crypto.timingSafeEqual(digest, checksum)) {
+    if (!verifyPaystackSignature(req)) {
         console.warn("Invalid Paystack signature");
         return sendResponse(res, {
             status: "error",
