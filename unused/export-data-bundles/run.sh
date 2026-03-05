@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # build
-npx tsc -b
+pnpm run build
 
 # export
 export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/wondamart/wondamart-data-solutions-ltd-firebase-adminsdk-fbsvc-d418aa8130.json
 
 # run
-node dist/index.js
+pnpm run start

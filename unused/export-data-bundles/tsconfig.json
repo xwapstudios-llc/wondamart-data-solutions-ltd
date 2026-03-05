@@ -14,8 +14,8 @@
             "@common-server/*": ["../../server/common/*"]
         },
 
-        "sourceMap": true,
+        "sourceMap": true
     },
     "include": ["src"],
-    "compileOnSave": false,
+    "compileOnSave": false
 }

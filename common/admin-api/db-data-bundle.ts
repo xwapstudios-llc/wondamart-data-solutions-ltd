@@ -27,15 +27,15 @@ const AdminDataBundles = {
     create: async (data: AdminNewDataBundle): Promise<void> => {
         try {
             const id = gen_bundle_id(data);
-            const ref = doc(
-                db,
-                collections.dataBundles,
-                id
-            );
-            const d = await getDoc(ref);
-            if (!d.exists()) {
+            // const ref = doc(
+            //     db,
+            //     collections.dataBundles,
+            //     id
+            // );
+            //const d = await getDoc(ref);
+            // if (!d.exists()) {
                 await wondamart_api_client("/admin/data-bundle/create", data);
-            }
+            // }
             return Promise.resolve();
         } catch(err) {
             // const code = error.code;

@@ -9,11 +9,12 @@ class TxWatcher {
             clearTimeout(this.watchList.get(txId)!);
         }
 
+        const time = timeoutMinutes * 1000;
         // Set new timeout
         const timeout = setTimeout(async () => {
             try {
                 const tx = await TxFn.read(txId);
-                if (tx && tx.status === "pending") {
+                if (tx && !(tx.status === "completed" || tx.status === "failed")) {
                     await TxFn.update_status_failed(txId);
                     console.log(`Auto-failed deposit: ${txId}`);
                 }
@@ -22,10 +23,11 @@ class TxWatcher {
             } finally {
                 this.watchList.delete(txId);
             }
-        }, timeoutMinutes * 60 * 1000);
+            console.log(`Time out executed for ${txId}`);
+        }, time);
 
         this.watchList.set(txId, timeout);
-        console.log(`Added tx ${txId} to watch list (${timeoutMinutes}min timeout)`);
+        console.log(`Added tx ${txId} to watch list (${time}ms timeout)`);
     }
 
     static removeFromWatch(txId: string) {

@@ -3,7 +3,7 @@ import { httpResponse } from "@common/types/request";
 import { Timestamp } from "firebase-admin/firestore";
 import { txCollections } from "@common-server/fn/collections";
 
-export const autoFailDeposits: RouteHandler = async (req, res) => {
+export const autoFailDeposits = async () => {
     try {
         const fiveMinutesAgo = Timestamp.fromMillis(Date.now() - 5 * 60 * 1000);
 
@@ -14,7 +14,7 @@ export const autoFailDeposits: RouteHandler = async (req, res) => {
             .get();
 
         if (snapshot.empty) {
-            return sendResponse(res, httpResponse("ok", "No stale deposits found"));
+            console.log("No stale deposits found");
         }
 
         const now = Timestamp.now();
@@ -34,9 +34,9 @@ export const autoFailDeposits: RouteHandler = async (req, res) => {
         });
 
         await Promise.all(updates);
-        sendResponse(res, httpResponse("ok", `Failed ${updates.length} stale deposits`));
+        console.log(`Failed ${updates.length} stale deposits`);
     } catch (err) {
         console.error("autoFailDeposits error:", err);
-        sendResponse(res, httpResponse("error", "Failed to process stale deposits"));
+        console.log("Failed to process stale deposits");
     }
 };
