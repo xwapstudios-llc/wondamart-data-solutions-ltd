@@ -17,7 +17,7 @@ export const handler: RouteHandler = async (req, res) => {
     console.log("------------------------------------");
 
     const hash = crypto
-        .createHmac("sha512", config.paystack_production_key)
+        .createHmac("sha256", config.paystack_production_key)
         .update((req as any).rawBody)
         .digest("hex");
 

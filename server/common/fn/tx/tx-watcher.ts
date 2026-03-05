@@ -3,7 +3,7 @@ import { TxFn } from "./tx-fn";
 class TxWatcher {
     private static watchList = new Map<string, NodeJS.Timeout>();
 
-    static addToWatch(txId: string, timeoutMinutes: number = 5) {
+    static addToWatch(txId: string, timeoutMinutes: number = 2) {
         // Clear existing timeout if exists
         if (this.watchList.has(txId)) {
             clearTimeout(this.watchList.get(txId)!);
