@@ -1,4 +1,5 @@
 import {RouteConfig, RouteHandler, sendResponse} from "@common-server/express";
+import { Request } from "express";
 import crypto from "crypto";
 import config from "@common-server/config";
 import {httpResponse} from "@common/types/request";
@@ -6,18 +7,37 @@ import {TxFn} from "@common-server/fn/tx/tx-fn";
 import {UserFn} from "@common-server/fn/user-fn";
 import {HendyLinksWebhookPayload} from "@common-server/providers/hendy-links/api";
 
-export const handler: RouteHandler = async (req, res) => {
+/**
+ * Validates the HendyLinks Webhook Signature
+ * @param {Object} req - The Express request object
+ * @returns {Boolean} - True if authenticated
+ */
+const verifyHendyLinksSignature = (req: Request) => {
     const signature = req.headers['x-webhook-signature'] as string;
+    const apiToken = config.hendylinks_api_key;
 
+    if (!signature || !apiToken) {
+        return false;
+    }
+
+    // Generate the HMAC SHA256 hash from the raw body
+    const hmac = crypto.createHmac('sha256', apiToken);
+    const hash = hmac.update((req as any).rawBody).digest('hex');
+
+    const expectedSignature = `sha256=${hash}`;
+
+    return crypto.timingSafeEqual(
+        Buffer.from(signature, 'utf8'),
+        Buffer.from(expectedSignature, 'utf8')
+    );
+};
+
+export const handler: RouteHandler = async (req, res) => {
     console.log("Received Hendylinks webhook ------------------------------------");
     console.log(JSON.stringify(req.body, null, 2));
     console.log("------------------------------------");
 
-    const hmac = crypto.createHmac("sha256", config.hendylinks_api_key);
-    const digest = Buffer.from(hmac.update((req as any).rawBody).digest('hex'), 'utf8');
-    const checksum = Buffer.from(signature, 'utf8');
-
-    if (crypto.timingSafeEqual(digest, checksum)) {
+    if (!verifyHendyLinksSignature(req)) {
         console.warn("Invalid hendylinks signature");
         return sendResponse(res, {
             status: "error",
