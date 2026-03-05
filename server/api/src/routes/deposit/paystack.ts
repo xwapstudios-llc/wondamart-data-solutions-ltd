@@ -46,7 +46,7 @@ export const handler: RouteHandler = async (req, res) => {
         await TxFn.update_status_processing(tx.id);
 
         // Add transaction to watcher for auto-fail after 5 minutes
-        TxWatcher.addToWatch(tx.id, 5);
+        TxWatcher.addToWatch(tx.id, 2);
 
         const data = tx.data as TxDepositPaystackData;
         const response = await test_paystack({

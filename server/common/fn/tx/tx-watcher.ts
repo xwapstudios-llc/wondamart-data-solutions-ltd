@@ -9,7 +9,7 @@ class TxWatcher {
             clearTimeout(this.watchList.get(txId)!);
         }
 
-        const time = timeoutMinutes * 1000;
+        const time = timeoutMinutes * 60 * 1000;
         // Set new timeout
         const timeout = setTimeout(async () => {
             try {
