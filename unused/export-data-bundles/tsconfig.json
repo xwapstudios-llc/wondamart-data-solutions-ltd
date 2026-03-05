@@ -11,7 +11,7 @@
         "paths": {
             "@/*": ["./src/*"],
             "@common/*": ["../../common/*"],
-            "@common-server/*": ["../common/*"]
+            "@common-server/*": ["../../server/common/*"]
         },
 
         "sourceMap": true,

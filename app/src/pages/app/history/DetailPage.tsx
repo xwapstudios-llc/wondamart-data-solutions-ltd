@@ -133,7 +133,7 @@ const HistoryPurchaseDetail: React.FC = () => {
                             <div className="text-xs text-muted-foreground">{k}</div>
                             {
                                 typeof v == "object" ? (
-                                    <div className={"flex gap-2 border-t"}>
+                                    <div className={"flex gap-2 justify-around border-t"}>
                                         {
                                             Object.entries(v).map(([k, v]) => (
                                                 <div key={k} className="p-2">

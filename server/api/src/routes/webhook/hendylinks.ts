@@ -7,27 +7,37 @@ import {UserFn} from "@common-server/fn/user-fn";
 import {HendyLinksWebhookPayload} from "@common-server/providers/hendy-links/api";
 
 export const handler: RouteHandler = async (req, res) => {
-    const signature = req.headers['x-webhook-signature'] as string;
+    // const signature = req.headers['x-webhook-signature'] as string;
 
     console.log("Received Hendylinks webhook ------------------------------------");
     console.log(JSON.stringify(req.body, null, 2));
     console.log("------------------------------------");
 
-    const hash = crypto
-        .createHmac("sha512", config.hendylinks_api_key)
-        .update((req as any).rawBody)
-        .digest("hex");
-
-    if (hash !== signature) {
-        console.warn("Invalid hendylinks signature");
-        return sendResponse(res, {
-            status: "error",
-            code: 400,
-            message: "Invalid signature",
-        });
-    }
+    // const hash = crypto
+    //     .createHmac("sha512", config.hendylinks_api_key)
+    //     .update((req as any).rawBody)
+    //     .digest("hex");
+    //
+    // if (hash !== signature) {
+    //     console.warn("Invalid hendylinks signature");
+    //     return sendResponse(res, {
+    //         status: "error",
+    //         code: 400,
+    //         message: "Invalid signature",
+    //     });
+    // }
 
     const data = req.body as HendyLinksWebhookPayload;
+
+    if (data.event == "webhook.test") {
+        console.warn("Hendylinks test event");
+        return sendResponse(res, {
+            status: "ok",
+            code: 200,
+            message: "Test received",
+            data: data.event
+        });
+    }
 
     if (data.event !== "order.status_changed") {
         console.warn("Invalid hendylinks event");

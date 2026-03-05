@@ -81,7 +81,7 @@ export interface HendyLinksDepositPayload {
  * ========================= */
 
 export interface HendyLinksWebhookPayload {
-    event: "order.status_changed";
+    event: "order.status_changed" | "webhook.test";
     timestamp: string;
     order: HendyLinksOrder;
     user: {

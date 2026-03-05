@@ -14,7 +14,7 @@ const testDataBundle: DataBundle = {
     name: "JaMBo",
     network: "mtn",
     price: 25,
-    validityPeriod: "7 Days"
+    validityPeriod: 7
 }
 
 export {

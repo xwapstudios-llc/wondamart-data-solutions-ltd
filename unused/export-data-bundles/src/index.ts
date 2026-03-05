@@ -3,6 +3,7 @@ import fs from "fs/promises";
 import path from "path";
 import {DataBundle} from "@common/types/data-bundle";
 import {AdminDataBundles} from "@common/admin-api/db-data-bundle";
+import type {AdminNewDataBundle} from "../../../common/types/data-bundle";
 
 // ---------- CONFIG ----------
 const COLLECTION_NAME = "data-bundles";
@@ -48,7 +49,7 @@ async function exportCollectionToJson() {
 async function publish() {
     const filePath = path.join(OUTPUT_DIR, OUTPUT_FILE);
     const data = await fs.readFile(filePath, { encoding: "utf-8" });
-    const dataBundles: DataBundle[] = JSON.parse(data);
+    const dataBundles: AdminNewDataBundle[] = JSON.parse(data);
 
     for (const bundle of dataBundles) {
         await AdminDataBundles.create(bundle);
