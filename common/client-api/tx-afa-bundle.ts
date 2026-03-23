@@ -7,10 +7,10 @@ import {wondamart_api_client} from "@common/lib/api-wondamart";
 
 const createQuery = (q: TxAfaBundleQuery): Query => {
     let Q = buildTxQuery(q);
-    Q = query(Q, where("type", "==", "afa-bundle"));
-    if (q.phoneNumber) Q = query(Q, where("data.phoneNumber", "==", q.phoneNumber));
-    if (q.idNumber) Q = query(Q, where("data.idNumber", "==", q.idNumber));
-    if (q.date_of_birth) Q = query(Q, where("data.date_of_birth", "==", q.date_of_birth));
+    Q = query(Q, where("type", "==", "afa-purchase"));
+    if (q.phoneNumber) Q = query(Q, where("txData.phoneNumber", "==", q.phoneNumber));
+    if (q.idNumber) Q = query(Q, where("txData.idNumber", "==", q.idNumber));
+    if (q.date_of_birth) Q = query(Q, where("txData.date_of_birth", "==", q.date_of_birth));
     return Q;
 }
 

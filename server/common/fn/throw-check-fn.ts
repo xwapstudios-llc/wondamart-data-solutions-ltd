@@ -5,7 +5,7 @@ import {httpResponse} from "@common/types/request.js"
 import {ServerFn} from "./server/server-fn.js";
 import {Response} from "express";
 import {sendResponse} from "../express";
-import {Tx} from "@common/types/tx";
+import {Tx} from "@common/tx";
 import {TxFn} from "./tx/tx-fn";
 
 const auth = getAuth();
@@ -82,9 +82,8 @@ class ThrowCheck {
 
     async hasEnoughBalance(amount: number, tx?: Tx, message?: string): Promise<boolean> {
         if (!await this.readWallet()) return false;
-        
         if (this.userWallet!.balance < amount) {
-            if (tx) await TxFn.update_status_failed(tx.id);
+            if (tx) await TxFn.update_status_failed(tx.txId);
             sendResponse(this.res, httpResponse("cancelled", message || "User does not have enough balance"));
             return false;
         }

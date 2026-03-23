@@ -1,4 +1,4 @@
-import { type Tx, type TxQuery } from "./tx";
+import { type Tx, type TxQuery } from "@common/tx";
 
 //
 //  SubType
@@ -15,8 +15,8 @@ export interface TxResultCheckerData {
     units: number;
 }
 export interface TxResultChecker extends Tx {
-    type: 'result-checker';
-    data: TxResultCheckerData;
+    type: 'checker-purchase';
+    txData: TxResultCheckerData;
 }
 
 //

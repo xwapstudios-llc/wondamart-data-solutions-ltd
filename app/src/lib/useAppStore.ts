@@ -26,6 +26,7 @@ interface AppState {
 
     // Logins and logouts
     login: (email: string, password: string) => Promise<void>;
+    // phoneNumberLogin(phone: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
 
     // Common Settings
@@ -99,6 +100,9 @@ export const useAppStore = create<AppState>()(
                     throw err;
                 }
             },
+            // phoneNumberLogin(phone: string, password: string) {
+            //     throw new Error("Function not implemented.");
+            // },
             logout: async () => {
                 set({loading: true, error: null});
                 await signOutUser();

@@ -1,98 +1,123 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useAppStore} from "@/lib/useAppStore.ts";
-import LoadingView from "@/ui/components/views/LoadingView.tsx";
-import type {Tx, TxQuery, TxType} from "@common/types/tx.ts";
+import type {Tx, TxQuery, TxType} from "@common/tx.ts";
 import {ClTx} from "@common/client-api/tx.ts";
-import NoItems from "@/ui/components/cards/NoItems.tsx";
-import {getTxIcon} from "@/lib/icons.ts";
-import TxCard from "@/ui/components/cards/tx/TxCard.tsx";
 import Page from "@/ui/page/Page.tsx";
-import PageHeading from "@/ui/page/PageHeading.tsx";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import PageContent from "@/ui/page/PageContent.tsx";
-import {Button} from "@/cn/components/ui/button.tsx";
 import {R} from "@/app/routes.ts";
+import {cn} from "@/cn/lib/utils.ts";
+import {
+    ArrowUpDownIcon,
+    CompassIcon,
+    DollarSignIcon,
+    Package2Icon,
+    BookOpenIcon,
+    ShoppingBagIcon,
+} from "lucide-react";
+import TxTableCard from "@/ui/components/TxTableCard.tsx";
+import {getTxIcon} from "@/lib/icons.ts";
 
-// purchases is a special filter that represents every tx type except "deposit"
+// ─── Filter config ────────────────────────────────────────────────────────────
+
 type FilterType = TxType | "purchase";
-type FilterObject = Omit<TxQuery, "uid">;
+
+const FILTERS: {label: string; value: FilterType; icon: React.ReactNode; color: string; active: string}[] = [
+    {
+        label: "All Purchases", value: "purchase",
+        icon: <ShoppingBagIcon className="size-3.5" />,
+        color: "border-violet-500/30 text-violet-600 dark:text-violet-400 bg-violet-500/10",
+        active: "bg-violet-500 text-white border-violet-500",
+    },
+    {
+        label: "Data Bundles", value: "bundle-purchase",
+        icon: <Package2Icon className="size-3.5" />,
+        color: "border-sky-500/30 text-sky-600 dark:text-sky-400 bg-sky-500/10",
+        active: "bg-sky-500 text-white border-sky-500",
+    },
+    {
+        label: "AFA Bundles", value: "afa-purchase",
+        icon: <CompassIcon className="size-3.5" />,
+        color: "border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10",
+        active: "bg-emerald-500 text-white border-emerald-500",
+    },
+    {
+        label: "Result Checkers", value: "checker-purchase",
+        icon: <BookOpenIcon className="size-3.5" />,
+        color: "border-amber-500/30 text-amber-600 dark:text-amber-400 bg-amber-500/10",
+        active: "bg-amber-500 text-white border-amber-500",
+    },
+    {
+        label: "Deposits", value: "paystack-deposit",
+        icon: <DollarSignIcon className="size-3.5" />,
+        color: "border-rose-500/30 text-rose-600 dark:text-rose-400 bg-rose-500/10",
+        active: "bg-rose-500 text-white border-rose-500",
+    },
+];
+
 const PAGE_SIZE = 20;
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 const HistoryIndex: React.FC = () => {
-    const { user } = useAppStore();
-    const [txes, setTxes] = useState<Tx[]>([]);
-    const [loading, setLoading] = useState(true);
+    const {user} = useAppStore();
+    const [txes, setTxes]               = useState<Tx[]>([]);
+    const [loading, setLoading]         = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
-    const [hasMore, setHasMore] = useState(false);
+    const [hasMore, setHasMore]         = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
+    const cursorRef = useRef<any>(undefined);
 
-    const cursorRef = useRef<any | undefined>(undefined);
+    const activeType = (searchParams.get("type") ?? "purchase") as FilterType;
 
-    const buildFilterFromSearchParams = (): FilterObject => {
-        const next: FilterObject = {};
-        const t = searchParams.get("type");
-        if (t && t !== "purchase" && t !== "all") next.type = t as TxType;
-        return next;
-    };
-
-    const fetchPage = async (append: boolean = false) => {
+    const fetchPage = async (append = false) => {
         if (!user) return;
-        const tParam = searchParams.get("type") || "purchase";
-        const isPurchaseView = tParam === "purchase";
+        const isPurchase = activeType === "purchase";
 
-        if (append) setLoadingMore(true);
-        else setLoading(true);
+        append ? setLoadingMore(true) : setLoading(true);
 
         try {
-            const pageSize = PAGE_SIZE;
             let finalItems: Tx[] = [];
             let exhausted = false;
 
-            if (isPurchaseView) {
+            if (isPurchase) {
                 let collected: Tx[] = [];
                 let localCursor = append ? cursorRef.current : undefined;
 
-                while (collected.length < pageSize && !exhausted) {
-                    const query: TxQuery = {
-                        uid: user.uid,
-                        limit: pageSize,
-                        startAfter: localCursor
-                    } as any;
+                while (collected.length < PAGE_SIZE && !exhausted) {
+                    const res = await ClTx.read({
+                        agentId: user.uid,
+                        limit: PAGE_SIZE,
+                        startAfter: localCursor,
+                    } as any);
 
-                    const res = await ClTx.read(query);
-                    if (!res || res.length === 0) {
-                        exhausted = true;
-                        break;
-                    }
+                    if (!res?.length) { exhausted = true; break; }
 
-                    const filtered = res.filter(tx => tx.type !== "deposit");
-                    collected.push(...filtered);
-
-                    localCursor = res[res.length - 1].date;
-                    if (res.length < pageSize) exhausted = true;
+                    collected.push(...res.filter(
+                        tx => tx.type !== "paystack-deposit" && tx.type !== "manual-deposit"
+                    ));
+                    localCursor = res[res.length - 1].time;
+                    if (res.length < PAGE_SIZE) exhausted = true;
                 }
 
-                finalItems = collected.slice(0, pageSize);
+                finalItems = collected.slice(0, PAGE_SIZE);
                 cursorRef.current = localCursor;
-                setHasMore(!exhausted || collected.length > pageSize);
+                setHasMore(!exhausted || collected.length > PAGE_SIZE);
             } else {
                 const query: TxQuery = {
-                    uid: user.uid,
-                    limit: pageSize,
-                    startAfter: append ? cursorRef.current : undefined
+                    agentId: user.uid,
+                    limit: PAGE_SIZE,
+                    startAfter: append ? cursorRef.current : undefined,
+                    type: activeType as TxType,
                 } as any;
-                Object.assign(query, buildFilterFromSearchParams());
 
                 const res = await ClTx.read(query);
-                // console.log("length of Tx Found ", res.length)
-                finalItems = res || [];
-                cursorRef.current = finalItems.length > 0 ? finalItems[finalItems.length - 1].date : undefined;
-                setHasMore(finalItems.length === pageSize);
+                finalItems = res ?? [];
+                cursorRef.current = finalItems.at(-1)?.time;
+                setHasMore(finalItems.length === PAGE_SIZE);
             }
 
             setTxes(prev => append ? [...prev, ...finalItems] : finalItems);
-            console.log("length of Tx Found ", txes.length)
         } catch (e) {
             console.error(e);
         } finally {
@@ -101,70 +126,71 @@ const HistoryIndex: React.FC = () => {
         }
     };
 
-    // 2. FIXED: Effect synchronization
     useEffect(() => {
-        // Redirect to 'purchase' if no type is set
         if (!searchParams.has("type")) {
-            setSearchParams({ type: "purchase" }, { replace: true });
+            setSearchParams({type: "purchase"}, {replace: true});
             return;
         }
-
-        // Reset cursor and fetch when params change
         cursorRef.current = undefined;
-        fetchPage(false).then(() => {});
-    }, [user?.uid, searchParams.get("type")]); // Only depend on the specific param
+        fetchPage(false);
+    }, [user?.uid, activeType]);
 
-    const activeType = searchParams.get("type") as FilterType;
-
-    const TX_TYPES: {label: string; value: FilterType}[] = [
-        {label: "Deposit", value: "deposit" as FilterType},
-        {label: "Purchase", value: "purchase" as FilterType},
-        {label: "AFA Bundle", value: "afa-bundle" as FilterType},
-        {label: "Data Bundle", value: "data-bundle" as FilterType},
-        {label: "Result Checker", value: "result-checker" as FilterType},
-    ];
+    const activeFilter = FILTERS.find(f => f.value === activeType) ?? FILTERS[0];
 
     return (
-        <Page>
-            <PageHeading>History</PageHeading>
-            {/*Filter buttons*/}
-            <div className={"flex gap-2 overflow-x-auto my-2 hidden-scroll-bar"}>
-                {TX_TYPES.map((t) => (
-                    <Button
-                        key={t.value}
-                        size={"sm"}
-                        variant={activeType === t.value ? "default" : "outline"}
-                        onClick={() => navigate(R.app.history.index + "?type=" + t.value, {replace: true})}
-                    >
-                        {t.label}
-                    </Button>
-                ))}
-            </div>
-            <PageContent className={"grid md:grid-cols-2 gap-4 mt-4"}>
-                {
-                    loading ? (<LoadingView className={"md:col-span-2"} />)
-                        : txes.length === 0
-                            ? (
-                                <NoItems className={"md:col-span-2"} Icon={getTxIcon["tx"]}>No transactions yet.</NoItems>
-                            )
-                            : (
-                                txes.map((tx, index) => (<TxCard key={tx.id ?? index} tx={tx} />))
-                            )
-                }
+        <Page className="pb-8">
+            <div className="max-w-4xl mx-auto space-y-4 pt-4">
 
-                {/* Load more button spans full width */}
-                {!loading && txes.length > 0 && (
-                    <div className={"md:col-span-2 flex justify-center mt-2"}>
-                        {hasMore ? (
-                            <Button onClick={() => fetchPage(true)} disabled={loadingMore} size={"sm"}>
-                                {loadingMore ? "Loading..." : "Load more"}
-                            </Button>
-                        ) : (
-                            <div className={"text-sm text-muted-foreground"}>No more transactions</div>
-                        )}
+                {/* Page header */}
+                <div className="flex items-center gap-3">
+                    <div className="flex size-9 items-center justify-center rounded-md bg-wondamart text-white shrink-0">
+                        <ArrowUpDownIcon className="size-5" />
                     </div>
-                )}
-            </PageContent>
+                    <div>
+                        <h1 className="font-bold text-lg leading-tight">History</h1>
+                        <p className="text-xs text-muted-foreground">Your transaction records</p>
+                    </div>
+                </div>
+
+                {/* Filter tabs */}
+                <div className="flex gap-2 overflow-x-auto hidden-scroll-bar pb-0.5">
+                    {FILTERS.map(f => (
+                        <button
+                            key={f.value}
+                            onClick={() => navigate(`${R.app.history.index}?type=${f.value}`, {replace: true})}
+                            className={cn(
+                                "shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all",
+                                activeType === f.value ? f.active : f.color
+                            )}
+                        >
+                            {f.icon}
+                            {f.label}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Table card Section */}
+                <TxTableCard
+                    title={activeFilter.label}
+                    icon={activeFilter.icon}
+                    iconColor={
+                        activeType === "purchase"         ? "bg-violet-500" :
+                        activeType === "bundle-purchase"  ? "bg-sky-500"    :
+                        activeType === "afa-purchase"     ? "bg-emerald-500":
+                        activeType === "checker-purchase" ? "bg-amber-500"  :
+                        "bg-rose-500"
+                    }
+                    transactions={txes}
+                    loading={loading}
+                    hasMore={hasMore}
+                    onLoadMore={() => fetchPage(true)}
+                    loadingMore={loadingMore}
+                    recordCount={txes.length}
+                    noItemsMessage="No transactions"
+                    noItemsIcon={getTxIcon["tx"]}
+                />
+
+            </div>
         </Page>
     );
 };

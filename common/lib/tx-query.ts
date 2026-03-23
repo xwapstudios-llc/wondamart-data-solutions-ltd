@@ -1,5 +1,5 @@
 import {collections, db} from "@common/lib/db";
-import { type TxQuery, type TxQueryAdmin } from "@common/types/tx";
+import { type TxQuery, type TxQueryAdmin } from "@common/tx";
 import { collection, Query, query, Timestamp, where, limit, startAfter, orderBy } from "firebase/firestore";
 
 const startOfDay = (d: Date | Timestamp): Timestamp => {
@@ -18,21 +18,21 @@ const endOfDay = (d: Date | Timestamp): Timestamp => {
 
 export const buildTxQuery = (q: TxQuery): Query => {
     let Q = buildAdminTxQuery(q);
-    Q = query(Q, where("uid", "==", q.uid));
+    Q = query(Q, where("agentId", "==", q.agentId));
     return Q;
 };
+
 export const buildAdminTxQuery = (q: TxQueryAdmin): Query => {
     let Q = query(collection(db, collections.tx));
 
-    if (q.uid) Q = query(Q, where("uid", "==", q.uid));
-    if (q.type) Q = query(Q, where("type", "==", q.type));
-    if (q.status) Q = query(Q, where("status", "==", q.status));
-    
-    // Add orderBy for pagination
-    Q = query(Q, orderBy("date", "desc"));
-    
+    if (q.agentId) Q = query(Q, where("agentId", "==", q.agentId));
+    if (q.type)    Q = query(Q, where("type", "==", q.type));
+    if (q.status)  Q = query(Q, where("status", "==", q.status));
+
+    Q = query(Q, orderBy("time", "desc"));
+
     if (q.startAfter) Q = query(Q, startAfter(q.startAfter));
-    if (q.limit) Q = query(Q, limit(q.limit));
+    if (q.limit)      Q = query(Q, limit(q.limit));
 
     if (q.amount) {
         if (q.amountCompare) Q = query(Q, where("amount", q.amountCompare, q.amount));
@@ -44,15 +44,13 @@ export const buildAdminTxQuery = (q: TxQueryAdmin): Query => {
         else Q = query(Q, where("commission", "==", q.commission));
     }
 
-    if (q.date) {
-        if (q.date instanceof Date || q.date instanceof Timestamp) {
-            // Single day → expand to [00:00:00, 23:59:59]
-            Q = query(Q, where("date", ">=", startOfDay(q.date)));
-            Q = query(Q, where("date", "<=", endOfDay(q.date)));
+    if (q.time) {
+        if (q.time instanceof Date || q.time instanceof Timestamp) {
+            Q = query(Q, where("time", ">=", startOfDay(q.time)));
+            Q = query(Q, where("time", "<=", endOfDay(q.time)));
         } else {
-            // Range → just cast
-            Q = query(Q, where("date", ">=", startOfDay(q.date.from)));
-            Q = query(Q, where("date", "<=", endOfDay(q.date.to)));
+            Q = query(Q, where("time", ">=", startOfDay(q.time.from)));
+            Q = query(Q, where("time", "<=", endOfDay(q.time.to)));
         }
     }
 

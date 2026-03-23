@@ -81,13 +81,13 @@ export const handler: RouteHandler = async (req, res) => {
             data: data.order.id
         });
     }
-    TxFn.addExtraData(tx.id, data)
+    TxFn.addExtraData(tx.txId, data)
 
     if (order.status && order.status == "completed") {
-        await TxFn.update_status_completed(tx.id);
+        await TxFn.update_status_success(tx.txId);
     } else if (order.status && order.status == "failed") {
-        await TxFn.update_status_failed(tx.id);
-        await UserFn.update_add_UserBalance(tx.uid, tx.amount);
+        await TxFn.update_status_failed(tx.txId);
+        await UserFn.update_add_UserBalance(tx.agentId, tx.amount);
     } else {
         console.log("Unknown order status => ", order.status);
     }

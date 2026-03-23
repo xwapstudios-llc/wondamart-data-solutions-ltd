@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/cn/components/ui/avatar';
 import Page from "@/ui/page/Page.tsx";
 import PageContent from "@/ui/page/PageContent.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
+import {UserIcon, InfoIcon} from "lucide-react";
 
 interface UserProfileData {
     firstName: string;
@@ -33,21 +34,33 @@ const UserProfile: React.FC = () => {
         setIsEditing(false);
     };
 
+    const initials = profile?.firstName
+        ? `${profile.firstName[0]}${profile.lastName?.[0] ?? ""}`.toUpperCase()
+        : "?";
+
     return (
-        <Page>
-            <PageContent className="pt-6 max-w-2xl mx-auto">
-                <div className="flex flex-col items-center mb-8">
-                    <Avatar className="size-32 mb-4">
+        <Page className="pb-8">
+            <PageContent className="max-w-xl mx-auto space-y-4 pt-4">
+                <div className="rounded-xl border bg-card p-4 flex flex-col items-center">
+                    <Avatar className="size-20 mb-4 rounded-xl">
                         <AvatarImage src={user?.photoURL ?? ""} alt="Profile" />
-                        <AvatarFallback className="text-2xl">
-                            {profile?.firstName?.[0]}{profile?.lastName?.[0]}
+                        <AvatarFallback className="rounded-xl text-lg font-semibold bg-primary/10 text-primary">
+                            {initials}
                         </AvatarFallback>
                     </Avatar>
                     <Button variant="outline" size="sm">Change Photo</Button>
                 </div>
 
-                <div className="mb-6 p-4 bg-muted/30 rounded-lg">
-                    <h3 className="font-medium mb-3">Account Information</h3>
+                <div className="rounded-xl border bg-card p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="flex size-9 items-center justify-center rounded-md bg-violet-500 text-white">
+                            <InfoIcon className="size-4" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold">Account Information</p>
+                            <p className="text-xs text-muted-foreground">Your account details</p>
+                        </div>
+                    </div>
                     <div className="grid md:grid-cols-2 gap-4 text-sm">
                         <div>
                             <span className="text-muted-foreground">User ID:</span>
@@ -70,7 +83,17 @@ const UserProfile: React.FC = () => {
                     </div>
                 </div>
 
-                <Form {...form}>
+                <div className="rounded-xl border bg-card p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="flex size-9 items-center justify-center rounded-md bg-sky-500 text-white">
+                            <UserIcon className="size-4" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold">Personal Details</p>
+                            <p className="text-xs text-muted-foreground">Edit your personal information</p>
+                        </div>
+                    </div>
+                    <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                             <FormField
                                 control={form.control}
@@ -155,6 +178,7 @@ const UserProfile: React.FC = () => {
                             </div>
                         </form>
                     </Form>
+                </div>
             </PageContent>
         </Page>
     );

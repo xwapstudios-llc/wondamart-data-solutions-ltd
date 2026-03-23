@@ -1,6 +1,6 @@
 import React from "react";
 import {cn} from "@/cn/lib/utils";
-import type {Tx} from "@common/types/tx.ts";
+import type {Tx} from "@common/tx.ts";
 import {getTxIcon, getTxName, toCurrency} from "@/lib/icons.ts";
 import {useNavigate} from "react-router-dom";
 import {R} from "@/app/routes.ts";
@@ -11,7 +11,7 @@ interface TxMiniCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const TxMiniCard: React.FC<TxMiniCardProps> = ({tx, className, ...props}) => {
     const navigate = useNavigate();
-    const href = R.app.history.id(tx.id);
+    const href = R.app.history.id(tx.txId);
     const Icon = getTxIcon[tx.type];
 
     return (
@@ -28,7 +28,7 @@ const TxMiniCard: React.FC<TxMiniCardProps> = ({tx, className, ...props}) => {
                     <Icon className={"text-primary-foreground p-1.5 rounded-full bg-primary size-9"} strokeWidth={1.5} />
                     <div className={"flex flex-col "}>
                         <span className={"font-semibold"}>{getTxName[tx.type]}</span>
-                        <span className={"text-[9px]"}>{tx.id}</span>
+                        <span className={"text-[9px]"}>{tx.txId}</span>
                     </div>
                 </div>
                 <div className={"font-semibold text-right"}>

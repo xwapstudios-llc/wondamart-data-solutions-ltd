@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Wondamart Data Solutions - Renovation</title>
+    <style>
+        :root {
+            --bg: #0b0f1a;
+            --card: #121826;
+            --accent: #1e90ff;
+            --accent-soft: rgba(30, 144, 255, 0.15);
+            --text: #e6edf3;
+            --subtext: #9aa4b2;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #10172a, var(--bg));
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 30px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .illustration {
+            margin: 20px auto 30px;
+        }
+
+        .illustration svg {
+            width: 160px;
+            height: auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: var(--subtext);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .notice {
+            background: var(--accent-soft);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 13px;
+            color: var(--subtext);
+        }
+
+        .pulse {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.6); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo">
+        Wondamart <span>Data Solutions</span>
+    </div>
+
+    <div class="illustration">
+        <!-- Simple SVG Illustration -->
+        <svg viewBox="0 0 200 200" fill="none">
+            <circle cx="100" cy="100" r="80" stroke="#1e90ff" stroke-width="2" opacity="0.3"/>
+            <rect x="60" y="70" width="80" height="60" rx="8" stroke="#1e90ff" stroke-width="2"/>
+            <path d="M75 90h50M75 105h35" stroke="#1e90ff" stroke-width="2"/>
+            <circle cx="100" cy="100" r="5" fill="#1e90ff">
+                <animate attributeName="r" values="5;8;5" dur="1.2s" repeatCount="indefinite"/>
+            </circle>
+        </svg>
+    </div>
+
+    <h1>We're Upgrading Our Platform</h1>
+    <p>
+        Wondamart Data Solutions is currently undergoing a strategic upgrade to deliver
+        faster, more reliable, and scalable data bundle services.
+    </p>
+
+    <div class="notice">
+        <div><span class="pulse"></span><strong>Scheduled Maintenance</strong></div>
+        <div style="margin-top:8px;">
+            Our systems are temporarily unavailable while we enhance performance,
+            security, and overall user experience. We’ll be back online shortly.
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2026 Wondamart Data Solutions. All rights reserved.
+    </div>
+</div>
+</body>
+</html>

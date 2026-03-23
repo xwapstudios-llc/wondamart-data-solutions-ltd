@@ -1,4 +1,4 @@
-import { type Tx, type TxQuery } from "./tx";
+import { type Tx, type TxQuery } from "@common/tx";
 
 //
 //  SubType
@@ -13,13 +13,13 @@ export interface TxAfaBundleData {
     fullName: string;
     phoneNumber: string;
     idNumber: string;
-    date_of_birth: Date; // date of birth as string
+    date_of_birth: Date;
     location: string;
     occupation: string;
 }
 export interface TxAfaBundle extends Tx {
-    type: 'afa-bundle';
-    data: TxAfaBundleData;
+    type: 'afa-purchase';
+    txData: TxAfaBundleData;
 }
 
 //

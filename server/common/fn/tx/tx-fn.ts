@@ -1,12 +1,4 @@
-// Create
-// Read
-// Update
-// Delete
-// List
-// Search
-
-
-import {Tx, TxStatus, TxType} from "@common/types/tx";
+import {Tx, TxStatus, TxType} from "@common/tx";
 import {txCollections} from "../collections";
 import {Timestamp} from "firebase-admin/firestore";
 import {generateTxID} from "../../utils/uid-gen";
@@ -16,115 +8,93 @@ import {HendyLinksCreateOrderResponse} from "../../providers/hendy-links/api";
 import {DatamartPurchaseResult} from "../../providers/data-mart/api";
 
 const TxFn = {
-    read(txID: string): Promise<Tx> {
-        const ref = txCollections.doc(txID);
+    read(txId: string): Promise<Tx> {
+        const ref = txCollections.doc(txId);
         return ref.get().then(doc => {
-            if (!doc.exists) {
-                throw new Error("Transaction doesn't exist");
-            }
+            if (!doc.exists) throw new Error("Transaction doesn't exist");
             return doc.data() as Tx;
         });
     },
-    update_status: async (txID: string, status: TxStatus) => {
-        let docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txID);
+    update_status: async (txId: string, status: TxStatus) => {
+        const docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txId);
         const doc = await docRef.get();
         if (!doc.exists) throw new Error("Transaction does not exist");
-        if (status == "completed" || status == "failed") {
-            await docRef.set({
-                status: status,
-                updatedAt: Timestamp.now(),
-                finishedAt: Timestamp.now(),
-            }, {merge: true});
+        if (status === "success" || status === "failed") {
+            await docRef.set({ status, timeCompleted: Timestamp.now() }, {merge: true});
         } else {
-            await docRef.set({
-                status: status,
-                updatedAt: Timestamp.now(),
-            }, {merge: true});
+            await docRef.set({ status }, {merge: true});
         }
     },
-    update_status_completed: async (txID: string) => {
-        await TxFn.update_status(txID, "completed");
-        // Read Tx
-        const tx = await TxFn.read(txID);
-        if (tx.type != "deposit") {
-            await TxCommissionFn.create(tx.uid, {
-                txID: tx.id,
-                commission: tx.commission,
+    update_status_success: async (txId: string) => {
+        await TxFn.update_status(txId, "success");
+        const tx = await TxFn.read(txId);
+        if (tx.type !== "paystack-deposit" && tx.type !== "manual-deposit") {
+            await TxCommissionFn.create(tx.agentId, {
+                txID: tx.txId,
+                commission: tx.commission ?? 0,
                 // @ts-ignore
                 date: Timestamp.now(),
             });
         }
     },
-    update_status_pending: async (txID: string) => {
-        await TxFn.update_status(txID, "pending");
-    },
-    update_status_processing: async (txID: string) => {
-        await TxFn.update_status(txID, "processing");
-    },
-    update_status_failed: async (txID: string) => {
-        await TxFn.update_status(txID, "failed");
-    },
+    // Keep "completed" alias so existing call-sites compile during migration
+    update_status_completed: async (txId: string) => TxFn.update_status_success(txId),
+    update_status_pending:    async (txId: string) => TxFn.update_status(txId, "pending"),
+    update_status_processing: async (txId: string) => TxFn.update_status(txId, "processing"),
+    update_status_failed:     async (txId: string) => TxFn.update_status(txId, "failed"),
     commit: async (tx: Tx) => {
-        const ref = txCollections.doc(tx.id);
+        const ref = txCollections.doc(tx.txId);
         await ref.set(tx);
-        if (tx.type != "deposit") {
-            await UserFn.update_add_recentTransaction(tx.uid, tx.id);
+        if (tx.type !== "paystack-deposit" && tx.type !== "manual-deposit") {
+            await UserFn.update_add_recentTransaction(tx.agentId, tx.txId);
         }
     },
-    addExtraData: async (txID: string, data: any) => {
-        let docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txID);
+    addExtraData: async (txId: string, data: any) => {
+        const docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txId);
         const doc = await docRef.get();
         if (!doc.exists) throw new Error("Transaction does not exist");
-        await docRef.set({
-            updatedAt: Timestamp.now(),
-            extraData: data,
-        }, {merge: true});
+        await docRef.set({ txData: { ...(doc.data()?.txData ?? {}), ...data } }, {merge: true});
     },
-    addHendyLinksData: async (txID: string, data: HendyLinksCreateOrderResponse) => {
-        let docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txID);
+    addHendyLinksData: async (txId: string, data: HendyLinksCreateOrderResponse) => {
+        const docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txId);
         const doc = await docRef.get();
         if (!doc.exists) throw new Error("Transaction does not exist");
         await docRef.set({
-            updatedAt: Timestamp.now(),
-            hendyLinks: data,
+            txData: { ...(doc.data()?.txData ?? {}), hendyLinks: data },
             hendyLinksTxId: data.order_id.toString(),
         }, {merge: true});
     },
     readHendyLinksData: async (hendyLinksTxId: string) => {
-        let query = await txCollections.where("hendyLinksTxId", "==", hendyLinksTxId).get();
-        if (query.empty) return undefined;
-        return query.docs[0].data() as Tx<HendyLinksCreateOrderResponse>
+        const q = await txCollections.where("hendyLinksTxId", "==", hendyLinksTxId).get();
+        if (q.empty) return undefined;
+        return q.docs[0].data() as Tx;
     },
-    addDatamartData: async (txID: string, data: DatamartPurchaseResult) => {
-        let docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txID);
+    addDatamartData: async (txId: string, data: DatamartPurchaseResult) => {
+        const docRef: FirebaseFirestore.DocumentReference = txCollections.doc(txId);
         const doc = await docRef.get();
         if (!doc.exists) throw new Error("Transaction does not exist");
         await docRef.set({
-            updatedAt: Timestamp.now(),
-            datamart: data,
+            txData: { ...(doc.data()?.txData ?? {}), datamart: data },
             datamartTxId: data.purchaseId,
         }, {merge: true});
     },
     readDatamartData: async (datamartTxId: string) => {
-        let query = await txCollections.where("datamartTxId", "==", datamartTxId).get();
-        if (query.empty) return undefined;
-        return query.docs[0].data() as Tx<DatamartPurchaseResult>
+        const q = await txCollections.where("datamartTxId", "==", datamartTxId).get();
+        if (q.empty) return undefined;
+        return q.docs[0].data() as Tx;
     },
-    // Create an initial transaction document object
-    // This does not create the document in Firestore, just returns the object
-    initialDoc: async (type: TxType, uid: string): Promise<Omit<Tx, "type">> => {
+    initialDoc: async (type: TxType, agentId: string, balance: number = 0): Promise<Omit<Tx, "type">> => {
         return {
-            id: await generateTxID(type),
-            uid: uid,
+            txId: await generateTxID(type),
+            agentId,
             status: "pending",
             amount: 0,
-            commission: 0,
-            // @ts-expect-error, server do not have the json function in the Timestamp class
-            date: Timestamp.now(),
-            // @ts-expect-error, server do not have the json function in the Timestamp class
-            updatedAt: Timestamp.now(),
-        }
-    }
-}
+            balance,
+            // @ts-expect-error server Timestamp lacks json()
+            time: Timestamp.now(),
+            txData: {},
+        };
+    },
+};
 
 export {TxFn};

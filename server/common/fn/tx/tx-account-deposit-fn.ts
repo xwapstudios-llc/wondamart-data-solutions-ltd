@@ -1,10 +1,3 @@
-// Create
-// Update
-// Read
-// Delete
-// List
-// Search
-
 import {
     TxDeposit,
     TxDepositMoMoRequest,
@@ -12,17 +5,17 @@ import {
     TxDepositSendRequest
 } from "@common/types/account-deposit";
 import {TxFn} from "./tx-fn";
-import {txType} from "@common/types/tx";
+import {txType} from "@common/tx";
 
 const TxAccountDepositFn = {
     create: {
         async paystack(data: TxDepositPaystackRequest) {
             const txDetails: TxDeposit = {
-                ...await TxFn.initialDoc(txType.deposit, data.uid),
-                type: "deposit",
+                ...await TxFn.initialDoc(txType.paystackDeposit, data.uid),
+                type: "paystack-deposit",
                 amount: data.amount,
-                data: {
-                    type: "paystack",
+                txData: {
+                    depositType: "paystack",
                     phoneNumber: data.phoneNumber,
                     email: data.email,
                     network: data.network,
@@ -32,11 +25,11 @@ const TxAccountDepositFn = {
         },
         async send(data: TxDepositSendRequest) {
             const txDetails: TxDeposit = {
-                ...await TxFn.initialDoc(txType.deposit, data.uid),
-                type: "deposit",
-                amount: 0, // Todo: read the amount from the messages and update
-                data: {
-                    type: "send",
+                ...await TxFn.initialDoc(txType.manualDeposit, data.uid),
+                type: "paystack-deposit",
+                amount: 0,
+                txData: {
+                    depositType: "send",
                     transactionID: data.transactionID,
                 }
             };
@@ -44,19 +37,19 @@ const TxAccountDepositFn = {
         },
         async momo(data: TxDepositMoMoRequest) {
             const txDetails: TxDeposit = {
-                ...await TxFn.initialDoc(txType.deposit, data.uid),
-                type: "deposit",
+                ...await TxFn.initialDoc(txType.paystackDeposit, data.uid),
+                type: "paystack-deposit",
                 amount: data.amount,
-                data: {
-                    type: "momo",
+                txData: {
+                    depositType: "momo",
                     phoneNumber: data.phoneNumber,
                 }
             };
             return txDetails;
         }
     },
-    async read_TxAccountDepositDoc(txID: string): Promise<TxDeposit> {
-        return await TxFn.read(txID) as TxDeposit;
+    async read_TxAccountDepositDoc(txId: string): Promise<TxDeposit> {
+        return await TxFn.read(txId) as TxDeposit;
     },
     createAndCommit: {
         async paystack(data: TxDepositPaystackRequest): Promise<TxDeposit> {

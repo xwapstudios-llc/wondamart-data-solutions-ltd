@@ -1,4 +1,4 @@
-import { type Tx } from "./tx";
+import { type Tx } from "@common/tx";
 import type {UserRegistrationRequest} from "@common/types/user";
 
 //
@@ -7,6 +7,6 @@ export interface TxUserRegistrationData extends Omit<UserRegistrationRequest, "p
     uid: string;
 }
 export interface TxUserRegistration extends Tx {
-    type: 'user-registration';
-    data: TxUserRegistrationData;
+    type: 'debit';
+    txData: TxUserRegistrationData;
 }

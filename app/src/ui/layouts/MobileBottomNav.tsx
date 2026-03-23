@@ -32,7 +32,7 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({className, ...props}) 
     if (isMobile)
         return (
             <div className={cn(
-                " fixed bottom-0 left-0 right-0 bg-background/50 backdrop-blur-2xl border-t flex justify-evenly py-1 z-50",
+                " fixed bottom-0 left-0 right-0 bg-background/50 backdrop-blur-2xl border-t flex justify-evenly py-1 z-40",
                 className
             )}
                  {...props}

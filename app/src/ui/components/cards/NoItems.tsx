@@ -15,7 +15,7 @@ const NoItems: React.FC<NoBundlesProps> = ({
     return (
         <div
             className={cn(
-                "flex flex-col items-center justify-center gap-8 p-8 text-primary-foreground bg-primary dark:bg-primary/75 rounded-xl text-xl",
+                "flex flex-col items-center justify-center gap-8 p-8 text-primary-foreground bg-primary dark:bg-wondamart rounded-xl text-xl",
                 className
             )}
             {...props}

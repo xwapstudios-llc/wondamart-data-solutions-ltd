@@ -7,17 +7,17 @@ import {
     SendIcon,
     UserPlus2Icon
 } from "lucide-react";
-import type {Tx, TxType} from "@common/types/tx.ts";
-import type {TxDataBundleData} from "@common/types/data-bundle.ts";
-import type {TxUserRegistrationData} from "@common/types/user-registration.ts";
-import type {TxResultCheckerData} from "@common/types/result-checker.ts";
-import type {TxAfaBundleData} from "@common/types/afa-bundle.ts";
+import type {Tx, TxType} from "@common/tx";
+import type {TxDataBundleData} from "@common/types/data-bundle";
+import type {TxUserRegistrationData} from "@common/types/user-registration";
+import type {TxResultCheckerData} from "@common/types/result-checker";
+import type {TxAfaBundleData} from "@common/types/afa-bundle";
 import type {
     TxDepositData,
     TxDepositMoMoData,
     TxDepositPaystackData,
     TxDepositSendData
-} from "@common/types/account-deposit.ts";
+} from "@common/types/account-deposit";
 
 const TxIcons = {
     dataBundles: Package2Icon,
@@ -28,21 +28,29 @@ const TxIcons = {
 }
 
 const getTxIcon: Record<TxType | "tx", LucideIcon> = {
-    "deposit": TxIcons.deposit,
-    "result-checker": TxIcons.resultChecker,
-    "user-registration": TxIcons.userRegistration,
-    "data-bundle": TxIcons.dataBundles,
-    "afa-bundle": TxIcons.afaBundle,
-    "tx": SendIcon,
+    "paystack-deposit": TxIcons.deposit,
+    "manual-deposit":   TxIcons.deposit,
+    "checker-purchase": TxIcons.resultChecker,
+    "debit":            TxIcons.userRegistration,
+    "bundle-purchase":  TxIcons.dataBundles,
+    "afa-purchase":     TxIcons.afaBundle,
+    "admin-debit":      SendIcon,
+    "admin-credit":     SendIcon,
+    "refund":           SendIcon,
+    "tx":               SendIcon,
 }
 
 const getTxName: Record<TxType | "tx", string> = {
-    "deposit": "Deposit",
-    "result-checker": "Result Checker",
-    "user-registration": "User Registration",
-    "data-bundle": "Data Bundle",
-    "afa-bundle": "AFA Bundle",
-    "tx": "Transaction",
+    "paystack-deposit": "Paystack Deposit",
+    "manual-deposit":   "Manual Deposit",
+    "checker-purchase": "Result Checker",
+    "debit":            "Debit",
+    "bundle-purchase":  "Data Bundle",
+    "afa-purchase":     "AFA Bundle",
+    "admin-debit":      "Admin Debit",
+    "admin-credit":     "Admin Credit",
+    "refund":           "Refund",
+    "tx":               "Transaction",
 }
 
 const toCurrency = (v: number) =>
@@ -51,31 +59,34 @@ const toCurrency = (v: number) =>
 const getTxReportText = (tx: Tx): string => {
     let strData: string;
     switch (tx.type) {
-        case "data-bundle":
-            const data = tx.data as TxDataBundleData;
+        case "bundle-purchase": {
+            const data = tx.txData as TxDataBundleData;
             strData = `
 📱 Phone: ${data.phoneNumber}
 📶 Network: ${data.network}
 📦 Bundle: ${data.bundleId}
 `;
             break;
-        case "user-registration":
-            const dataReg = tx.data as TxUserRegistrationData;
+        }
+        case "debit": {
+            const dataReg = tx.txData as TxUserRegistrationData;
             strData = `
-👤 Name: ${dataReg.firstName } ${dataReg.lastName}
+👤 Name: ${dataReg.firstName} ${dataReg.lastName}
 📧 Email: ${dataReg.email}
 📱 Phone: ${dataReg.phoneNumber}
 `;
             break;
-        case "result-checker":
-            const datarc = tx.data as TxResultCheckerData;
+        }
+        case "checker-purchase": {
+            const datarc = tx.txData as TxResultCheckerData;
             strData = `
 📚 CheckerType: ${datarc.checkerType}
 🆔 Units: ${datarc.units}
 `;
             break;
-        case "afa-bundle":
-            const dataAfa = tx.data as TxAfaBundleData;
+        }
+        case "afa-purchase": {
+            const dataAfa = tx.txData as TxAfaBundleData;
             strData = `
 Name: ${dataAfa.fullName}
 Phone: ${dataAfa.phoneNumber}
@@ -85,47 +96,52 @@ Location: ${dataAfa.location}
 Occupation: ${dataAfa.occupation}
 `;
             break;
-        case "deposit":
-            const dataDep = tx.data as TxDepositData;
-
-            switch (dataDep.type) {
-                case "paystack":
+        }
+        case "paystack-deposit":
+        case "manual-deposit": {
+            const dataDep = tx.txData as TxDepositData;
+            switch (dataDep.depositType) {
+                case "paystack": {
                     const paystack = dataDep as TxDepositPaystackData;
                     strData = `
-💳 Payment Method: ${paystack.type}
+💳 Payment Method: ${paystack.depositType}
 Phone: ${paystack.phoneNumber}
 Network: ${paystack.network}
 📧 Email: ${paystack.email}
 `;
                     break;
-                case "send":
+                }
+                case "send": {
                     const send = dataDep as TxDepositSendData;
                     strData = `
-💳 Payment Method: ${send.type}
+💳 Payment Method: ${send.depositType}
 Transaction ID: ${send.transactionID}
 `;
                     break;
-                case "momo":
+                }
+                case "momo": {
                     const momo = dataDep as TxDepositMoMoData;
                     strData = `
-💳 Payment Method: ${momo.type}
+💳 Payment Method: ${momo.depositType}
 Phone: ${momo.phoneNumber}
 `;
                     break;
+                }
                 default:
                     strData = ``;
             }
             break;
+        }
         default:
             strData = ``;
     }
     return `
 📋 ORDER DETAILS FOR REPORT
 ━━━━━━━━━━━━━━━━━━━━━
-🔖 Track ID: ${tx.id}
+🔖 Track ID: ${tx.txId}
 💰 Amount: ${toCurrency(tx.amount)}
-💸 Commission: ${toCurrency(tx.commission)}
-📅 Date: ${tx.date.toDate().toLocaleDateString("en-GB")}
+💸 Commission: ${toCurrency(tx.commission ?? 0)}
+📅 Date: ${tx.time.toDate().toLocaleDateString("en-GB")}
 📦 Type: ${getTxName[tx.type]}
 ${strData}
 📊 Status: ${tx.status.toUpperCase()}

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {ClTx} from '@common/client-api/tx.ts';
-import type {Tx, TxData} from '@common/types/tx.ts';
+import type {Tx} from '@common/tx.ts';
 import {getTxIcon, getTxName, getTxReportText, toCurrency} from '@/lib/icons.ts';
 import LoadingView from '@/ui/components/views/LoadingView.tsx';
 import StatusBadge from "@/ui/components/typography/StatusBadge.tsx";
@@ -116,18 +116,18 @@ const HistoryPurchaseDetail: React.FC = () => {
                     Copy details
                 </Button>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <IconTitleText Icon={PencilIcon} title={"Transaction Id"} text={tx.id} />
+                    <IconTitleText Icon={PencilIcon} title={"Transaction Id"} text={tx.txId} />
                     <IconTitleText Icon={DollarSignIcon} title={"Amount"} text={toCurrency(tx.amount)} />
-                    <IconTitleText Icon={CoinsIcon} title={"Commission"} text={toCurrency(tx.commission)} />
-                    <IconTitleText Icon={ClockPlusIcon} title={"Date"} text={formatDate(tx.date)} />
-                    <IconTitleText Icon={ClockCheckIcon} title={"Finished"} text={tx.finishedAt ? formatDate(tx.finishedAt) : "N/A"} />
+                    <IconTitleText Icon={CoinsIcon} title={"Commission"} text={toCurrency(tx.commission ?? 0)} />
+                    <IconTitleText Icon={ClockPlusIcon} title={"Date"} text={formatDate(tx.time)} />
+                    <IconTitleText Icon={ClockCheckIcon} title={"Finished"} text={tx.timeCompleted ? formatDate(tx.timeCompleted) : "N/A"} />
                 </div>
             </div>
 
             <div className="bg-card/50 p-4 rounded-md">
                 <h2 className="text-lg font-medium mb-2">Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {Object.entries(tx.data as TxData).map(([k, v]) => (
+                    {Object.entries(tx.txData as object).map(([k, v]) => (
 
                         <div key={k} className="p-2">
                             <div className="text-xs text-muted-foreground">{k}</div>

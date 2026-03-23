@@ -1,24 +1,17 @@
-// Create
-// Update
-// Read
-// Delete
-// List
-// Search
-
 import { TxAfaBundle, TxAfaBundleRequest } from "@common/types/afa-bundle";
 import { TxFn } from "./tx-fn";
 import {CommonSettingsFn} from "../common-settings-fn";
-import {txType} from "@common/types/tx";
+import {txType} from "@common/tx";
 
 const TxAfaBundleFn = {
     async create(data: TxAfaBundleRequest) {
         const settings = await CommonSettingsFn.read_afa();
         const txDetails: TxAfaBundle = {
-            ...await TxFn.initialDoc(txType.afaBundle, data.uid),
-            type: "afa-bundle",
+            ...await TxFn.initialDoc(txType.afaPurchase, data.uid),
+            type: "afa-purchase",
             amount: settings.unitPrice,
             commission: settings.commission,
-            data: {
+            txData: {
                 fullName: data.fullName,
                 phoneNumber: data.phoneNumber,
                 idNumber: data.idNumber,
@@ -29,8 +22,8 @@ const TxAfaBundleFn = {
         };
         return txDetails;
     },
-    async read_TxAfaBundleDoc(txID: string): Promise<TxAfaBundle> {
-        return await TxFn.read(txID) as TxAfaBundle;
+    async read_TxAfaBundleDoc(txId: string): Promise<TxAfaBundle> {
+        return await TxFn.read(txId) as TxAfaBundle;
     },
     async createAndCommit(data: TxAfaBundleRequest): Promise<TxAfaBundle> {
         const details = await this.create(data);

@@ -1,12 +1,12 @@
 import React from "react";
 import Page from "@/ui/page/Page.tsx";
 import PageContent from "@/ui/page/PageContent.tsx";
-import { Card, CardContent } from '@/cn/components/ui/card';
+import {TargetIcon, EyeIcon, MapPinIcon} from "lucide-react";
 
 const AboutPage: React.FC = () => {
     return (
-        <Page className="md:p-6">
-            <PageContent className="max-w-4xl mx-auto">
+        <Page className="pb-8">
+            <PageContent className="max-w-xl mx-auto space-y-4 pt-4">
                 <div className="text-center mb-8">
                     <div className="mb-6">
                         <div className="w-24 h-24 mx-auto mb-4 flex items-center justify-center">
@@ -17,38 +17,54 @@ const AboutPage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="space-y-6">
-                    <Card>
-                        <CardContent className="p-6">
-                            <h2 className="text-xl font-semibold mb-3">Our Mission</h2>
-                            <p className="text-muted-foreground leading-relaxed">
-                                To provide reliable, affordable, and accessible digital services that empower individuals 
-                                and businesses across Ghana. We strive to bridge the digital divide by offering seamless 
-                                data solutions and financial services.
-                            </p>
-                        </CardContent>
-                    </Card>
+                <div className="rounded-xl border bg-card p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="flex size-9 items-center justify-center rounded-md bg-red-500 text-white">
+                            <TargetIcon className="size-4" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold">Our Mission</p>
+                            <p className="text-xs text-muted-foreground">What drives us</p>
+                        </div>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed">
+                        To provide reliable, affordable, and accessible digital services that empower individuals 
+                        and businesses across Ghana. We strive to bridge the digital divide by offering seamless 
+                        data solutions and financial services.
+                    </p>
+                </div>
 
-                    <Card>
-                        <CardContent className="p-6">
-                            <h2 className="text-xl font-semibold mb-3">Our Vision</h2>
-                            <p className="text-muted-foreground leading-relaxed">
-                                To become the leading digital service provider in West Africa, known for innovation, 
-                                reliability, and exceptional customer service. We aim to create a connected future 
-                                where everyone has access to essential digital services.
-                            </p>
-                        </CardContent>
-                    </Card>
+                <div className="rounded-xl border bg-card p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="flex size-9 items-center justify-center rounded-md bg-blue-500 text-white">
+                            <EyeIcon className="size-4" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold">Our Vision</p>
+                            <p className="text-xs text-muted-foreground">Our future goal</p>
+                        </div>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed">
+                        To become the leading digital service provider in West Africa, known for innovation, 
+                        reliability, and exceptional customer service. We aim to create a connected future 
+                        where everyone has access to essential digital services.
+                    </p>
+                </div>
 
-                    <Card>
-                        <CardContent className="p-6">
-                            <h2 className="text-xl font-semibold mb-3">Location</h2>
-                            <p className="text-muted-foreground">
-                                Accra, Ghana<br/>
-                                West Africa
-                            </p>
-                        </CardContent>
-                    </Card>
+                <div className="rounded-xl border bg-card p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="flex size-9 items-center justify-center rounded-md bg-green-500 text-white">
+                            <MapPinIcon className="size-4" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold">Location</p>
+                            <p className="text-xs text-muted-foreground">Where we operate</p>
+                        </div>
+                    </div>
+                    <p className="text-muted-foreground">
+                        Accra, Ghana<br/>
+                        West Africa
+                    </p>
                 </div>
 
                 <div className="text-center mt-12 space-y-4">

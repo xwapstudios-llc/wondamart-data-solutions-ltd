@@ -1,104 +1,108 @@
 const R = {
-    login: '/',
-    dashboard: '/dashboard',
+    index: "/",
+    login: "/login",
+    signup: "/signup",
 
-    providers: {
-        index: '/providers',
-        mnotify: {
-            index: '/providers/mnotify',
-            edit: '/providers/mnotify?edit=true',
-        },
-        hendyLinks: {
-            index: '/providers/hendy-links',
-            edit: '/providers/hendy-links?edit=true',
-        },
-        datamart: {
-            index: '/providers/datamart',
-            edit: '/providers/datamart?edit=true',
-        },
-        wondamart: {
-            index: '/providers/wondamart',
-            edit: '/providers/wondamart?edit=true',
-        }
+    // Terms and Conditions
+    termsAndConditions: "/terms-and-conditions",
+
+    help: "/help",
+    about: "/about",
+    faq: "/faq",
+
+    auth: {
+        action: "/auth/action",
+        forgotPassword: "/auth/forgot-password",
+        otp: (txID: string) => `/auth/otp/${txID}`,
     },
-    payments: {
-        index: '/payments',
-        paystack: {
-            index: '/payments/paystack',
-            edit: '/payments/paystack?edit=true',
-        },
-        send: {
-            index: '/payments/send',
-            edit: '/payments/send?edit=true',
-        },
-        momo: {
-            index: '/payments/momo',
-            edit: '/payments/momo?edit=true',
-        }
+
+    client: {
+        store: (storeId: string): string => `/store/${storeId}`,
+        bundles: (storeId: string, network: string): string => `/store/${storeId}/${network}`,
+        checkout: (storeId: string): string => `/store/${storeId}/checkout`,
+        track: "/tracker"
     },
-    stock: {
-        index: '/stock',
-        dataBundle: {
-            index: '/stock/data-bundles',
-            id: (id: string) => {
-                return `/stock/data-bundles/${id}`
+
+    app: {
+        index: "/app",
+        dashboard: "/app/dashboard",
+
+        purchase: {
+            index: "/app/purchase",
+
+            // data bundle purchase
+            dataBundle: {
+                index: "/app/purchase/data-bundle",
+                mtn: "/app/purchase/data-bundle/mtn",
+                telecel: "/app/purchase/data-bundle/telecel",
+                airtelTigo: "/app/purchase/data-bundle/airtel-tigo",
             },
-            edit: (id: string) => {
-                return `/stock/data-bundles/${id}?edit=true`
+
+            // AFA bundle purchase
+            afaBundle: "/app/purchase/afa-bundle",
+
+            // Result checker purchase
+            resultChecker: "/app/purchase/result-checker",
+        },
+
+        registerAgent: "/app/register-agent",
+
+        // User purchase history
+        history: {
+            index: "/app/history",
+            id: (id: string) => `/app/history/${id}`,
+
+            // Purchase history
+            purchases: {
+                index: "/app/history?type=purchase",
+                dataBundles: "/app/history?type=data-bundle",
+                afaBundles: "/app/history?type=afa-bundle",
+                resultCheckers: "/app/history?type=result-checker",
+            },
+            // Deposit history
+            deposits: "/app/history?type=deposit",
+        },
+
+        // Deposit funds
+        deposit: "/app/deposit",
+
+        // Commissions
+        commissions: {
+            index: "/app/commissions",
+            id: (id: string) => `/app/commissions/${id}`,
+        },
+
+        // Notifications
+        notifications: "/app/notifications",
+
+        user: {
+            index: "/app/user",
+
+            // Profile Overview
+            profile: "/app/user/profile",
+
+            // Activate Account
+            activate: "/app/user/activate",
+
+            // Settings
+            settings: {
+                general: "/app/user/settings/general",
+                security: "/app/user/settings/security",
             },
         },
-        afaBundles: '/stock/afa-bundles',
-        resultCheckers: {
-            index: '/stock/result-checkers',
-            edit: `/stock/result-checkers?edit=true`,
-        }
+        // Terms and Conditions
+        termsAndConditions: "/app/terms-and-conditions",
+
+        help: "/app/help",
+        about: "/app/about",
+        faq: "/app/faq",
     },
-    servers: {
-        index: '/servers',
-        id: (id: string) => {
-            return `/server/${id}`
-        },
-    },
-    users: {
-        index: '/users',
-        id: (id: string) => {
-            return `/user/${id}`
-        },
-        edit: (id: string) => {
-            return `/user/${id}?edit=true`
-        },
-    },
-    transactions: {
-        index: '/transactions',
-        id: (id: string) => {
-            return `/transaction/${id}`
-        },
-        edit: (id: string) => {
-            return `/transaction/${id}?edit=true`
-        },
-    },
-    commissions: {
-        index: '/commissions',
-        id: (id: string) => {
-            return `/commission/${id}`
-        },
-    },
-    messaging: {
-        index: '/messaging',
-        new: '/messaging/new',
-    },
-    modem: '/modem',
-    admins: {
-        index: '/admins',
-        id: (id: string) => {
-            return `/admin/${id}`
-        },
-        edit: (id: string) => {
-            return `/admin/${id}?edit=true`
-        },
+
+    utils: {
+        whatsAppGroup: "https://chat.whatsapp.com/HDhT0o5JXtO8dq5OmiEqVU",
+        admin: "https://wa.me/+233539971202?text=Hi%20Wondamart%20Data%20Solutions.",
+        support: "https://chat.whatsapp.com/HDhT0o5JXtO8dq5OmiEqVU",
     }
-}
-
-export {
-    R
 };
+
+export {R};

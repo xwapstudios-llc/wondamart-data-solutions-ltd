@@ -46,10 +46,10 @@ export const handler: RouteHandler = async (req, res) => {
         await UserFn.claims.activate(newUID);
 
         const tx = await TxUserRegistrationFn.createAndCommit(check.uid, newUID);
-        await TxFn.update_status_processing(tx.id);
+        await TxFn.update_status_processing(tx.txId);
         await UserFn.update_sub_UserBalance(check.uid, commonUserRegistration.unitPrice);
         balance_changed = true;
-        await TxFn.update_status_completed(tx.id);
+        await TxFn.update_status_success(tx.txId);
 
         return sendResponse(res, httpResponse("ok", `User ${d.email} account registered successfully`));
     } catch (err) {

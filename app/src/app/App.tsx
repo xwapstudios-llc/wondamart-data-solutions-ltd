@@ -17,7 +17,7 @@ const ForgotPasswordPage = lazy(() => import("@/pages/auth/ForgotPasswordPage.ts
 const OTPPage = lazy(() => import("@/pages/auth/OTPPage.tsx"));
 const UserLayout = lazy(() => import("@/ui/layouts/UserLayout"));
 const Dashboard = lazy(() => import("@/pages/app/dashboard"));
-const PurchaseIndex = lazy(() => import("@/pages/app/purchase/index"));
+const PurchaseIndex = lazy(() => import("@/pages/app/purchase/indexV2"));
 const DataBundleIndex = lazy(() => import("@/pages/app/purchase/dataBundle/index"));
 const DataBundleMTN = lazy(() => import("@/pages/app/purchase/dataBundle/mtn"));
 const DataBundleTelecel = lazy(() => import("@/pages/app/purchase/dataBundle/telecel"));
@@ -41,6 +41,11 @@ const TermsAndConditionsPage = lazy(() => import("@/pages/TermsAndConditionsPage
 const HelpPage = lazy(() => import("@/pages/HelpPage.tsx"));
 const FAQPage = lazy(() => import("@/pages/FAQPage.tsx"));
 const AboutPage = lazy(() => import("@/pages/AboutPage.tsx"));
+
+const AgentStorePage = lazy(() => import("@/pages/agent-store/AgentStore"));
+const AgentStoreBundlesPage = lazy(() => import("@/pages/agent-store/AgentStoreBundles"));
+const AgentStoreCheckout = lazy(() => import("@/pages/agent-store/AgentStoreCheckout"));
+const ClientTrackTxPage = lazy(() => import("@/pages/client/ClientTrackTx"));
 
 // Loading component
 const PageLoader = () => (
@@ -81,6 +86,17 @@ const App = () => {
                             <Route path={R.auth.forgotPassword} element={<ForgotPasswordPage/>}/>
                             <Route path={R.auth.otp(":txID")} element={<OTPPage/>}/>
                         </>
+
+
+                        {/*Client*/}
+                        <>
+                            <Route path={R.client.store("")} element={<AgentStorePage />} />
+                            <Route path={R.client.store(":storeId")} element={<AgentStorePage />} />
+                            <Route path={R.client.bundles(":storeId", ":network")} element={<AgentStoreBundlesPage />} />
+                            <Route path={R.client.checkout(":storeId")} element={<AgentStoreCheckout />} />
+                            <Route path={R.client.track} element={<ClientTrackTxPage />} />
+                        </>
+
 
                         {/*Routes group for user*/}
                         <Route path={R.app.index} element={<UserLayout/>}>

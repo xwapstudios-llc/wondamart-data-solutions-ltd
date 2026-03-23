@@ -1,6 +1,6 @@
 import { getFirestore } from "firebase-admin/firestore";
 import {collections} from "@common/lib/collections";
-import {txPrefix, TxType} from "@common/types/tx";
+import {txPrefix, TxType} from "@common/tx";
 
 const db = getFirestore();
 

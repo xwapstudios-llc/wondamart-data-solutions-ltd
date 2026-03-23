@@ -8,9 +8,9 @@ export const autoFailDeposits = async () => {
         const fiveMinutesAgo = Timestamp.fromMillis(Date.now() - 5 * 60 * 1000);
 
         const snapshot = await txCollections
-            .where("type", "==", "deposit")
+            .where("type", "in", ["paystack-deposit", "manual-deposit"])
             .where("status", "in", ["pending", "processing"])
-            .where("date", "<=", fiveMinutesAgo)
+            .where("time", "<=", fiveMinutesAgo)
             .get();
 
         if (snapshot.empty) {
@@ -25,8 +25,7 @@ export const autoFailDeposits = async () => {
                 txCollections.doc(doc.id).set(
                     {
                         status: "failed",
-                        updatedAt: now,
-                        finishedAt: now,
+                        timeCompleted: now,
                     },
                     { merge: true }
                 )

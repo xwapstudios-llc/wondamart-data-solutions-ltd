@@ -16,6 +16,13 @@ const R = {
         otp: (txID: string) => `/auth/otp/${txID}`,
     },
 
+    client: {
+        store: (storeId: string): string => `/store/${storeId}`,
+        bundles: (storeId: string, network: string): string => `/store/${storeId}/${network}`,
+        checkout: (storeId: string): string => `/store/${storeId}/checkout`,
+        track: "/tracker"
+    },
+
     app: {
         index: "/app",
         dashboard: "/app/dashboard",

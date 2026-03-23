@@ -1,8 +1,9 @@
 import {
     // connectAuthEmulator,
     createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
     getAuth,
-    signInWithEmailAndPassword, signOut,
+    signOut,
     type User,
 } from "firebase/auth";
 import app from "@common/lib/app";
@@ -31,6 +32,7 @@ export const createUser = async (email: string, password: string): Promise<User>
     });
 };
 
+
 export const signInUser = async (
     email: string,
     password: string,
@@ -47,6 +49,7 @@ export const signInUser = async (
         }
     })
 };
+
 
 export const signOutUser = async () => {
     return signOut(auth);

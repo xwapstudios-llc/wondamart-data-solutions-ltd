@@ -88,7 +88,7 @@
     --sidebar-border: oklch(0.92 0.004 286.32);
     --sidebar-ring: oklch(0.623 0.214 259.815);
 
-    --wondamart: oklch(37.9% 0.146 265.522);
+    --wondamart: oklch(0.23 0.08 265.986);
 
     --mtn: oklch(85.2% 0.199 91.936);
     --telecel: oklch(63.7% 0.237 25.331);
@@ -133,7 +133,7 @@
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.488 0.243 264.376);
 
-    --wondamart: oklch(70.7% 0.165 254.624);
+    --wondamart: oklch(0.559 0.243 263.689 / 0.53);
 
     --mtn: oklch(79.5% 0.184 86.047);
     --telecel: oklch(57.7% 0.245 27.325);

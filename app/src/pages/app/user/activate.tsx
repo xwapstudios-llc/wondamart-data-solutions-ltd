@@ -75,13 +75,13 @@ const UserActivate: React.FC = () => {
     }
 
     return (
-        <Page>
-            <PageHeading className="mt-4 text-4xl">User Activation</PageHeading>
-            <PageContent className={"mt-8 md:p-4 flex flex-wrap gap-8"}>
+        <Page className="pb-8">
+            <PageHeading className="mt-4">Activation & Verification</PageHeading>
+            <PageContent className="max-w-xl mx-auto space-y-4 pt-4">
                 {
                     claims?.isActivated ? (
                         <ActivationCard
-                            className={"w-full md:w-lg"}
+                            className={"w-full"}
                             Icon={PackageCheckIcon}
                             title={"Activated"}
                             cta={{label: "Activated"}}
@@ -90,7 +90,7 @@ const UserActivate: React.FC = () => {
                         </ActivationCard>
                     ) : (
                         <ActivationCard
-                            className={"w-full md:w-lg"}
+                            className={"w-full"}
                             Icon={PackageXIcon}
                             title={"Not Activated"}
                             cta={{

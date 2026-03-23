@@ -2,10 +2,9 @@ import React, {useEffect, useState} from "react";
 import {cn} from "@/cn/lib/utils";
 import ActivityHighlightCard from "@/ui/components/cards/dashboard/ActivityHighlightCard.tsx";
 import {getTxIcon, toCurrency} from "@/lib/icons.ts";
-import {HandCoinsIcon, TrendingUpIcon} from "lucide-react";
-import OverviewGraph from "../../OverviewGraph";
+import {CheckCircle, HandCoinsIcon, HistoryIcon, TrendingUpIcon} from "lucide-react";
 import {useAppStore} from "@/lib/useAppStore.ts";
-import type {Tx, TxQuery} from "@common/types/tx.ts";
+import type {Tx, TxQuery} from "@common/tx.ts";
 import {Timestamp} from "firebase/firestore";
 import {ClTxDataBundle} from "@common/client-api/tx-data-bundle.ts";
 import {ClTxAFABundle} from "@common/client-api/tx-afa-bundle.ts";
@@ -25,13 +24,13 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
     const {profile} = useAppStore();
     const [loading, setLoading] = useState(true);
     const period = [
-        {label: "24 hours", value: "1"},
+        {label: "Today", value: "1"},
         {label: "3 days", value: "3"},
         {label: "7 days", value: "7"},
         {label: "14 days", value: "14"},
         {label: "31 days", value: "31"},
     ];
-    const [selectedPeriod, setSelectedPeriod] = useState<string>(period[2].value);
+    const [selectedPeriod, setSelectedPeriod] = useState<string>(period[0].value);
 
     const [bundleTx, setBundleTx] = useState<Tx[]>([]);
     const [afaTx, setAfaTx] = useState<Tx[]>([]);
@@ -54,9 +53,9 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
             }
 
             const values: TxQuery = {
-                uid: profile.id,
+                agentId: profile.id,
                 ...(from && {
-                    date: { from: Timestamp.fromDate(from), to: Timestamp.fromDate(now) },
+                    time: { from: Timestamp.fromDate(from), to: Timestamp.fromDate(now) },
                 }),
             };
 
@@ -89,15 +88,9 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
     useEffect(() => {
         function calculateCommission() {
             let total = 0;
-            bundleTx.forEach((tx) => {
-                total += tx.commission;
-            });
-            afaTx.forEach((tx) => {
-                total += tx.commission;
-            });
-            rcTx.forEach((tx) => {
-                total += tx.commission;
-            });
+            bundleTx.forEach((tx) => { total += tx.commission ?? 0; });
+            afaTx.forEach((tx) => { total += tx.commission ?? 0; });
+            rcTx.forEach((tx) => { total += tx.commission ?? 0; });
             setCommission(total);
         }
         function calculateTransactions() {
@@ -107,16 +100,16 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
         function calculateGraphData() {
             const data: GraphData[] = [];
             const mtn = bundleTx.filter((tx) => {
-                const data = tx.data as TxDataBundleData;
-                return data.network && data.network === "mtn";
+                const d = tx.txData as TxDataBundleData;
+                return d.network && d.network === "mtn";
             })
             const telecel = bundleTx.filter((tx) => {
-                const data = tx.data as TxDataBundleData;
-                return data.network && data.network === "telecel";
+                const d = tx.txData as TxDataBundleData;
+                return d.network && d.network === "telecel";
             })
             const airteltigo = bundleTx.filter((tx) => {
-                const data = tx.data as TxDataBundleData;
-                return data.network && data.network === "airteltigo";
+                const d = tx.txData as TxDataBundleData;
+                return d.network && d.network === "airteltigo";
             })
             const getTotal = (transactions: Tx[]) => {
                 let total = 0;
@@ -164,7 +157,7 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
                 }
 
                 const filterTxInInterval = (txs: Tx[]) => txs.filter((tx) => {
-                    const date = tx.date.toDate();
+                    const date = tx.time.toDate();
                     return date >= intervalStart && date < intervalEnd;
                 });
 
@@ -185,22 +178,22 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
         }
         function calculateBundleGB() {
             const mtn = bundleTx.filter((tx) => {
-                const data = tx.data as TxDataBundleData;
-                return data.network && data.network === "mtn";
+                const d = tx.txData as TxDataBundleData;
+                return d.network && d.network === "mtn";
             })
             const telecel = bundleTx.filter((tx) => {
-                const data = tx.data as TxDataBundleData;
-                return data.network && data.network === "telecel";
+                const d = tx.txData as TxDataBundleData;
+                return d.network && d.network === "telecel";
             })
             const airteltigo = bundleTx.filter((tx) => {
-                const data = tx.data as TxDataBundleData;
-                return data.network && data.network === "airteltigo";
+                const d = tx.txData as TxDataBundleData;
+                return d.network && d.network === "airteltigo";
             })
             const getTotal = (transactions: Tx[]) => {
                 let total = 0;
                 transactions.forEach((tx) => {
-                    const data = tx.data as TxDataBundleData;
-                    total += data.dataPackage.data || 0;
+                    const d = tx.txData as TxDataBundleData;
+                    total += d.dataPackage.data || 0;
                 });
                 return total;
             }
@@ -225,7 +218,76 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
                 </div>
                 <FilterButton values={period} defaultIndex={2} onValueChange={setSelectedPeriod} />
             </div>
-            <OverviewGraph data={graphData} loading={loading} className={"mt-1"} />
+            {/*<OverviewGraph data={graphData} loading={loading} className={"mt-1"} />*/}
+            <div className={"w-full bg-wondamart text-primary-foreground rounded-md flex items-start gap-8 p-4"}>
+                <div className={"grid gap-8"}>
+                    <div className={"flex flex-col items-center gap-1"}>
+                        <div className={"bg-green-500 rounded-sm text-white p-2 flex items-center w-fit h-fit"}>
+                            <CheckCircle size={16} />
+                        </div>
+                        <p className={"p-0 m-0"}>0</p>
+                        <p className={"p-2 leading-0 text-wrap text-sm"}>Delivered orders</p>
+                    </div>
+
+                    <div className={"flex flex-col items-center gap-1"}>
+                        <div className={"bg-orange-500 rounded-sm text-white p-2 flex items-center w-fit h-fit"}>
+                            <HistoryIcon size={16} />
+                        </div>
+                        <p className={"p-0 m-0"}>0</p>
+                        <p className={"p-2 leading-0 text-wrap text-sm"}>Pending orders</p>
+                    </div>
+                </div>
+                <div className={"space-y-2"}>
+                    <div className={"grid grid-cols-3 gap-8"}>
+                        <div className={"flex items-center col-span-2 gap-2"}>
+                            <div className={"size-4 bg-mtn rounded-xs"}/>
+                            <span>MTN</span>
+                        </div>
+                        <p>{toCurrency(0)}</p>
+                    </div>
+
+                    <div className={"grid grid-cols-3 gap-8"}>
+                        <div className={"flex items-center col-span-2 gap-2"}>
+                            <div className={"size-4 bg-telecel rounded-xs"}/>
+                            <span>Telecel</span>
+                        </div>
+                        <p>{toCurrency(0)}</p>
+                    </div>
+
+                    <div className={"grid grid-cols-3 gap-8"}>
+                        <div className={"flex items-center col-span-2 gap-2"}>
+                            <div className={"size-4 bg-airteltigo rounded-xs"}/>
+                            <span>AirtelTigo</span>
+                        </div>
+                        <p>{toCurrency(0)}</p>
+                    </div>
+
+                    <div className={"grid grid-cols-3 gap-8"}>
+                        <div className={"flex items-center col-span-2 gap-2"}>
+                            <div className={"size-4 bg-green-500 rounded-xs"}/>
+                            <span>AFA</span>
+                        </div>
+                        <p>{toCurrency(0)}</p>
+                    </div>
+
+                    <div className={"grid grid-cols-3 gap-8"}>
+                        <div className={"flex items-center col-span-2 gap-2"}>
+                            <div className={"size-4 bg-purple-500 rounded-xs"}/>
+                            <span>Checker</span>
+                        </div>
+                        <p>{toCurrency(0)}</p>
+                    </div>
+
+
+                    <div className={"flex justify-between gap-8 text-2xl"}>
+                        <div className={"flex items-center col-span-2 gap-2"}>
+                            {/*<div className={"size-50 bg-white rounded-xs"}/>*/}
+                            <span className={""}>Total</span>
+                        </div>
+                        <p>{toCurrency(9290.3)}</p>
+                    </div>
+                </div>
+            </div>
 
             <div className={"flex gap-2 overflow-x-auto hidden-scroll-bar"}>
                 <ActivityHighlightCard
@@ -244,7 +306,7 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
                 </ActivityHighlightCard>
 
                 <ActivityHighlightCard
-                    Icon={getTxIcon["data-bundle"]}
+                    Icon={getTxIcon["bundle-purchase"]}
                     iconClassName={"bg-mtn"}
                     subTitle={"MTN"}
                     childrenClassName={"text-xl text-mtn"}
@@ -252,7 +314,7 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
                     {mtnBundleGB} GB
                 </ActivityHighlightCard>
                 <ActivityHighlightCard
-                    Icon={getTxIcon["data-bundle"]}
+                    Icon={getTxIcon["bundle-purchase"]}
                     iconClassName={"bg-telecel"}
                     subTitle={"Telecel"}
                     childrenClassName={"text-xl text-telecel"}
@@ -260,7 +322,7 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
                     {telecelBundleGB} GB
                 </ActivityHighlightCard>
                 <ActivityHighlightCard
-                    Icon={getTxIcon["data-bundle"]}
+                    Icon={getTxIcon["bundle-purchase"]}
                     iconClassName={"bg-airteltigo"}
                     subTitle={"AirtelTigo"}
                     childrenClassName={"text-xl text-airteltigo"}
@@ -269,14 +331,14 @@ const ActivityHighlights: React.FC<ActivityHighlightsProps> = ({className, ...pr
                 </ActivityHighlightCard>
 
                 <ActivityHighlightCard
-                    Icon={getTxIcon["afa-bundle"]}
+                    Icon={getTxIcon["afa-purchase"]}
                     subTitle={"AFA Bundle"}
                     childrenClassName={"text-xl text-primary"}
                 >
                     {afaTx.length}
                 </ActivityHighlightCard>
                 <ActivityHighlightCard
-                    Icon={getTxIcon["result-checker"]}
+                    Icon={getTxIcon["checker-purchase"]}
                     subTitle={"Result Checker"}
                     childrenClassName={"text-xl text-primary"}
                 >

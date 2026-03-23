@@ -14,7 +14,7 @@ class TxWatcher {
         const timeout = setTimeout(async () => {
             try {
                 const tx = await TxFn.read(txId);
-                if (tx && !(tx.status === "completed" || tx.status === "failed")) {
+                if (tx && !(tx.status === "success" || tx.status === "failed")) {
                     await TxFn.update_status_failed(txId);
                     console.log(`Auto-failed deposit: ${txId}`);
                 }

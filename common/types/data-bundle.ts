@@ -1,6 +1,6 @@
 
 import { Timestamp } from "firebase/firestore";
-import { type Tx, type TxQuery } from "./tx"
+import { type Tx, type TxQuery } from "@common/tx";
 
 //
 //  SubTypes
@@ -10,8 +10,8 @@ export type ValidityPeriod = number;
 
 export interface DataPackage {
     data: number;
-    minutes?: number; // Some data bundles come with minutes
-    sms?: number;     // Some data bundles come with sms
+    minutes?: number;
+    sms?: number;
 }
 export interface DataBundleQuery {
     network?: NetworkId;
@@ -23,18 +23,17 @@ export interface TxDataBundleQuery extends TxQuery {
     phoneNumber?: string,
 }
 
-
 //
 // Database Type
 export interface DataBundle {
     id: string;
     network: NetworkId;
     name?: string;
-    price: number; // Price in cedis
+    price: number;
     dataPackage: DataPackage;
-    validityPeriod: ValidityPeriod; // Validity period in days
+    validityPeriod: ValidityPeriod;
     enabled: boolean;
-    commission: number; // Commission in cedis
+    commission: number;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -47,8 +46,8 @@ export interface TxDataBundleData {
     validityPeriod: ValidityPeriod;
 }
 export interface TxDataBundle extends Tx {
-    type: 'data-bundle';
-    data: TxDataBundleData;
+    type: 'bundle-purchase';
+    txData: TxDataBundleData;
 }
 
 //

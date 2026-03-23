@@ -2,7 +2,7 @@ import React from "react";
 import {cn} from "@/cn/lib/utils.ts";
 
 import { Timestamp } from "firebase/firestore";
-import type {Tx} from "@common/types/tx.ts";
+import type {Tx} from "@common/tx.ts";
 import {getTxIcon, getTxName, getTxReportText, toCurrency} from "@/lib/icons.ts";
 import {useNavigate} from "react-router-dom";
 import {R} from "@/app/routes.ts";
@@ -28,7 +28,7 @@ interface TxCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const TxCard: React.FC<TxCardProps> = ({tx, className, ...props}) => {
     const navigate = useNavigate();
-    const href = R.app.history.id(tx.id);
+    const href = R.app.history.id(tx.txId);
     const Icon = getTxIcon[tx.type];
 
     return (
@@ -52,12 +52,12 @@ const TxCard: React.FC<TxCardProps> = ({tx, className, ...props}) => {
             <div className={"flex items-center gap-4 justify-between"}>
                 <div className="mt-3 text-xs space-y-1">
                     <div className={"flex gap-2 items-center"}>
-                        <ClockPlusIcon className={"text-muted-foreground size-5"} strokeWidth={1.5} /> {formatDate(tx.date)}
+                        <ClockPlusIcon className={"text-muted-foreground size-5"} strokeWidth={1.5} /> {formatDate(tx.time)}
                     </div>
                     {
-                        tx.finishedAt && <div className={"flex gap-2 items-center"}>
+                        tx.timeCompleted && <div className={"flex gap-2 items-center"}>
                             <ClockCheckIcon className={"text-green-600 size-5"} strokeWidth={1.5} />
-                            {formatDate(tx.finishedAt)}
+                            {formatDate(tx.timeCompleted)}
                         </div>
                     }
                 </div>
@@ -68,17 +68,17 @@ const TxCard: React.FC<TxCardProps> = ({tx, className, ...props}) => {
                         {toCurrency(tx.amount)}
                     </div>
                     {
-                        tx.type != "deposit" && (
+                        tx.type != "paystack-deposit" && tx.type != "manual-deposit" && (
                             <div className="text-xs text-right">
-                                Commission: {toCurrency(tx.commission)}
+                                Commission: {toCurrency(tx.commission ?? 0)}
                             </div>
                         )
                     }
                 </div>
             </div>
-            <div className="mt-2 text-xs">Ref: {tx.id}</div>
+            <div className="mt-2 text-xs">Ref: {tx.txId}</div>
             {
-                tx.type != "deposit" && (
+                tx.type != "paystack-deposit" && tx.type != "manual-deposit" && (
                     <Button
                         className={"mt-1.5 w-full"}
                         variant={"outline"}

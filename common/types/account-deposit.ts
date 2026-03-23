@@ -1,10 +1,9 @@
 import { type NetworkId } from "./data-bundle";
-import { type Tx, type TxQuery } from "./tx";
+import { type Tx, type TxQuery } from "@common/tx";
 
 //
 //  SubType
 export interface TxAccountDepositQuery extends TxQuery {
-    type: "deposit",
     network?: NetworkId,
     phoneNumber?: string,
 }
@@ -14,32 +13,31 @@ export interface TxAccountDepositQuery extends TxQuery {
 export type AccountDepositType = "paystack" | "send" | "momo";
 export type TxDepositData = TxDepositPaystackData | TxDepositSendData | TxDepositMoMoData;
 export interface TxDeposit extends Tx {
-    type: 'deposit';
-    data: TxDepositData;
+    type: 'paystack-deposit';
+    txData: TxDepositData;
 }
 
 interface Deposit {
-    type: AccountDepositType;
+    depositType: AccountDepositType;
 }
 // Client Data Type
 export interface TxDepositPaystackData extends Deposit {
-    type: "paystack";
+    depositType: "paystack";
     phoneNumber: string;
     email: string;
     network: NetworkId;
 }
 export interface TxDepositSendData extends Deposit {
-    type: "send";
+    depositType: "send";
     transactionID: string;
 }
 export interface TxDepositMoMoData extends Deposit {
-    type: "momo";
+    depositType: "momo";
     phoneNumber: string;
 }
 
-
 // Request
-export interface TxDepositPaystackRequest extends Omit<TxDepositPaystackData, "type"> {
+export interface TxDepositPaystackRequest extends Omit<TxDepositPaystackData, "depositType"> {
     uid: string;
     amount: number;
 }
@@ -48,10 +46,10 @@ export interface TxSubmitOTPRequest {
     txID: string;
     otp: string;
 }
-export interface TxDepositSendRequest extends Omit<TxDepositSendData, "type"> {
+export interface TxDepositSendRequest extends Omit<TxDepositSendData, "depositType"> {
     uid: string;
 }
-export interface TxDepositMoMoRequest extends Omit<TxDepositMoMoData, "type"> {
+export interface TxDepositMoMoRequest extends Omit<TxDepositMoMoData, "depositType"> {
     uid: string;
     amount: number;
 }

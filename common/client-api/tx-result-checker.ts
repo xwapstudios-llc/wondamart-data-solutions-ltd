@@ -7,9 +7,9 @@ import {wondamart_api_client} from "@common/lib/api-wondamart";
 
 const createQuery = (q: TxResultCheckerQuery): Query => {
     let Q = buildTxQuery(q);
-    Q = query(Q, where("type", "==", "result-checker"));
-    if (q.checkerType) Q = query(Q, where("data.checkerType", "==", q.checkerType));
-    if (q.units) Q = query(Q, where("data.units", "==", q.units));
+    Q = query(Q, where("type", "==", "checker-purchase"));
+    if (q.checkerType) Q = query(Q, where("txData.checkerType", "==", q.checkerType));
+    if (q.units) Q = query(Q, where("txData.units", "==", q.units));
     return Q;
 }
 

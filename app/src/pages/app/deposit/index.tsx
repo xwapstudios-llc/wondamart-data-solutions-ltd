@@ -1,44 +1,49 @@
 import React from 'react';
 import Page from "@/ui/page/Page.tsx";
-import PageHeading from "@/ui/page/PageHeading.tsx";
-import PageSubHeading from "@/ui/page/PageSubHeading.tsx";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/cn/components/ui/tabs.tsx";
-import PaystackDepositView from "@/ui/components/views/deposit/PaystackDepositView.tsx";
-import SendDepositView from "@/ui/components/views/deposit/SendDepositView.tsx";
-import MoMoDepositView from "@/ui/components/views/deposit/MoMoDepositView.tsx";
-import {useAppStore} from "@/lib/useAppStore.ts";
+import { useAppStore } from "@/lib/useAppStore.ts";
+import { WalletIcon } from "lucide-react";
+import {toCurrency} from "@/lib/icons.ts";
+import PageContent from "@/ui/page/PageContent.tsx";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/cn/components/ui/tabs.tsx";
+import PaystackDeposit from "./PaystackDeposit.tsx";
+import ManualTopup from "./ManualTopup.tsx";
 
 const Deposit: React.FC = () => {
-    const {commonSettings} = useAppStore();
-    const settings = commonSettings.paymentMethods;
+    const { wallet } = useAppStore();
 
     return (
-        <Page>
-            <PageHeading>Deposit</PageHeading>
-            <PageSubHeading>Deposit funds into your account.</PageSubHeading>
+        <Page className="pt-4">
+            <PageContent className="max-w-4xl mx-auto space-y-4 pt-4">
 
-            <Tabs defaultValue={"paystack"} className={"mt-4 space-y-2"}>
-                <TabsList className={"w-full sticky top-16"}>
-                    <TabsTrigger className={"dark:data-[state=active]:text-primary-foreground"}
-                                 value={"paystack"}>Paystack</TabsTrigger>
-                    <TabsTrigger className={"dark:data-[state=active]:text-primary-foreground"} value={"send"}>Send
-                        (new)</TabsTrigger>
-                    <TabsTrigger className={"dark:data-[state=active]:text-primary-foreground"} value={"momo"}>MoMo
-                        (new)</TabsTrigger>
-                </TabsList>
-                <TabsContent value={"paystack"}>
-                    <PaystackDepositView disabled={!settings.paystack.enabled}/>
-                </TabsContent>
-                <TabsContent value={"send"}>
-                    <SendDepositView disabled={!settings.send.enabled}/>
-                </TabsContent>
-                <TabsContent value={"momo"}>
-                    <MoMoDepositView disabled={!settings.momo.enabled}/>
-                </TabsContent>
-            </Tabs>
+                {/* Balance card */}
+                <div className="rounded-xl bg-gradient-to-br from-wondamart to-primary p-5 text-white">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="flex size-9 items-center justify-center rounded-md bg-white/20">
+                            <WalletIcon className="size-5" />
+                        </div>
+                        <span className="text-sm font-medium opacity-90">Current Balance</span>
+                    </div>
+                    <p className="text-3xl font-bold tracking-tight">
+                        {toCurrency(wallet?.balance ?? 0)}
+                    </p>
+                    <p className="text-xs opacity-70 mt-1">Funds available in your wallet</p>
+                </div>
+
+                <Tabs defaultValue="paystack" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger className={"data-[state=active]:text-primary-foreground!"} value="paystack">Instant Deposit</TabsTrigger>
+                        <TabsTrigger className={"data-[state=active]:text-primary-foreground!"} value="manual">Manual Topup</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="paystack">
+                        <PaystackDeposit />
+                    </TabsContent>
+                    <TabsContent value="manual">
+                        <ManualTopup />
+                    </TabsContent>
+                </Tabs>
+            </PageContent>
         </Page>
     );
 };
 
 export default Deposit;
-

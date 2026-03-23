@@ -14,7 +14,7 @@ export const TERMS_AND_CONDITIONS: TermClause[] = [
     {
         title: "Payments Before Orders",
         items: [
-            "Wondermat GH operates strictly on a prepaid model.",
+            "Wondamart GH operates strictly on a prepaid model.",
             "Agents must fund their wallet before purchasing any data bundles.",
             "No order will be processed until full payment has been received.",
             "All transactions are final once processed.",
@@ -40,7 +40,7 @@ export const TERMS_AND_CONDITIONS: TermClause[] = [
         title: "Responsibility for Wrong Numbers",
         items: [
             "Agents are fully responsible for verifying phone numbers before submission.",
-            "Wondermat GH bears no responsibility for data sent to wrong numbers.",
+            "Wondamart GH bears no responsibility for data sent to wrong numbers.",
             "Wrong-number transactions cannot be reversed, corrected, or refunded.",
             "Agents must double-check all numbers before placing orders.",
         ],
@@ -48,7 +48,7 @@ export const TERMS_AND_CONDITIONS: TermClause[] = [
     {
         title: "Platform Usage & Compliance",
         items: [
-            "All payments must be made through official Wondermat GH merchant channels only.",
+            "All payments must be made through official Wondamart GH merchant channels only.",
             "Agents must comply with all telecommunications and digital service regulations.",
             "Fraud, misuse, or violations may result in account suspension or termination.",
         ],
@@ -56,7 +56,7 @@ export const TERMS_AND_CONDITIONS: TermClause[] = [
     {
         title: "Network Provider Dependency & Commitment to Delivery",
         items: [
-            "Network delays or downtimes are outside the control of Wondermat GH.",
+            "Network delays or downtimes are outside the control of Wondamart GH.",
             "Delivering data remains our top operational priority.",
             "Every validly paid order will be delivered once the network permits.",
             "Successful payment guarantees eventual data delivery.",
@@ -65,7 +65,7 @@ export const TERMS_AND_CONDITIONS: TermClause[] = [
     {
         title: "Liability Limitations",
         items: [
-            "Wondermat GH is not responsible for wrong-number orders.",
+            "Wondamart GH is not responsible for wrong-number orders.",
             "Network provider delays or failures are excluded from liability.",
             "Agent or customer disputes are not our responsibility.",
             "Loss of resale profits is not compensable.",
@@ -75,21 +75,21 @@ export const TERMS_AND_CONDITIONS: TermClause[] = [
     {
         title: "Amendments",
         items: [
-            "Wondermat GH may update these Terms at any time.",
+            "Wondamart GH may update these Terms at any time.",
             "Continued use of the platform constitutes acceptance of updates.",
         ],
     },
     {
         title: "Acceptance",
         items: [
-            "By registering or using Wondermat GH, you confirm full acceptance of these Terms.",
+            "By registering or using Wondamart GH, you confirm full acceptance of these Terms.",
             "Continued platform usage signifies ongoing acceptance of amendments.",
         ],
     },
     {
         title: "Strict Policy: No Social Media Advertising",
         items: [
-            "Agents are prohibited from advertising Wondermat GH on any social media platform.",
+            "Agents are prohibited from advertising Wondamart GH on any social media platform.",
             "This includes Facebook, Instagram, WhatsApp Status, TikTok, Twitter, Snapchat, and others.",
             "Violation results in permanent account deletion without warning.",
             "This policy protects system stability and platform integrity.",

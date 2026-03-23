@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {cn} from "@/cn/lib/utils";
-import type {Tx} from "@common/types/tx.ts";
+import type {Tx} from "@common/tx.ts";
 import {ClTx} from "@common/client-api/tx.ts";
 import TxMiniCard from "@/ui/components/cards/tx/TxMiniCard.tsx";
 import {FrownIcon, Loader2Icon} from "lucide-react";
