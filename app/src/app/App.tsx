@@ -4,7 +4,7 @@ import "./app.css";
 // Routes
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {R} from "@/app/routes.ts";
-import {ThemeProvider} from "@/cn/components/theme/theme-provider.tsx";
+// import {ThemeProvider} from "@/cn/components/theme/theme-provider.tsx";
 import {Toaster} from "@/cn/components/ui/sonner.tsx";
 import OnErrorCard from "@/ui/components/cards/OnErrorCard.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
@@ -63,8 +63,8 @@ const App = () => {
         });
     }, []);
 
-    return (
-        <ThemeProvider defaultTheme="dark" storageKey="wondamart-app-ui-theme">
+    return (<>
+
             <BrowserRouter>
                 <Suspense fallback={<PageLoader/>}>
                     <Routes>
@@ -98,57 +98,59 @@ const App = () => {
                         </>
 
 
-                        {/*Routes group for user*/}
-                        <Route path={R.app.index} element={<UserLayout/>}>
-                            {/* Dashboard */}
-                            <Route index path={R.app.index} element={<Dashboard/>}/>
-                            <Route path={R.app.dashboard} element={<Dashboard/>}/>
+                        {/*<ThemeProvider defaultTheme="dark" storageKey="wondamart-app-ui-theme">*/}
+                            {/*Routes group for user*/}
+                            <Route path={R.app.index} element={<UserLayout/>}>
+                                {/* Dashboard */}
+                                <Route index path={R.app.index} element={<Dashboard/>}/>
+                                <Route path={R.app.dashboard} element={<Dashboard/>}/>
 
-                            {/* Purchases */}
-                            <Route path={R.app.purchase.index} element={<PurchaseIndex/>}/>
+                                {/* Purchases */}
+                                <Route path={R.app.purchase.index} element={<PurchaseIndex/>}/>
 
-                            <Route path={R.app.purchase.dataBundle.index} element={<DataBundleIndex/>}>
-                                <Route path={R.app.purchase.dataBundle.mtn} element={<DataBundleMTN/>}/>
-                                <Route path={R.app.purchase.dataBundle.telecel} element={<DataBundleTelecel/>}/>
-                                <Route path={R.app.purchase.dataBundle.airtelTigo} element={<DataBundleAirtelTigo/>}/>
+                                <Route path={R.app.purchase.dataBundle.index} element={<DataBundleIndex/>}>
+                                    <Route path={R.app.purchase.dataBundle.mtn} element={<DataBundleMTN/>}/>
+                                    <Route path={R.app.purchase.dataBundle.telecel} element={<DataBundleTelecel/>}/>
+                                    <Route path={R.app.purchase.dataBundle.airtelTigo} element={<DataBundleAirtelTigo/>}/>
+                                </Route>
+
+                                <Route path={R.app.purchase.afaBundle} element={<AfaBundlePurchase/>}/>
+                                <Route path={R.app.purchase.resultChecker} element={<ResultCheckerPurchase/>}/>
+
+                                {/*Register Agent*/}
+                                <Route path={R.app.registerAgent} element={<RegisterAgent/>}/>
+
+                                {/* History */}
+                                <Route path={R.app.history.index} element={<HistoryIndex/>}/>
+                                <Route path={R.app.history.id(":id")} element={<HistoryDetail/>}/>
+
+                                {/* Deposit */}
+                                <Route path={R.app.deposit} element={<Deposit/>}/>
+
+                                {/* Commissions */}
+                                <Route path={R.app.commissions.index} element={<CommissionsIndex/>}/>
+                                <Route path={R.app.commissions.id(":id")} element={<CommissionsDetail/>}/>
+
+                                {/* Notifications */}
+                                <Route path={R.app.notifications} element={<NotificationsPage/>}/>
+
+                                {/* User */}
+                                <Route path={R.app.user.index} element={<UserIndex/>}/>
+                                <Route path={R.app.user.profile} element={<UserProfile/>}/>
+                                <Route path={R.app.user.activate} element={<UserActivate/>}/>
+                                <Route path={R.app.user.settings.general} element={<UserSettingsGeneral/>}/>
+                                <Route path={R.app.user.settings.security} element={<UserSettingsSecurity/>}/>
+
+                                {/* Legal and Info Pages (for authenticated users) */}
+                                <Route path={R.app.termsAndConditions} element={<TermsAndConditionsPage/>}/>
+                                <Route path={R.app.help} element={<HelpPage/>}/>
+                                <Route path={R.app.about} element={<AboutPage/>}/>
+                                <Route path={R.app.faq} element={<FAQPage/>}/>
+
+                                {/*Not found page*/}
+                                <Route path={"*"} element={<NotFoundPage/>}/>
                             </Route>
-
-                            <Route path={R.app.purchase.afaBundle} element={<AfaBundlePurchase/>}/>
-                            <Route path={R.app.purchase.resultChecker} element={<ResultCheckerPurchase/>}/>
-
-                            {/*Register Agent*/}
-                            <Route path={R.app.registerAgent} element={<RegisterAgent/>}/>
-
-                            {/* History */}
-                            <Route path={R.app.history.index} element={<HistoryIndex/>}/>
-                            <Route path={R.app.history.id(":id")} element={<HistoryDetail/>}/>
-
-                            {/* Deposit */}
-                            <Route path={R.app.deposit} element={<Deposit/>}/>
-
-                            {/* Commissions */}
-                            <Route path={R.app.commissions.index} element={<CommissionsIndex/>}/>
-                            <Route path={R.app.commissions.id(":id")} element={<CommissionsDetail/>}/>
-
-                            {/* Notifications */}
-                            <Route path={R.app.notifications} element={<NotificationsPage/>}/>
-
-                            {/* User */}
-                            <Route path={R.app.user.index} element={<UserIndex/>}/>
-                            <Route path={R.app.user.profile} element={<UserProfile/>}/>
-                            <Route path={R.app.user.activate} element={<UserActivate/>}/>
-                            <Route path={R.app.user.settings.general} element={<UserSettingsGeneral/>}/>
-                            <Route path={R.app.user.settings.security} element={<UserSettingsSecurity/>}/>
-
-                            {/* Legal and Info Pages (for authenticated users) */}
-                            <Route path={R.app.termsAndConditions} element={<TermsAndConditionsPage/>}/>
-                            <Route path={R.app.help} element={<HelpPage/>}/>
-                            <Route path={R.app.about} element={<AboutPage/>}/>
-                            <Route path={R.app.faq} element={<FAQPage/>}/>
-
-                            {/*Not found page*/}
-                            <Route path={"*"} element={<NotFoundPage/>}/>
-                        </Route>
+                        {/*</ThemeProvider>*/}
 
                         {/*Not Found Page*/}
                         <Route path={"*"} element={<NotFoundPage/>}/>
@@ -157,7 +159,7 @@ const App = () => {
             </BrowserRouter>
             <Toaster/>
             <OnErrorCard/>
-        </ThemeProvider>
+        </>
     );
 }
 

@@ -15,6 +15,21 @@ const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.tsx"));
 const UserLayout = lazy(() => import("@/ui/layouts/UserLayout"));
 const Dashboard = lazy(() => import("@/pages/app/dashboard"));
 
+// Purchase pages
+const AgentStorePage = lazy(() => import("@/pages/app/agent-store"));
+const CommissionsPage = lazy(() => import("@/pages/app/commissions"));
+
+// Stock pages
+const StockPage = lazy(() => import("@/pages/app/stock"));
+const StockBundlesPage = lazy(() => import("@/pages/app/stock/bundles"));
+const StockAFAPage = lazy(() => import("@/pages/app/stock/afa"));
+const StockCheckerPage = lazy(() => import("@/pages/app/stock/checker"));
+
+// Other pages
+const SettingsPage = lazy(() => import("@/pages/app/settings"));
+const TransactionsPage = lazy(() => import("@/pages/app/transactions"));
+const UsersPage = lazy(() => import("@/pages/app/users"));
+
 // Loading component
 const PageLoader = () => (
     <div className="flex items-center justify-center min-h-screen">
@@ -39,13 +54,34 @@ const App = () => {
                         {/*Login Page as default index page*/}
                         <Route index path={R.index} element={<LoginPage/>}/>
                         <Route path={R.login} element={<LoginPage/>}/>
-                        {/*Signup or register page*/}
+
 
                         {/*Routes group for user*/}
                         <Route path={R.app.index} element={<UserLayout/>}>
                             {/* Dashboard */}
                             <Route index path={R.app.index} element={<Dashboard/>}/>
                             <Route path={R.app.dashboard} element={<Dashboard/>}/>
+
+                            {/* Agent Store */}
+                            <Route path={R.app.agentStore} element={<AgentStorePage/>}/>
+
+                            {/* Commissions */}
+                            <Route path={R.app.commissions.index} element={<CommissionsPage/>}/>
+
+                            {/* Settings */}
+                            <Route path={R.app.settings} element={<SettingsPage/>}/>
+
+                            {/* Stock */}
+                            <Route path={R.app.stock.index} element={<StockPage/>}/>
+                            <Route path={R.app.stock.bundles} element={<StockBundlesPage/>}/>
+                            <Route path={R.app.stock.afa} element={<StockAFAPage/>}/>
+                            <Route path={R.app.stock.checker} element={<StockCheckerPage/>}/>
+
+                            {/* Transactions */}
+                            <Route path={`${R.app.transactions.index}/:type?`} element={<TransactionsPage/>}/>
+
+                            {/* Users */}
+                            <Route path={R.app.users} element={<UsersPage/>}/>
 
                             {/*Not found page*/}
                             <Route path={"*"} element={<NotFoundPage/>}/>

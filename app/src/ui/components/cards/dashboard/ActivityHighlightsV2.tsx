@@ -32,6 +32,7 @@ interface StatTileProps {
     loading?: boolean;
 }
 
+export
 const StatTile: React.FC<StatTileProps> = ({label, value, icon, iconBg, sub, loading}) => (
     <div className="flex items-center gap-3 rounded-xl border bg-card p-3">
         <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-md text-white", iconBg)}>
@@ -72,12 +73,13 @@ const ActivityHighlightsV2: React.FC<ActivityHighlightsProps> = ({className, ...
     const {profile} = useAppStore();
     const [loading, setLoading] = useState(true);
 
+    // Todo: Adjust dates and times to fit
     const period = [
         {label: "Today",   value: "1"},
-        {label: "3 days",  value: "3"},
-        {label: "7 days",  value: "7"},
-        {label: "14 days", value: "14"},
-        {label: "31 days", value: "31"},
+        {label: "This Week",  value: "7"},
+        {label: "This Month",  value: "30"},
+        {label: "This Year", value: "365"},
+        {label: "All Time", value: "0"},
     ];
     const [selectedPeriod, setSelectedPeriod] = useState(period[0].value);
 
@@ -172,14 +174,6 @@ const ActivityHighlightsV2: React.FC<ActivityHighlightsProps> = ({className, ...
                     <FilterButton values={period} defaultIndex={0} onValueChange={setSelectedPeriod} />
                 </div>
             </div>
-
-            {/*/!* Error banner *!/*/}
-            {/*{error && !loading && (*/}
-            {/*    <div className="flex items-center gap-2 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">*/}
-            {/*        <span className="flex-1">Failed to load data. Showing last known values.</span>*/}
-            {/*        <button onClick={() => setRefreshKey(k => k + 1)} className="font-medium underline underline-offset-2">Retry</button>*/}
-            {/*    </div>*/}
-            {/*)}*/}
 
             {/* Top stat tiles — 2-col grid */}
             <div className="grid grid-cols-2 gap-2">

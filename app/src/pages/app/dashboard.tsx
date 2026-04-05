@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
             </div>
             <PWAAction />
             {/* Balance card */}
-            <div className="rounded-xl bg-gradient-to-br from-wondamart/80 to-wondamart p-5 text-white">
+            <div className="rounded-xl bg-linear-to-br from-wondamart/80 to-wondamart p-5 text-white">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="flex size-9 items-center justify-center rounded-md bg-white/20">

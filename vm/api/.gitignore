@@ -1,0 +1,4 @@
+target
+.sqlx
+Cargo.lock
+wondamart_api

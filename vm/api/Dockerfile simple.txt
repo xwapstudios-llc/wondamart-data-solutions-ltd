@@ -1,0 +1,11 @@
+# --- Runtime stage ---
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+COPY migrations ./migrations
+COPY wondamart_api .
+
+EXPOSE 8080
+
+CMD ["./wondamart_api"]

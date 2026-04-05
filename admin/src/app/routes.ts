@@ -1,107 +1,76 @@
+import { txTypes, type TxType } from "@common/tx";
+
 const R = {
     index: "/",
     login: "/login",
-    signup: "/signup",
-
-    // Terms and Conditions
-    termsAndConditions: "/terms-and-conditions",
-
-    help: "/help",
-    about: "/about",
-    faq: "/faq",
-
-    auth: {
-        action: "/auth/action",
-        forgotPassword: "/auth/forgot-password",
-        otp: (txID: string) => `/auth/otp/${txID}`,
-    },
-
-    client: {
-        store: (storeId: string): string => `/store/${storeId}`,
-        bundles: (storeId: string, network: string): string => `/store/${storeId}/${network}`,
-        checkout: (storeId: string): string => `/store/${storeId}/checkout`,
-        track: "/tracker"
-    },
 
     app: {
         index: "/app",
         dashboard: "/app/dashboard",
-
+        
+        // Purchase section
         purchase: {
             index: "/app/purchase",
-
-            // data bundle purchase
             dataBundle: {
-                index: "/app/purchase/data-bundle",
-                mtn: "/app/purchase/data-bundle/mtn",
-                telecel: "/app/purchase/data-bundle/telecel",
-                airtelTigo: "/app/purchase/data-bundle/airtel-tigo",
+                index: "/app/purchase/data-bundles",
+                mtn: "/app/purchase/data-bundles/mtn",
+                telecel: "/app/purchase/data-bundles/telecel",
+                airtelTigo: "/app/purchase/data-bundles/airteltigo",
             },
-
-            // AFA bundle purchase
-            afaBundle: "/app/purchase/afa-bundle",
-
-            // Result checker purchase
-            resultChecker: "/app/purchase/result-checker",
+            afaBundle: "/app/purchase/afa-bundles",
+            resultChecker: "/app/purchase/result-checkers",
         },
 
-        registerAgent: "/app/register-agent",
-
-        // User purchase history
+        // History section
         history: {
             index: "/app/history",
-            id: (id: string) => `/app/history/${id}`,
-
-            // Purchase history
             purchases: {
-                index: "/app/history?type=purchase",
-                dataBundles: "/app/history?type=data-bundle",
-                afaBundles: "/app/history?type=afa-bundle",
-                resultCheckers: "/app/history?type=result-checker",
+                index: "/app/history/purchases",
+                dataBundles: "/app/history/purchases/data-bundles",
+                afaBundles: "/app/history/purchases/afa-bundles",
+                resultCheckers: "/app/history/purchases/result-checkers",
             },
-            // Deposit history
-            deposits: "/app/history?type=deposit",
+            deposits: "/app/history/deposits",
         },
 
-        // Deposit funds
-        deposit: "/app/deposit",
-
-        // Commissions
-        commissions: {
-            index: "/app/commissions",
-            id: (id: string) => `/app/commissions/${id}`,
-        },
-
-        // Notifications
-        notifications: "/app/notifications",
-
+        // User section
         user: {
             index: "/app/user",
-
-            // Profile Overview
             profile: "/app/user/profile",
-
-            // Activate Account
-            activate: "/app/user/activate",
-
-            // Settings
             settings: {
                 general: "/app/user/settings/general",
                 security: "/app/user/settings/security",
             },
+            activate: "/app/user/activation-verification",
         },
-        // Terms and Conditions
-        termsAndConditions: "/app/terms-and-conditions",
 
-        help: "/app/help",
-        about: "/app/about",
-        faq: "/app/faq",
-    },
+        // Legal & Info section
+        termsAndConditions: "/app/legal/terms-conditions",
+        help: "/app/legal/help",
+        about: "/app/legal/about",
+        faq: "/app/legal/faq",
 
-    utils: {
-        whatsAppGroup: "https://chat.whatsapp.com/HDhT0o5JXtO8dq5OmiEqVU",
-        admin: "https://wa.me/+233539971202?text=Hi%20Wondamart%20Data%20Solutions.",
-        support: "https://chat.whatsapp.com/HDhT0o5JXtO8dq5OmiEqVU",
+        // Utility pages
+        registerAgent: "/app/register-agent",
+        commissions: {
+            index: "/app/commissions",
+        },
+        deposit: "/app/deposit",
+
+        // Admin specific pages
+        agentStore: "/app/agent-store",
+        settings: "/app/settings",
+        stock: {
+            index: "/app/stock",
+            bundles: "/app/stock/bundles",
+            afa: "/app/stock/afa",
+            checker: "/app/stock/checker",
+        },
+        transactions: {
+            index: "/app/transactions",
+            types: Object.fromEntries(txTypes.map(type => [type, `/app/transactions/${type}`])) as Record<TxType, string>,
+        },
+        users: "/app/users",
     }
 };
 
