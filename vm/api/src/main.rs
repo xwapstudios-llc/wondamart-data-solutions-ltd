@@ -2,6 +2,7 @@ mod pool;
 mod routes;
 pub mod db_model;
 pub mod error;
+pub mod middleware;
 
 use std::process::exit;
 use std::sync::Arc;
