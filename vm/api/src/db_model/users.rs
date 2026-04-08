@@ -1,7 +1,6 @@
 use serde::{Serialize, Deserialize};
 use sqlx::types::JsonValue;
 use sqlx::PgPool;
-use sqlx::Row;
 use time::OffsetDateTime;
 use crate::db_model::DBModel;
 use crate::error::AppError;
@@ -22,7 +21,7 @@ impl From<UserMetadata> for JsonValue {
     }
 }
 
-#[derive(Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Serialize, Deserialize, sqlx::FromRow, Debug)]
 pub struct User {
     pub uid: Option<i32>,
     pub email: Option<String>,

@@ -7,8 +7,6 @@
 // /guest/track
 
 use std::sync::Arc;
-use axum::extract::State;
-use axum::middleware::from_fn;
 use axum::Router;
 use axum::routing::{get, post};
 use crate::middleware;
@@ -17,12 +15,14 @@ mod store;
 mod buy;
 mod track;
 
-pub fn routes(State(pool): State<Arc<sqlx::PgPool>>) -> Router {
+pub fn routes(pool: Arc<sqlx::PgPool>) -> Router {
+    println!("[routes::guest] Setting up...");
+
     Router::new()
-        .route("/agent/store", get(store::get))
-        .route("/agent/buy", post(buy::post))
-        .route("/agent/track", get(track::get))
-        .layer(from_fn(middleware::firebase::firebase_auth_middleware))
-        .layer(middleware::cors::public_cors())
+        .route("/guest/store", get(store::get))
+        .route("/guest/buy", post(buy::post))
+        .route("/guest/track", get(track::get))
+        //.layer(from_fn(middleware::firebase::firebase_auth_middleware))
+        .layer(middleware::cors::user_cors())
         .with_state(pool)
 }

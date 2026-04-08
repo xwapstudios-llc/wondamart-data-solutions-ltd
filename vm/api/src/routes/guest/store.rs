@@ -5,9 +5,8 @@ use axum::Json;
 use serde::{Deserialize, Serialize};
 use sqlx::types::JsonValue;
 use zod_rs::prelude::ZodSchema;
-use crate::error::AppError;
-
-
+use crate::db_model::{AgentStore, DBModel};
+use crate::routes::{RouteResponse, RouteResponseJson};
 
 #[derive(Deserialize, Serialize, Debug, ZodSchema)]
 struct GuestStoreGetReq {
@@ -15,17 +14,18 @@ struct GuestStoreGetReq {
     pub store_id: String,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct GuestStoreGetRes{}
-
 pub async fn get(
     State(pool): State<Arc<sqlx::PgPool>>,
     Json(payload): Json<JsonValue>,
-) -> Result<Json<GuestStoreGetRes>, AppError> {
+) -> RouteResponseJson<AgentStore> {
+    println!("[routes::guest::store::get]");
+
+    println!("[/guest/store] Received payload: {:?}", &payload);
     let payload = GuestStoreGetReq::validate_and_parse(&payload)?;
 
     // Implementation
+    let store = AgentStore::from_db(&pool, payload.store_id).await?;
+    println!("[/guest/store] Found Agent Store: {:?}", &store);
 
-    let res = GuestStoreGetRes {};
-    Ok(Json(res))
+    RouteResponse::new_ok(store, None).json_result()
 }

@@ -4,3 +4,15 @@
 // ii) Bundle services
 // 2. Create a generic webhook system that tracks
 // `/webhooks/:id` and then map the id based on db.
+
+use std::sync::Arc;
+use axum::Router;
+use crate::middleware::cors::public_cors;
+
+pub fn routes(pool: Arc<sqlx::PgPool>) -> Router {
+    println!("[routes::webhooks] Setting up...");
+
+    Router::new()
+        .layer(public_cors())
+        .with_state(pool)
+}

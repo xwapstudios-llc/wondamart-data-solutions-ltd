@@ -5,9 +5,7 @@ use axum::Json;
 use serde::{Deserialize, Serialize};
 use sqlx::types::JsonValue;
 use zod_rs::prelude::ZodSchema;
-use crate::error::AppError;
-
-
+use crate::routes::{RouteResponse, RouteResponseJson};
 
 #[derive(Deserialize, Serialize, Debug, ZodSchema)]
 struct GuestBuyPostReq {
@@ -27,11 +25,11 @@ pub struct GuestBuyPostRes{}
 pub async fn post(
     State(pool): State<Arc<sqlx::PgPool>>,
     Json(payload): Json<JsonValue>,
-) -> Result<Json<GuestBuyPostRes>, AppError> {
+) -> RouteResponseJson<GuestBuyPostRes> {
     let payload = GuestBuyPostReq::validate_and_parse(&payload)?;
 
     // Implementation
 
     let res = GuestBuyPostRes {};
-    Ok(Json(res))
+    RouteResponse::new_ok(res, None).json_result()
 }

@@ -4,7 +4,7 @@ mod commissions;
 mod data_bundles;
 mod agent_stores;
 mod api_providers;
-pub mod user_wallet;
+mod user_wallet;
 
 use crate::error::AppError;
 pub use self::users::*;
@@ -13,6 +13,7 @@ pub use self::commissions::*;
 pub use self::data_bundles::*;
 pub use self::agent_stores::*;
 pub use self::api_providers::*;
+pub use self::user_wallet::*;
 
 
 pub trait DBModel: Sized {

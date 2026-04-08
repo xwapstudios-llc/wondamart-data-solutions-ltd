@@ -59,7 +59,9 @@ pub async fn firebase_auth_middleware(
     req: axum::http::Request<axum::body::Body>,
     next: axum::middleware::Next,
 ) -> Result<axum::response::Response, axum::http::status::StatusCode> {
-    let project_id = "YOUR_PROJECT_ID";
+    print!("[firebase_auth_middleware]");
+    
+    let project_id = "wondamart-data-solutions-ltd";
     let auth_header = req
         .headers()
         .get("Authorization")

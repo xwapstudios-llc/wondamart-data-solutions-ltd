@@ -26,7 +26,14 @@ RUN cargo build --release
 FROM debian:bookworm-slim
 
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y libssl3 && rm -rf /var/lib/apt/lists/*
+
+RUN rm ./wondamart_api -f
+
 COPY --from=builder /app/target/release/wondamart_api .
+
+RUN ls -a .
 
 EXPOSE 8080
 
