@@ -3,16 +3,30 @@ mod routes;
 pub mod db_model;
 pub mod error;
 pub mod middleware;
+pub mod services;
 
 use std::process::exit;
 use std::sync::Arc;
 use pool::{create_pool};
+use services::{TransactionManager, TransactionManagerConfig, start_transaction_worker};
 
 async fn run() -> Result<(), Box<dyn std::error::Error>> {
     let pool = create_pool().await?;
     sqlx::migrate!().run(&pool).await?;
 
-    let app = routes::routes(Arc::new(pool));
+    let pool = Arc::new(pool);
+
+    // Initialize Transaction Manager with default configuration
+    let tx_manager = Arc::new(TransactionManager::new(
+        pool.clone(),
+        TransactionManagerConfig::default(),
+    ));
+
+    // Start the background transaction worker
+    let _worker_handle = start_transaction_worker(tx_manager, None);
+    println!("[run] Transaction worker started...");
+
+    let app = routes::routes(pool);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await?;
     axum::serve(listener, app.into_make_service()).await?;
@@ -21,11 +35,12 @@ async fn run() -> Result<(), Box<dyn std::error::Error>> {
 
 #[tokio::main]
 async fn main() {
-    println!("Something ...");
-    println!("Running server...");
+    println!("[main] Running server...");
 
     if let Err(e) = run().await {
-        eprintln!("Application error: {}", e);
+        eprintln!("[main] Application error: {}", e);
         exit(1);
     }
+
+    println!("[main] I really don't like what docker is doing.")
 }
