@@ -145,10 +145,7 @@ impl AdminApiProviderPutReq {
     async fn into_api_provider(self, pool: &sqlx::PgPool) -> Result<ApiProvider, AppError> {
         let prev = ApiProvider::from_db(&pool, self.api_id.clone()).await?;
         let get = |main: Option<String>, prev: Option<String>| match main {
-            None => match prev {
-                None => None,
-                Some(s_key) => Some(s_key),
-            },
+            None => prev,
             Some(s_key) => Some(s_key),
         };
 

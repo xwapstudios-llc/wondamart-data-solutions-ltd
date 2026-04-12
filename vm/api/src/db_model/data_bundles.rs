@@ -9,8 +9,11 @@ use crate::error::AppError;
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum NetworkType {
+    #[serde(rename = "mtn")]
     Mtn,
+    #[serde(rename = "telecel")]
     Telecel,
+    #[serde(rename = "airteltigo")]
     Airteltigo,
 }
 

@@ -38,6 +38,7 @@ export interface HendyLinksCreateOrderByNetwork {
 
 export type HendyLinksCreateOrderPayload = HendyLinksCreateOrderByPlanId | HendyLinksCreateOrderByNetwork;
 
+// Webhook response
 export interface HendyLinksOrder {
     id: number;
     status: "processing" | "completed" | "failed";
