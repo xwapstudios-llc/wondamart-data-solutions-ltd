@@ -70,7 +70,7 @@ impl DBModel for DataBundle {
         Ok(bundle)
     }
 
-    async fn update_db(&self, pool: &PgPool) -> Result<(), AppError> {
+    async fn update_db(self, pool: &PgPool) -> Result<(), AppError> {
         sqlx::query!(
             r#"
             UPDATE data_bundles

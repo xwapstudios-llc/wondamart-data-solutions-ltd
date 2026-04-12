@@ -41,7 +41,7 @@ impl DBModel for Commission {
         Ok(commission)
     }
 
-    async fn update_db(&self, pool: &PgPool) -> Result<(), AppError> {
+    async fn update_db(self, pool: &PgPool) -> Result<(), AppError> {
         sqlx::query!(
             r#"
             UPDATE commissions

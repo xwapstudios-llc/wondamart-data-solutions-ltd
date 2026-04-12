@@ -58,7 +58,7 @@ impl DBModel for User {
         Ok(user)
     }
 
-    async fn update_db(&self, pool: &PgPool) -> Result<(), AppError> {
+    async fn update_db(self, pool: &PgPool) -> Result<(), AppError> {
         sqlx::query!(
             r#"
             UPDATE users

@@ -34,7 +34,7 @@ impl DBModel for UserWallet {
         Ok(wallet)
     }
 
-    async fn update_db(&self, pool: &PgPool) -> Result<(), AppError> {
+    async fn update_db(self, pool: &PgPool) -> Result<(), AppError> {
         sqlx::query!(
             r#"
             UPDATE user_wallets

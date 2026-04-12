@@ -9,16 +9,32 @@ use crate::error::AppError;
 pub struct ApiProvider {
     pub api_id: String,
     pub name: String,
-    pub url: Option<String>,
+    pub url: String,
     pub purpose: String,
-    pub api_key: Option<String>,
+    pub api_key: String,
     pub secret_key: Option<String>,
     pub webhook_url: Option<String>,
     pub is_active: bool,
-    pub timeout_seconds: Option<i32>,
+    pub timeout_seconds: i32,
     pub configuration: JsonValue,
     pub created_at: Option<OffsetDateTime>,
     pub updated_at: Option<OffsetDateTime>,
+}
+
+impl ApiProvider {
+    pub(crate) async fn delete_db(pool: &PgPool, api_id: String) -> Result<(), AppError> {
+        sqlx::query!(
+            r#"
+            DELETE FROM api_providers
+            WHERE api_id = $1
+            "#,
+            api_id
+        )
+        .execute(pool)
+        .await?;
+
+        Ok(())
+    }
 }
 
 impl DBModel for ApiProvider {
@@ -40,7 +56,7 @@ impl DBModel for ApiProvider {
         Ok(provider)
     }
 
-    async fn update_db(&self, pool: &PgPool) -> Result<(), AppError> {
+    async fn update_db(self, pool: &PgPool) -> Result<(), AppError> {
         sqlx::query!(
             r#"
             UPDATE api_providers

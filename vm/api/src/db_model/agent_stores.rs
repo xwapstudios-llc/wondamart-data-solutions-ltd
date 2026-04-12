@@ -41,7 +41,7 @@ impl DBModel for AgentStore {
         Ok(store)
     }
 
-    async fn update_db(&self, pool: &PgPool) -> Result<(), AppError> {
+    async fn update_db(self, pool: &PgPool) -> Result<(), AppError> {
         sqlx::query!(
             r#"
             UPDATE agent_stores

@@ -123,7 +123,7 @@ impl DBModel for Transaction {
         Ok(tx)
     }
 
-    async fn update_db(&self, pool: &PgPool) -> Result<(), AppError> {
+    async fn update_db(self, pool: &PgPool) -> Result<(), AppError> {
         sqlx::query(
             r#"
             UPDATE transactions

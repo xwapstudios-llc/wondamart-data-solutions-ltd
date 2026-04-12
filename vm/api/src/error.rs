@@ -66,3 +66,9 @@ impl From<reqwest::Error> for AppError {
         Self::Internal(err.to_string())
     }
 }
+
+impl From<serde_json::Error> for AppError {
+    fn from(err: serde_json::Error) -> Self {
+        Self::Internal(err.to_string())
+    }
+}

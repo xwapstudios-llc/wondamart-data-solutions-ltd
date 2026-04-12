@@ -24,7 +24,7 @@ pub trait DBModel: Sized {
 
     /// Overwrite the database entry at id with the state of the struct.
     /// Call this only if you have an entry already
-    async fn update_db(&self, pool: &sqlx::PgPool) -> Result<(), AppError>;
+    async fn update_db(self, pool: &sqlx::PgPool) -> Result<(), AppError>;
 
     /// Create a new entry and return the new entry id. Note that this will destroy self.
     async fn new_db_entry(self, pool: &sqlx::PgPool) -> Result<Self::IdType, AppError>;
