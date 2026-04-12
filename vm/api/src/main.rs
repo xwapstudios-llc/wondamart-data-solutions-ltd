@@ -4,6 +4,7 @@ pub mod db_model;
 pub mod error;
 pub mod middleware;
 pub mod services;
+pub mod api_providers;
 
 use std::process::exit;
 use std::sync::Arc;
@@ -42,5 +43,5 @@ async fn main() {
         exit(1);
     }
 
-    println!("[main] I really don't like what docker is doing.")
+    println!("[main] I really don't like the way docker is not using my changes...")
 }

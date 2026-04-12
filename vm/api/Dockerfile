@@ -23,7 +23,7 @@ COPY .sqlx ./.sqlx
 RUN cargo build --release
 
 # --- Runtime stage ---
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 WORKDIR /app
 

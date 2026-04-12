@@ -86,7 +86,7 @@ impl TransactionStatus {
     }
 }
 
-#[derive(Debug, sqlx::FromRow)]
+#[derive(Debug, Clone, sqlx::FromRow)]
 pub struct Transaction {
     pub tx_id: Option<i32>,
     pub agent_id: i32,

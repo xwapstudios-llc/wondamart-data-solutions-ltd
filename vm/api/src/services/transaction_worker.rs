@@ -3,10 +3,14 @@ use tokio::task::JoinHandle;
 use std::time::Duration;
 use tokio::time::sleep;
 
-use crate::db_model::Transaction;
+use crate::db_model::{Transaction, TransactionType};
 use crate::error::AppError;
 
 use super::transaction_manager::TransactionManager;
+use super::workers::{
+    TransactionWorkerTrait, WorkerContext, BundleTransactionWorker, AfaTransactionWorker,
+    DepositTransactionWorker,
+};
 
 /// Background worker configuration for transaction processing
 #[derive(Clone, Debug)]
@@ -26,11 +30,12 @@ impl Default for TransactionWorkerConfig {
     }
 }
 
-/// Transaction Worker: Monitors and manages uncompleted transactions
+/// Transaction Worker Pool Manager: Monitors and spawns workers for pending transactions
 /// - Runs in the background throughout the application lifetime
 /// - On startup, reads uncompleted transactions from the database
 /// - Periodically checks for uncompleted transactions
-/// - Can be extended to re-process or verify transaction status
+/// - Spawns individual workers for each pending transaction (respecting max_workers limit)
+/// - Each worker is an async Tokio task that handles a specific transaction type
 pub struct TransactionWorker {
     manager: Arc<TransactionManager>,
     config: TransactionWorkerConfig,
@@ -42,9 +47,9 @@ impl TransactionWorker {
         Self { manager, config }
     }
 
-    /// Initialize the worker: Read and process uncompleted transactions on startup
+    /// Initialize the worker: Read and spawn workers for uncompleted transactions on startup
     pub async fn initialize(&self) -> Result<(), AppError> {
-        log::info!("Initializing transaction worker...");
+        log::info!("Initializing transaction worker pool...");
 
         match self.manager.get_uncompleted_transactions().await {
             Ok(transactions) => {
@@ -56,18 +61,26 @@ impl TransactionWorker {
                 for tx in transactions {
                     if let Some(tx_id) = tx.tx_id {
                         log::debug!(
-                            "Monitoring uncompleted transaction: tx_id={}, status={}, agent_id={}",
+                            "Scheduling worker for transaction: tx_id={}, status={}, type={}",
                             tx_id,
                             tx.status_str,
-                            tx.agent_id
+                            tx.type_str
                         );
+
+                        // Spawn worker for this transaction if not already active
+                        if !self.manager.has_active_worker(tx_id).await {
+                            self.spawn_worker_for_transaction(tx).await;
+                        }
                     }
                 }
 
                 Ok(())
             }
             Err(e) => {
-                log::warn!("Failed to load uncompleted transactions on startup: {:?}", e);
+                log::warn!(
+                    "Failed to load uncompleted transactions on startup: {:?}",
+                    e
+                );
                 // Don't fail initialization if we can't load transactions
                 Ok(())
             }
@@ -78,21 +91,21 @@ impl TransactionWorker {
     /// This method should be spawned as a background task
     pub async fn run_check_loop(self: Arc<Self>) {
         log::info!(
-            "Starting transaction worker check loop with interval: {}s",
+            "Starting transaction worker pool check loop with interval: {}s",
             self.config.check_interval_secs
         );
 
         loop {
             sleep(Duration::from_secs(self.config.check_interval_secs)).await;
 
-            if let Err(e) = self.check_and_process_uncompleted_transactions().await {
+            if let Err(e) = self.check_and_spawn_workers().await {
                 log::error!("Error in transaction worker check loop: {:?}", e);
             }
         }
     }
 
-    /// Check for uncompleted transactions and log their status
-    async fn check_and_process_uncompleted_transactions(&self) -> Result<(), AppError> {
+    /// Check for uncompleted transactions and spawn workers for pending ones
+    async fn check_and_spawn_workers(&self) -> Result<(), AppError> {
         match self.manager.get_uncompleted_transactions().await {
             Ok(transactions) => {
                 if !transactions.is_empty() {
@@ -102,7 +115,12 @@ impl TransactionWorker {
                     );
 
                     for tx in transactions {
-                        self.process_transaction(&tx).await;
+                        if let Some(tx_id) = tx.tx_id {
+                            // Only spawn worker if one isn't already active
+                            if !self.manager.has_active_worker(tx_id).await {
+                                self.spawn_worker_for_transaction(tx).await;
+                            }
+                        }
                     }
                 }
                 Ok(())
@@ -114,49 +132,107 @@ impl TransactionWorker {
         }
     }
 
-    /// Process a single uncompleted transaction
-    async fn process_transaction(&self, tx: &Transaction) {
+    /// Spawn a worker for a specific transaction
+    /// The worker type is determined by the transaction type
+    async fn spawn_worker_for_transaction(&self, tx: Transaction) {
         if let Some(tx_id) = tx.tx_id {
-            log::debug!(
-                "Processing transaction: tx_id={}, status={}, agent_id={}, type={}",
-                tx_id,
-                tx.status_str,
-                tx.agent_id,
-                tx.type_str
-            );
+            // Acquire worker slot before spawning
+            let _permit = self.manager.acquire_worker_slot().await;
 
-            // Here you can add logic to:
-            // 1. Verify transaction status with third-party providers
-            // 2. Re-attempt failed transactions
-            // 3. Clean up stuck transactions
-            // 4. Generate notifications
+            let manager = Arc::clone(&self.manager);
+            let tx_copy = tx.clone();
 
-            // Example: Log old pending transactions
-            if let Some(created_at) = tx.created_at {
-                let now = time::OffsetDateTime::now_utc();
-                let age_secs = (now - created_at).whole_seconds();
-                let timeout_secs = self.config.transaction_timeout_secs as i64;
+            let handle = tokio::spawn(async move {
+                let worker_name = match tx_copy.transaction_type() {
+                    Ok(TransactionType::BundlePurchase) => "BundleWorker",
+                    Ok(TransactionType::AfaPurchase) => "AfaWorker",
+                    Ok(TransactionType::PaystackDeposit)
+                    | Ok(TransactionType::ManualDeposit) => "DepositWorker",
+                    _ => "UnknownWorker",
+                };
 
-                if age_secs > timeout_secs {
-                    log::warn!(
-                        "Transaction {} has been pending for {}s (timeout: {}s)",
-                        tx_id,
-                        age_secs,
-                        timeout_secs
-                    );
-                    // Could mark as failed or trigger manual intervention here
+                log::info!(
+                    "[{}] Spawned for transaction tx_id={}",
+                    worker_name,
+                    tx_id
+                );
+
+                let result = match tx_copy.transaction_type() {
+                    Ok(TransactionType::BundlePurchase) => {
+                        let worker = BundleTransactionWorker;
+                        Self::execute_worker(&worker, &manager, tx_copy).await
+                    }
+                    Ok(TransactionType::AfaPurchase) => {
+                        let worker = AfaTransactionWorker;
+                        Self::execute_worker(&worker, &manager, tx_copy).await
+                    }
+                    Ok(TransactionType::PaystackDeposit)
+                    | Ok(TransactionType::ManualDeposit) => {
+                        let worker = DepositTransactionWorker;
+                        Self::execute_worker(&worker, &manager, tx_copy).await
+                    }
+                    _ => {
+                        log::warn!(
+                            "[UnknownWorker] Unsupported transaction type: {}",
+                            tx_copy.type_str
+                        );
+                        Ok(())
+                    }
+                };
+
+                match result {
+                    Ok(_) => {
+                        log::info!("[{}] Completed successfully for tx_id={}", worker_name, tx_id);
+                    }
+                    Err(e) => {
+                        log::error!(
+                            "[{}] Error for tx_id={}: {:?}",
+                            worker_name,
+                            tx_id,
+                            e
+                        );
+                    }
                 }
-            }
+
+                // Unregister the worker
+                manager.unregister_worker(tx_id).await;
+            });
+
+            // Register the worker handle
+            self.manager.register_worker(tx_id, handle).await;
         }
     }
 
-    /// Stop the worker gracefully
+    /// Execute a worker with the provided transaction
+    async fn execute_worker(
+        worker: &dyn TransactionWorkerTrait,
+        manager: &Arc<TransactionManager>,
+        tx: Transaction,
+    ) -> Result<(), AppError> {
+        let config = manager.config();
+
+        let context = WorkerContext {
+            pool: manager.pool().clone(),
+            transaction: tx,
+            max_retries: config.max_retries,
+            retry_delay_ms: config.retry_delay_ms,
+            pre_transaction_delay_ms: config.pre_transaction_delay_ms,
+        };
+
+        worker.execute(context).await
+    }
+
+    /// Shutdown the worker pool gracefully
     pub async fn shutdown(&self) {
-        log::info!("Shutting down transaction worker...");
+        log::info!("Shutting down transaction worker pool...");
+        log::info!(
+            "Active workers: {}",
+            self.manager.active_worker_count().await
+        );
     }
 }
 
-/// Start the transaction worker as a background task
+/// Start the transaction worker pool as a background task
 /// Returns a JoinHandle that can be used to manage the task
 pub fn start_transaction_worker(
     manager: Arc<TransactionManager>,
@@ -169,7 +245,7 @@ pub fn start_transaction_worker(
     let worker_clone = Arc::clone(&worker);
     tokio::spawn(async move {
         if let Err(e) = worker_clone.initialize().await {
-            log::error!("Failed to initialize transaction worker: {:?}", e);
+            log::error!("Failed to initialize transaction worker pool: {:?}", e);
         }
 
         // Run the check loop

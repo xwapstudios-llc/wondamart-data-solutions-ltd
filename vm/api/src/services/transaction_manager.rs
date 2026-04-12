@@ -2,6 +2,8 @@ use std::sync::Arc;
 use sqlx::PgPool;
 use std::time::Duration;
 use tokio::time::sleep;
+use tokio::sync::{Semaphore, RwLock};
+use std::collections::HashMap;
 
 use crate::db_model::{Transaction, TransactionStatus, TransactionType, DBModel};
 use crate::error::AppError;
@@ -15,6 +17,8 @@ pub struct TransactionManagerConfig {
     pub retry_delay_ms: u64,
     /// Delay before executing a transaction in milliseconds
     pub pre_transaction_delay_ms: u64,
+    /// Maximum number of concurrent workers
+    pub max_workers: usize,
 }
 
 impl Default for TransactionManagerConfig {
@@ -23,6 +27,7 @@ impl Default for TransactionManagerConfig {
             max_retries: 3,
             retry_delay_ms: 1000,
             pre_transaction_delay_ms: 500,
+            max_workers: 10,
         }
     }
 }
@@ -32,15 +37,26 @@ impl Default for TransactionManagerConfig {
 /// - Manages transaction status based on user (uid)
 /// - Calls third-party provider APIs with retry logic
 /// - Implements pre-transaction delays
+/// - Manages a pool of concurrent transaction workers
 pub struct TransactionManager {
     pool: Arc<PgPool>,
     config: TransactionManagerConfig,
+    /// Semaphore to limit concurrent workers
+    worker_semaphore: Arc<Semaphore>,
+    /// Track active worker tasks
+    active_workers: Arc<RwLock<HashMap<i32, tokio::task::JoinHandle<()>>>>,
 }
 
 impl TransactionManager {
     /// Create a new TransactionManager instance
     pub fn new(pool: Arc<PgPool>, config: TransactionManagerConfig) -> Self {
-        Self { pool, config }
+        let max_workers = config.max_workers;
+        Self {
+            pool,
+            config,
+            worker_semaphore: Arc::new(Semaphore::new(max_workers)),
+            active_workers: Arc::new(RwLock::new(HashMap::new())),
+        }
     }
 
     /// Create a new transaction entry in the database
@@ -248,6 +264,35 @@ impl TransactionManager {
     /// Get pool reference
     pub fn pool(&self) -> &Arc<PgPool> {
         &self.pool
+    }
+
+    /// Acquire a worker slot (respects max_workers limit)
+    pub async fn acquire_worker_slot(&self) -> tokio::sync::SemaphorePermit<'_> {
+        self.worker_semaphore.acquire().await.unwrap()
+    }
+
+    /// Register an active worker
+    pub async fn register_worker(&self, tx_id: i32, handle: tokio::task::JoinHandle<()>) {
+        let mut workers = self.active_workers.write().await;
+        workers.insert(tx_id, handle);
+    }
+
+    /// Unregister a completed worker
+    pub async fn unregister_worker(&self, tx_id: i32) {
+        let mut workers = self.active_workers.write().await;
+        workers.remove(&tx_id);
+    }
+
+    /// Get count of active workers
+    pub async fn active_worker_count(&self) -> usize {
+        let workers = self.active_workers.read().await;
+        workers.len()
+    }
+
+    /// Check if a worker is active for a transaction
+    pub async fn has_active_worker(&self, tx_id: i32) -> bool {
+        let workers = self.active_workers.read().await;
+        workers.contains_key(&tx_id)
     }
 }
 

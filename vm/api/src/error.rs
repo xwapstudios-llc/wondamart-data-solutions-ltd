@@ -12,6 +12,7 @@ pub enum AppError {
     DbError(sqlx::Error),
     BadRequest(String),
     ValidationError(ValidationResult),
+    Internal(String),
 }
 
 #[derive(Serialize)]
@@ -34,7 +35,8 @@ impl IntoResponse for AppError {
             AppError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg),
             AppError::ValidationError(err) => {
                 (StatusCode::BAD_REQUEST, err.to_string())
-            }
+            },
+            AppError::Internal(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
         };
 
         let body = Json(ErrorResponse { error: message });
@@ -56,5 +58,11 @@ impl From<sqlx::Error> for AppError {
         }
         
         AppError::DbError(err)
+    }
+}
+
+impl From<reqwest::Error> for AppError {
+    fn from(err: reqwest::Error) -> Self {
+        Self::Internal(err.to_string())
     }
 }
