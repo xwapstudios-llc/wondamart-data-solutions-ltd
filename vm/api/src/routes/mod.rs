@@ -5,24 +5,23 @@ mod admin;
 mod guest;
 mod response;
 
-use std::sync::Arc;
 use axum::{Router};
 use axum::routing;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 pub use response::*;
+use crate::app::AppState;
 
-
-pub fn routes(pool: Arc<sqlx::PgPool>) -> Router {
+pub fn routes(app: AppState) -> Router {
     println!("[routes] Setting up routes...");
 
     Router::new()
         .route("/", routing::get(get))
-        .with_state(pool.clone())
-        .merge(guest::routes(pool.clone()))
-        .merge(user::routes(pool.clone()))
-        .merge(admin::routes(pool.clone()))
-        .merge(webhooks::routes(pool.clone()))
+        .with_state(app.clone())
+        .merge(guest::routes(app.clone()))
+        .merge(user::routes(app.clone()))
+        .merge(admin::routes(app.clone()))
+        .merge(webhooks::routes(app.clone()))
 }
 
 

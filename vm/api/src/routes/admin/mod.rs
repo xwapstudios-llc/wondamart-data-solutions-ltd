@@ -2,9 +2,9 @@ mod api_providers;
 
 use axum::Router;
 use axum::routing::get;
-use std::sync::Arc;
+use crate::app::AppState;
 
-pub fn routes(pool: Arc<sqlx::PgPool>) -> Router {
+pub fn routes(app: AppState) -> Router {
     println!("[routes::admin] Setting up...");
 
     Router::new()
@@ -17,5 +17,5 @@ pub fn routes(pool: Arc<sqlx::PgPool>) -> Router {
                 .delete(api_providers::delete),
         )
         // .layer(from_fn(middleware::firebase::firebase_auth_middleware))
-        .with_state(pool)
+        .with_state(app)
 }

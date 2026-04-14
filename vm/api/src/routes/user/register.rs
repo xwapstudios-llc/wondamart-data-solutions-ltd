@@ -1,10 +1,10 @@
 use zod_rs::Schema;
-use std::sync::Arc;
 use axum::extract::State;
 use axum::Json;
 use serde::{Deserialize, Serialize};
 use sqlx::types::JsonValue;
 use zod_rs::prelude::ZodSchema;
+use crate::app::AppState;
 use crate::db_model::{User, UserWallet};
 use crate::routes::{RouteResponse, RouteResponseJson};
 
@@ -24,7 +24,7 @@ pub struct UserRegisterPostReq {
 }
 
 pub async fn post(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<User> {
     println!("[routes::users::register] request...");
@@ -44,7 +44,7 @@ pub async fn post(
         payload.last_name,
         payload.email,
         payload.phone_number,
-    ).fetch_one(&*pool).await?;
+    ).fetch_one(app.pool_ref()).await?;
 
     println!("[UserRegisterPost] User data created, {:?}", user);
 
@@ -56,7 +56,7 @@ pub async fn post(
         RETURNING *
         "#,
         user.uid
-    ).fetch_one(&*pool).await?;
+    ).fetch_one(app.pool_ref()).await?;
 
     println!("[UserRegisterPost] User wallet created, {:?}", wallet);
 

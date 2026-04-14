@@ -1,10 +1,10 @@
 use zod_rs::Schema;
-use std::sync::Arc;
 use axum::extract::State;
 use axum::Json;
 use serde::{Deserialize, Serialize};
 use sqlx::types::JsonValue;
 use zod_rs::prelude::ZodSchema;
+use crate::app::AppState;
 use crate::routes::{RouteResponse, RouteResponseJson};
 
 #[derive(Deserialize, Serialize, Debug, ZodSchema)]
@@ -23,7 +23,7 @@ struct GuestBuyPostReq {
 pub struct GuestBuyPostRes{}
 
 pub async fn post(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<GuestBuyPostRes> {
     let payload = GuestBuyPostReq::validate_and_parse(&payload)?;

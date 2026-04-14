@@ -5,6 +5,7 @@ use axum::Json;
 use serde::{Deserialize, Serialize};
 use sqlx::types::JsonValue;
 use zod_rs::prelude::ZodSchema;
+use crate::app::AppState;
 use crate::routes::{RouteResponse, RouteResponseJson};
 
 #[derive(Deserialize, Serialize, Debug, ZodSchema)]
@@ -17,7 +18,7 @@ struct GuestTrackGetReq {
 pub struct GuestTrackGetRes{}
 
 pub async fn get(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<GuestTrackGetRes> {
     let payload = GuestTrackGetReq::validate_and_parse(&payload)?;

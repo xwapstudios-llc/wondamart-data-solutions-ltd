@@ -1,11 +1,11 @@
+use crate::routes::{RouteResponse};
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
-    Json,
 };
 use serde::Serialize;
+use sqlx::migrate::MigrateError;
 use zod_rs_util::ValidationResult;
-// use zod_rs::
 
 #[derive(Debug)]
 pub enum AppError {
@@ -29,18 +29,16 @@ impl From<ValidationResult> for AppError {
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, message) = match self {
-            AppError::DbError(_) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
-            }
+            AppError::DbError(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Database error".to_string(),
+            ),
             AppError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg),
-            AppError::ValidationError(err) => {
-                (StatusCode::BAD_REQUEST, err.to_string())
-            },
+            AppError::ValidationError(err) => (StatusCode::BAD_REQUEST, err.to_string()),
             AppError::Internal(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
         };
 
-        let body = Json(ErrorResponse { error: message });
-
+        let body = RouteResponse::new(status, (), Some(message)).json_result();
         (status, body).into_response()
     }
 }
@@ -51,12 +49,14 @@ impl From<sqlx::Error> for AppError {
             if let Some(message) = db_err.constraint() {
                 return match message {
                     "users_email_key" => AppError::BadRequest("Email already exists".into()),
-                    "users_phone_number_key" => AppError::BadRequest("Phone number already exists".into()),
-                    &_ => AppError::DbError(err)
-                }
+                    "users_phone_number_key" => {
+                        AppError::BadRequest("Phone number already exists".into())
+                    }
+                    &_ => AppError::DbError(err),
+                };
             }
         }
-        
+
         AppError::DbError(err)
     }
 }
@@ -69,6 +69,18 @@ impl From<reqwest::Error> for AppError {
 
 impl From<serde_json::Error> for AppError {
     fn from(err: serde_json::Error) -> Self {
+        Self::Internal(err.to_string())
+    }
+}
+
+impl From<MigrateError> for AppError {
+    fn from(err: MigrateError) -> Self {
+        Self::Internal(err.to_string())
+    }
+}
+
+impl From<std::io::Error> for AppError {
+    fn from(err: std::io::Error) -> Self {
         Self::Internal(err.to_string())
     }
 }

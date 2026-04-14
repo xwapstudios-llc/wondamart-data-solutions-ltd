@@ -1,8 +1,10 @@
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
 use sqlx::types::{BigDecimal, JsonValue};
-use sqlx::PgPool;
+use sqlx::{Database, PgPool, Type};
 use sqlx::Row;
 use sqlx::{Decode, Encode, Postgres};
+use sqlx::error::BoxDynError;
+use sqlx::postgres::PgTypeInfo;
 use time::OffsetDateTime;
 use crate::db_model::{Commission, DBModel};
 use crate::error::AppError;
@@ -15,6 +17,19 @@ pub enum NetworkType {
     Telecel,
     #[serde(rename = "airteltigo")]
     Airteltigo,
+}
+impl Type<Postgres> for NetworkType {
+    #[inline]
+    fn type_info() -> <Postgres as Database>::TypeInfo {
+        PgTypeInfo::with_name("network_type")
+    }
+}
+impl Decode<'_, Postgres> for NetworkType {
+    #[inline]
+    fn decode(value: <Postgres as Database>::ValueRef<'_>) -> Result<Self, BoxDynError> {
+        let s = <&str as Decode<Postgres>>::decode(value)?;
+        Ok(Self::from_str(s)?)
+    }
 }
 
 impl NetworkType {
@@ -39,11 +54,11 @@ impl NetworkType {
 #[derive(Debug, sqlx::FromRow)]
 pub struct DataBundle {
     pub id: String,
-    pub network_str: String,
+    pub network: NetworkType,
     pub name: Option<String>,
-    pub cost_price: JsonValue,
-    pub selling_price: Option<BigDecimal>,
-    pub api_id: Option<String>,
+    pub cost_price: JsonValue, // A list of key value pairs of api_provider : cost
+    pub selling_price: BigDecimal,
+    pub api_id: String,
     pub data_amount: i32,
     pub minutes: Option<i32>,
     pub sms: Option<i32>,
@@ -61,7 +76,7 @@ impl DBModel for DataBundle {
         let bundle = sqlx::query_as!(
             DataBundle,
             r#"
-            SELECT id, network as "network_str: _", name, cost_price, selling_price, api_id, data_amount, minutes, sms, validity_period, commission, enabled, created_at, updated_at
+            SELECT id, network as "network: _", name, cost_price, selling_price, api_id, data_amount, minutes, sms, validity_period, commission, enabled, created_at, updated_at
             FROM data_bundles
             WHERE id = $1
             "#,
@@ -103,7 +118,7 @@ impl DBModel for DataBundle {
             "#
         )
         .bind(self.id)
-        .bind(&self.network_str)
+        .bind(&self.network.as_str())
         .bind(&self.name)
         .bind(&self.cost_price)
         .bind(&self.selling_price)
@@ -140,11 +155,11 @@ impl<'de> Deserialize<'de> for DataBundle {
 }
 
 impl DataBundle {
-    pub fn network(&self) -> Result<NetworkType, String> {
-        NetworkType::from_str(&self.network_str)
+    pub fn network(&self) -> NetworkType {
+        self.network
     }
 
     pub fn set_network(&mut self, network: NetworkType) {
-        self.network_str = network.as_str().to_string();
+        self.network = network;
     }
 }

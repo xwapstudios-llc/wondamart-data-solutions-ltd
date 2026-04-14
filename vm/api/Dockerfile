@@ -27,7 +27,12 @@ FROM debian:trixie-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y libssl3 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get install -y libssl3 \
+    && apt-get install -y ca-certificates \
+    && apt-get install -y libssl-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN rm ./wondamart_api -f
 

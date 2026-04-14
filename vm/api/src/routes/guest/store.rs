@@ -1,10 +1,10 @@
 use zod_rs::Schema;
-use std::sync::Arc;
 use axum::extract::State;
 use axum::Json;
 use serde::{Deserialize, Serialize};
 use sqlx::types::JsonValue;
 use zod_rs::prelude::ZodSchema;
+use crate::app::AppState;
 use crate::db_model::{AgentStore, DBModel};
 use crate::routes::{RouteResponse, RouteResponseJson};
 
@@ -15,7 +15,7 @@ struct GuestStoreGetReq {
 }
 
 pub async fn get(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<AgentStore> {
     println!("[routes::guest::store::get]");
@@ -24,7 +24,7 @@ pub async fn get(
     let payload = GuestStoreGetReq::validate_and_parse(&payload)?;
 
     // Implementation
-    let store = AgentStore::from_db(&pool, payload.store_id).await?;
+    let store = AgentStore::from_db(&app.pool(), payload.store_id).await?;
     println!("[/guest/store] Found Agent Store: {:?}", &store);
 
     RouteResponse::new_ok(store, None).json_result()

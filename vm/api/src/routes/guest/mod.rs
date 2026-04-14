@@ -6,16 +6,16 @@
 // 3. Track orders by phone number.
 // /guest/track
 
-use std::sync::Arc;
 use axum::Router;
 use axum::routing::{get, post};
+use crate::app::AppState;
 use crate::middleware;
 
 mod store;
 mod buy;
 mod track;
 
-pub fn routes(pool: Arc<sqlx::PgPool>) -> Router {
+pub fn routes(app: AppState) -> Router {
     println!("[routes::guest] Setting up...");
 
     Router::new()
@@ -24,5 +24,5 @@ pub fn routes(pool: Arc<sqlx::PgPool>) -> Router {
         .route("/guest/track", get(track::get))
         //.layer(from_fn(middleware::firebase::firebase_auth_middleware))
         .layer(middleware::cors::user_cors())
-        .with_state(pool)
+        .with_state(app)
 }

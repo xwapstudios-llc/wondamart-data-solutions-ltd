@@ -5,8 +5,8 @@ use axum::Json;
 use axum::extract::State;
 use serde::Deserialize;
 use sqlx::types::JsonValue;
-use std::sync::Arc;
 use zod_rs::Schema;
+use crate::app::AppState;
 
 #[derive(Deserialize, Debug)]
 pub struct AdminApiProviderGetReq {
@@ -15,14 +15,14 @@ pub struct AdminApiProviderGetReq {
 
 impl AdminApiProviderGetReq {
     pub fn validate_and_parse(value: &JsonValue) -> Result<Self, AppError> {
-        let schemas = zod_rs::object().field("api_id", zod_rs::string().min(2).max(255));
+        let schemas = zod_rs::object().field("api_id", zod_rs::string().min(2).max(50));
         Ok(serde_json::from_value(schemas.safe_parse(value)?)?)
     }
 }
 
 /// Get an api provider
 pub async fn get(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<ApiProvider> {
     println!("[routes::admin::api_providers::get] request...");
@@ -33,7 +33,7 @@ pub async fn get(
     );
 
     let payload = AdminApiProviderGetReq::validate_and_parse(&payload)?;
-    let api_provider = ApiProvider::from_db(&pool, payload.api_id).await?;
+    let api_provider = ApiProvider::from_db(app.pool_ref(), payload.api_id).await?;
 
     RouteResponse::new_ok(api_provider, None).json_result()
 }
@@ -54,19 +54,16 @@ pub struct AdminApiProviderPostReq {
 impl AdminApiProviderPostReq {
     pub fn validate_and_parse(value: &JsonValue) -> Result<Self, AppError> {
         let schemas = zod_rs::object()
-            .field("api_id", zod_rs::string().min(2).max(255))
+            .field("api_id", zod_rs::string().min(2).max(50))
             .field("name", zod_rs::string().min(2).max(255))
             .field("url", zod_rs::string().url())
-            .field("purpose", zod_rs::string().min(2).max(255).optional())
+            .field("purpose", zod_rs::optional(zod_rs::string().min(2).max(255)))
             .field("api_key", zod_rs::string().min(2).max(255))
-            .field("secret_key", zod_rs::string().min(2).max(255).optional())
-            .field("webhook_url", zod_rs::string().url().optional())
-            .field("is_active", zod_rs::boolean().optional())
-            .field(
-                "timeout_seconds",
-                zod_rs::number().min(2.0).positive().int().optional(),
-            )
-            .field("configuration", zod_rs::object().optional());
+            .field("secret_key", zod_rs::optional(zod_rs::string().min(2).max(255)))
+            .field("webhook_url", zod_rs::optional(zod_rs::string().url()))
+            .field("is_active", zod_rs::optional(zod_rs::boolean()))
+            .field("timeout_seconds", zod_rs::optional(zod_rs::number().min(2.0).positive().int()))
+            .field("configuration", zod_rs::optional(zod_rs::object()));
 
         Ok(serde_json::from_value(schemas.safe_parse(value)?)?)
     }
@@ -92,7 +89,7 @@ impl Into<ApiProvider> for AdminApiProviderPostReq {
 
 /// Create a new api provider
 pub async fn post(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<ApiProvider> {
     println!("[routes::admin::api_providers::post] request...");
@@ -103,8 +100,8 @@ pub async fn post(
     );
 
     let payload = AdminApiProviderPostReq::validate_and_parse(&payload)?;
-    let api_id = ApiProvider::new_db_entry(payload.into(), &pool).await?;
-    let res = ApiProvider::from_db(&pool, api_id).await?;
+    let api_id = ApiProvider::new_db_entry(payload.into(), app.pool_ref()).await?;
+    let res = ApiProvider::from_db(app.pool_ref(), api_id).await?;
 
     RouteResponse::new_ok(res, None).json_result()
 }
@@ -125,25 +122,23 @@ pub struct AdminApiProviderPutReq {
 impl AdminApiProviderPutReq {
     pub fn validate_and_parse(value: &JsonValue) -> Result<Self, AppError> {
         let schemas = zod_rs::object()
-            .field("api_id", zod_rs::string().min(2).max(255))
-            .field("name", zod_rs::string().min(2).max(255).optional())
-            .field("url", zod_rs::string().url().optional())
-            .field("purpose", zod_rs::string().min(2).max(255).optional())
-            .field("api_key", zod_rs::string().min(2).max(255).optional())
-            .field("secret_key", zod_rs::string().min(2).max(255).optional())
-            .field("webhook_url", zod_rs::string().url().optional())
-            .field("is_active", zod_rs::boolean().optional())
-            .field(
-                "timeout_seconds",
-                zod_rs::number().min(2.0).positive().int().optional(),
-            )
-            .field("configuration", zod_rs::object().optional());
+            .field("api_id", zod_rs::string().min(2).max(50))
+            .field("name", zod_rs::optional(zod_rs::string().min(2).max(255)))
+            .field("url", zod_rs::optional(zod_rs::string().url()))
+            .field("purpose", zod_rs::optional(zod_rs::string().min(2).max(255)))
+            .field("api_key", zod_rs::optional(zod_rs::string().min(2).max(255)))
+            .field("secret_key", zod_rs::optional(zod_rs::string().min(2).max(255)))
+            .field("webhook_url", zod_rs::optional(zod_rs::string().url()))
+            .field("is_active", zod_rs::optional(zod_rs::boolean()))
+            .field("timeout_seconds", zod_rs::optional(zod_rs::number().min(2.0).positive().int()))
+            .field("configuration", zod_rs::optional(zod_rs::object()))
+            ;
 
         Ok(serde_json::from_value(schemas.safe_parse(value)?)?)
     }
 
     async fn into_api_provider(self, pool: &sqlx::PgPool) -> Result<ApiProvider, AppError> {
-        let prev = ApiProvider::from_db(&pool, self.api_id.clone()).await?;
+        let prev = ApiProvider::from_db(pool, self.api_id.clone()).await?;
         let get = |main: Option<String>, prev: Option<String>| match main {
             None => prev,
             Some(s_key) => Some(s_key),
@@ -168,7 +163,7 @@ impl AdminApiProviderPutReq {
 
 /// Update an api provider
 pub async fn put(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<ApiProvider> {
     println!("[routes::admin::api_providers::put] request...");
@@ -181,15 +176,15 @@ pub async fn put(
     let payload = AdminApiProviderPutReq::validate_and_parse(&payload)?;
     let api_id = payload.api_id.clone();
 
-    let shim = payload.into_api_provider(&pool).await?;
-    shim.update_db(&pool).await?;
+    let shim = payload.into_api_provider(app.pool_ref()).await?;
+    shim.update_db(app.pool_ref()).await?;
 
-    RouteResponse::new_ok(ApiProvider::from_db(&pool, api_id).await?, None).json_result()
+    RouteResponse::new_ok(ApiProvider::from_db(app.pool_ref(), api_id).await?, None).json_result()
 }
 
 /// Delete an api provider
 pub async fn delete(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<()> {
     println!("[routes::admin::api_providers::delete] request...");
@@ -200,7 +195,7 @@ pub async fn delete(
     );
 
     let payload = AdminApiProviderGetReq::validate_and_parse(&payload)?;
-    ApiProvider::delete_db(&pool, payload.api_id).await?;
+    ApiProvider::delete_db(app.pool_ref(), payload.api_id).await?;
 
     RouteResponse::new_ok(
         (),

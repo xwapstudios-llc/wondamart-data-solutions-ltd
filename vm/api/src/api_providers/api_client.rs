@@ -1,12 +1,11 @@
 use std::time::Duration;
-use axum::http::header;
-use reqwest::Client;
+use reqwest::{header, Client};
 use crate::db_model::{ApiProvider, DBModel};
 use crate::error::AppError;
 
 pub(super) struct ApiClient {
     pub(crate) client: Client,
-    pub(crate) api_provider: ApiProvider
+    pub(crate) api_provider: ApiProvider,
 }
 
 impl ApiClient {
@@ -21,17 +20,15 @@ impl ApiClient {
 
             let client = Client::builder()
                 .default_headers(headers)
-                .timeout(Duration::from_secs(provider.timeout_seconds as u64))
-                .build();
-            if let Ok(client) = client {
-                return Ok(Self { client, api_provider: provider });
-            };
-        }
+                .connect_timeout(Duration::from_secs(provider.timeout_seconds as u64))
+                .build()?;
 
-        Err(AppError::Internal(format!(
-            "Failed to create {} API client with the api key {:?}",
-            provider.name,
-            provider.api_key
-        )))
+                Ok(Self { client, api_provider: provider })
+        } else {
+            Err(AppError::Internal(format!(
+                "Failed to create {} API client with the api key",
+                provider.name
+            )))
+        }
     }
 }

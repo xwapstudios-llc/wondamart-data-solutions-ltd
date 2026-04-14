@@ -5,9 +5,9 @@ use crate::error::AppError;
 
 #[derive(Serialize, Debug)]
 pub struct GetusCreateOrderReq {
-    recipient: String,
-    network: GetusNetworkType,
-    package_gb: Option<u32>,
+    pub recipient: String,
+    pub network: GetusNetworkType,
+    pub package_gb: u32,
 }
 #[derive(Deserialize, Debug)]
 pub struct GetusCreateOrderRes {
@@ -17,7 +17,7 @@ pub struct GetusCreateOrderRes {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-enum GetusNetworkType {
+pub enum GetusNetworkType {
     MTN,
     Telecel,
     AirtelTigo
@@ -28,6 +28,15 @@ impl From<GetusNetworkType> for NetworkType {
             GetusNetworkType::MTN => NetworkType::Mtn,
             GetusNetworkType::Telecel => NetworkType::Telecel,
             GetusNetworkType::AirtelTigo => NetworkType::Airteltigo
+        }
+    }
+}
+impl From<NetworkType> for GetusNetworkType {
+    fn from(value: NetworkType) -> Self {
+        match value {
+            NetworkType::Mtn => Self::MTN,
+            NetworkType::Telecel => Self::Telecel,
+            NetworkType::Airteltigo => Self::AirtelTigo
         }
     }
 }
@@ -61,26 +70,35 @@ pub struct GetusApiClient(pub(crate) ApiClient);
 
 impl GetusApiClient {
     #[inline]
-    async fn new(pool: &sqlx::PgPool) -> Result<Self, AppError> {
-        Ok(Self(ApiClient::new(pool, "getus".to_string(), "X-API-Key").await?))
+    pub fn api_id() -> &'static str {
+        "getus"
     }
 
-    async fn place_order(&self, order: GetusCreateOrderReq) -> Result<GetusCreateOrderRes, AppError> {
+    #[inline]
+    pub async fn new(pool: &sqlx::PgPool) -> Result<Self, AppError> {
+        Ok(Self(ApiClient::new(pool, Self::api_id().to_string(), "X-API-Key").await?))
+    }
+
+    pub async fn place_order(&self, order: GetusCreateOrderReq) -> Result<GetusCreateOrderRes, AppError> {
         let res = self.0.client
             .post(format!("{}/wp-json/ddm/v1/order", self.0.api_provider.url))
             .json(&order)
             .send()
             .await?;
 
+        println!("[api_providers::getus_site::place_order()] Response {:?}", res);
+
         Ok(serde_json::from_value(res.json().await?)?)
     }
 
-    async fn check_order_status(&self, order: u32) -> Result<(), AppError> {
+    pub async fn check_order_status(&self, order: u32) -> Result<(), AppError> {
         let res = self.0.client
             .get(format!("{}/wp-json/ddm/v1/order-status?order_id={}", self.0.api_provider.url, order))
             .json(&order)
             .send()
             .await?;
+
+        println!("[api_providers::getus_site::check_order_status()] Response {:?}", res);
 
         Ok(serde_json::from_value(res.json().await?)?)
     }

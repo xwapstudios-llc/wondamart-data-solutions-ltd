@@ -9,6 +9,7 @@
 
 use zod_rs::Schema;
 mod register;
+mod data_bundle;
 
 use crate::db_model::{DBModel, User};
 use crate::middleware;
@@ -16,20 +17,21 @@ use axum::extract::State;
 use axum::routing;
 use axum::{Json, Router};
 use sqlx::types::JsonValue;
-use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use zod_rs::prelude::ZodSchema;
+use crate::app::AppState;
 use crate::routes::{RouteResponse, RouteResponseJson};
 
-pub fn routes(pool: Arc<sqlx::PgPool>) -> Router {
+pub fn routes(app: AppState) -> Router {
     println!("[routes::users] Setting up...");
 
     Router::new()
         .route("/user", routing::get(get).put(put).delete(delete))
         //.layer(from_fn(middleware::firebase::firebase_auth_middleware))
         .route("/user/register", routing::post(register::post))
+        .route("/user/data-bundle", routing::put(data_bundle::put))
         .layer(middleware::cors::user_cors())
-        .with_state(pool)
+        .with_state(app)
 }
 
 #[derive(Debug, Serialize, Deserialize, ZodSchema)]
@@ -39,14 +41,14 @@ struct UserGetReq {
 }
 
 async fn get(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<User> {
     // Request
     let payload = UserGetReq::validate_and_parse(&payload)?;
 
     // Implementation
-    let user = User::from_db(&pool, payload.uid).await?;
+    let user = User::from_db(app.pool_ref(), payload.uid).await?;
 
     // Result
     RouteResponse::new_ok(user, None).json_result()
@@ -59,20 +61,20 @@ struct UserPostReq {
     uid: i32,
 }
 async fn put(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<User> {
     let payload = UserPostReq::validate_and_parse(&payload)?;
 
     // Fetch user
-    let user = User::from_db(&pool, payload.uid).await?;
+    let user = User::from_db(app.pool_ref(), payload.uid).await?;
 
     // todo: Update user with payload
 
     // Update user
-    user.update_db(&pool).await?;
+    user.update_db(app.pool_ref()).await?;
 
-    let updated_user = User::from_db(&pool, payload.uid).await?;
+    let updated_user = User::from_db(app.pool_ref(), payload.uid).await?;
 
     RouteResponse::new_ok(updated_user, None).json_result()
 }
@@ -83,12 +85,12 @@ struct UserDeleteReq {
     uid: i32,
 }
 async fn delete(
-    State(pool): State<Arc<sqlx::PgPool>>,
+    State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<()> {
     let payload = UserDeleteReq::validate_and_parse(&payload)?;
 
-    let user = User::from_db(&pool, payload.uid).await?;
+    let user = User::from_db(app.pool_ref(), payload.uid).await?;
 
     // Implementation
     // 1. move data to deleted table

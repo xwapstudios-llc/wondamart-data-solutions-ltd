@@ -5,11 +5,11 @@
 // 2. Create a generic webhook system that tracks
 // `/webhooks/:id` and then map the id based on db.
 
-use std::sync::Arc;
 use axum::Router;
+use crate::app::AppState;
 use crate::middleware::cors::public_cors;
 
-pub fn routes(pool: Arc<sqlx::PgPool>) -> Router {
+pub fn routes(pool: AppState) -> Router {
     println!("[routes::webhooks] Setting up...");
 
     Router::new()
