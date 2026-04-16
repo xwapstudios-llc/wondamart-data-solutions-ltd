@@ -2,12 +2,14 @@ use std::sync::Arc;
 use sqlx::PgPool;
 use crate::api_providers::getus_site::{GetusApiClient, GetusCreateOrderReq};
 use crate::api_providers::hendy_links::{HendyApiClient, HendyCreateOrderReq};
+use crate::api_providers::sykes_official::{SykesApiClient, SykesCreateOrderReq};
 use crate::db_model::{DBModel, DataBundle};
 use crate::error::AppError;
 
 pub struct BundleService {
     pool: Arc<PgPool>,
     hendy: HendyApiClient,
+    sykes: SykesApiClient,
     getus: GetusApiClient
 }
 
@@ -16,17 +18,21 @@ impl BundleService {
         Ok(Arc::new(Self {
             pool: pool.clone(),
             hendy: HendyApiClient::new(pool.as_ref()).await?,
+            sykes: SykesApiClient::new(pool.as_ref()).await?,
             getus: GetusApiClient::new(pool.as_ref()).await?,
         }))
     }
     
     pub(crate) async fn reload_clients(&mut self) -> Result<(), AppError> {
         self.hendy = HendyApiClient::new(self.pool.as_ref()).await?;
+        self.sykes = SykesApiClient::new(self.pool.as_ref()).await?;
         self.getus = GetusApiClient::new(self.pool.as_ref()).await?;
         Ok(())
     }
 
     pub async fn new_bundle(&self, bundle_id: String, phone: String) -> Result<(), AppError> {
+        println!("[services::bundle_service::new_bundle()] An Order received...");
+        
         let bundle = DataBundle::from_db(&self.pool, bundle_id).await?;
 
         match bundle.api_id.as_str() {
@@ -35,6 +41,18 @@ impl BundleService {
                     recipient_phone: phone,
                     network: bundle.network.into(),
                     size_gb: bundle.data_amount as u32
+                }).await?;
+
+                println!("Created hendy order {:?}", res);
+            }
+
+            "sykes" => {
+                println!("[new_bundle()::sykes] Sending order to sykes... Bundle: {:?}, phone: {}", bundle, phone);
+                let res = self.sykes.create_order( SykesCreateOrderReq {
+                    recipient_phone: phone,
+                    network: bundle.network.into(),
+                    size_gb: bundle.data_amount as u32,
+                    oder_id: "Order-111".to_string(),
                 }).await?;
 
                 println!("Created hendy order {:?}", res);

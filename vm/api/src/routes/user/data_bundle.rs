@@ -8,11 +8,11 @@ use crate::error::AppError;
 use crate::routes::{RouteResponse, RouteResponseJson};
 
 #[derive(Debug, Deserialize)]
-struct UserDataBundlePutReq {
+struct UserDataBundlePostReq {
     phone: String,
     bundle_id: String,
 }
-impl UserDataBundlePutReq {
+impl UserDataBundlePostReq {
     pub fn validate_and_parse(value: &JsonValue) -> Result<Self, AppError> {
         let schemas = zod_rs::object()
             .field("phone", zod_rs::string().regex(r"^(0|\+233|233)[25][0-9]{8}$"))
@@ -21,13 +21,13 @@ impl UserDataBundlePutReq {
     }
 }
 
-pub async fn put(
+pub async fn post(
     State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
 ) -> RouteResponseJson<()> {
     println!("[routes::user::data_bundle::put] Request received. {}", payload);
     
-    let payload = UserDataBundlePutReq::validate_and_parse(&payload)?;
+    let payload = UserDataBundlePostReq::validate_and_parse(&payload)?;
 
     app.bundle_service.new_bundle(payload.bundle_id, payload.phone).await?;
 
