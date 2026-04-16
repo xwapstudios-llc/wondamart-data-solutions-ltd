@@ -7,7 +7,8 @@ import DisabledNotice from "@/ui/components/cards/DisabledNotice";
 import {useAppStore} from "@/lib/useAppStore";
 
 const notice: NoticeData = {
-    heading: "Important Notice",
+    heading: "IMPORTANT",
+    subHeading: "Please Read Before Purchase",
     notices: [
         {
             title: "Delivery",
@@ -31,7 +32,6 @@ const notice: NoticeData = {
         },
     ],
 };
-
 
 const DataBundleTelecel: React.FC = () => {
     const [bundles, setBundles] = useState<DataBundle[]>([]);
@@ -63,7 +63,7 @@ const DataBundleTelecel: React.FC = () => {
     if (settings && settings.enabled && settings.telecel.enabled)
         return (
             <div className={"space-y-4"}>
-                <NoticeConstructor notice={notice}/>
+                <NoticeConstructor className={"p-2"} collapsable notice={notice}/>
                 <BundlesView loading={loading} bundles={bundles}/>
             </div>
         );

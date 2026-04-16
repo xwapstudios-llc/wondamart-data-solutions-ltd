@@ -1,10 +1,7 @@
 import React from "react";
 import {cn} from "@/cn/lib/utils";
-
 import {BadgeDollarSignIcon, HistoryIcon, HomeIcon, ShoppingBagIcon, UserIcon,} from "lucide-react";
-
 import {Link, useLocation} from "react-router-dom";
-import {useSidebar} from "@/cn/components/ui/sidebar.tsx";
 import {R} from "@/app/routes.ts";
 
 const TABS = [
@@ -19,7 +16,6 @@ type MobileBottomNavProps = Omit<React.HTMLAttributes<HTMLDivElement>, "children
 const MobileBottomNav: React.FC<MobileBottomNavProps> = ({className, ...props}) => {
     const location = useLocation();
     const pathname = location.pathname;
-    const {isMobile} = useSidebar();
 
     const isActive = (route: string) => {
         if (route === "/app") {
@@ -29,42 +25,41 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({className, ...props}) 
     };
 
 
-    if (isMobile)
-        return (
-            <div className={cn(
-                " fixed bottom-0 left-0 right-0 bg-background/50 backdrop-blur-2xl border-t flex justify-evenly py-1 z-40",
-                className
-            )}
-                 {...props}
-            >
-                {
-                    TABS.map((tab) => {
-                        const active = isActive(tab.path);
-                        const Icon = tab.icon;
+    return (
+        <div className={cn(
+            " fixed bottom-0 left-0 right-0 flex justify-evenly z-40",
+            className
+        )}
+             {...props}
+        >
+            {
+                TABS.map((tab) => {
+                    const active = isActive(tab.path);
+                    const Icon = tab.icon;
 
-                        return (
-                            <Link
-                                key={tab.path}
-                                to={tab.path}
+                    return (
+                        <Link
+                            key={tab.path}
+                            to={tab.path}
+                            className={cn(
+                                "flex flex-col items-center justify-center gap-1 flex-1 py-2",
+                                active && "text-primary"
+                            )}
+                        >
+                            <Icon
                                 className={cn(
-                                    "flex flex-col items-center justify-center gap-1 flex-1 py-2",
+                                    "w-6 h-6 transition-all",
                                     active && "text-primary"
                                 )}
-                            >
-                                <Icon
-                                    className={cn(
-                                        "w-6 h-6 transition-all",
-                                        active && "text-primary"
-                                    )}
-                                    strokeWidth={1.5}
-                                />
-                                <span className="text-xs font-medium">{tab.name}</span>
-                            </Link>
-                        );
-                    })
-                }
-            </div>
-        )
+                                strokeWidth={1.5}
+                            />
+                            <span className="text-xs font-medium">{tab.name}</span>
+                        </Link>
+                    );
+                })
+            }
+        </div>
+    )
 }
 
 export default MobileBottomNav;

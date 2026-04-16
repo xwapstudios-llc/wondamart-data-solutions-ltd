@@ -12,10 +12,9 @@ const AfaBundlePurchase: React.FC = () => {
     const {commonSettings} = useAppStore();
     const settings = commonSettings.afa
 
-
     return (
         <Page>
-            <PageHeading>AFA Bundle</PageHeading>
+            <PageHeading className={"mt-4"}>AFA Bundle</PageHeading>
             <Notice variant={"default"} className={"mt-4"}>
                 <NoticeHeading>Notice</NoticeHeading>
                 <NoticeContent>

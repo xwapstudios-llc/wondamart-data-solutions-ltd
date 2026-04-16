@@ -7,7 +7,8 @@ import DisabledNotice from "@/ui/components/cards/DisabledNotice";
 import {useAppStore} from "@/lib/useAppStore";
 
 const notice: NoticeData = {
-    heading: "IMPORTANT: Please Read Before Purchase",
+    heading: "IMPORTANT",
+    subHeading: "Please Read Before Purchase",
     notices: [
         {
             title: "Premium Delivery",
@@ -60,7 +61,7 @@ const DataBundleAirtelTigo: React.FC = () => {
     if (settings && settings.enabled && settings.airteltigo.enabled)
         return (
             <div className={"space-y-4"}>
-                <NoticeConstructor notice={notice}/>
+                <NoticeConstructor className={"p-2"} collapsable notice={notice}/>
                 <BundlesView loading={loading} bundles={bundles}/>
             </div>
         );

@@ -15,7 +15,7 @@ const DataBundleIndex: React.FC = () => {
 
     return (
         <Page className={"space-y-4"}>
-            <div>
+            <div className={"mt-4"}>
                 <PageHeading>Data Bundles</PageHeading>
                 <PageSubHeading>Choose a network and bundle.</PageSubHeading>
             </div>

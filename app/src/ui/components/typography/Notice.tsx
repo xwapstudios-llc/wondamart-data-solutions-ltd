@@ -1,5 +1,6 @@
 import {cn} from "@/cn/lib/utils";
-import React from "react";
+import React, {useState} from "react";
+import {Button} from "@/cn/components/ui/button.tsx";
 
 interface NoticeProps extends React.HTMLAttributes<HTMLDivElement> {
     variant?: "default" | "warning" | "info";
@@ -19,7 +20,7 @@ const Notice: React.FC<NoticeProps> = ({
     return (
         <div
             className={cn(
-                "p-4 border rounded-md space-y-1",
+                "p-4 border rounded-md",
                 variantClasses[variant],
                 className
             )}
@@ -75,9 +76,9 @@ const NoticeItem: React.FC<NoticeItemProps> = ({
                                                }) => {
     return (
         <li className={cn(className)} {...props}>
-            {title ? (
+            {title && (
                 <span className={"font-semibold mr-2"}>{title}:</span>
-            ) : null}
+            )}
             {children}
         </li>
     );
@@ -85,7 +86,9 @@ const NoticeItem: React.FC<NoticeItemProps> = ({
 
 interface NoticeData {
     heading: string;
+    subHeading?: string;
     variant?: "default" | "warning" | "info";
+    subHeadingClass?: string,
     notices: {
         title?: string;
         description: React.ReactNode;
@@ -94,26 +97,54 @@ interface NoticeData {
 
 interface NoticeConstructorProps extends React.HTMLAttributes<HTMLDivElement> {
     notice: NoticeData;
+    collapsable?: boolean;
 }
 
 const NoticeConstructor: React.FC<NoticeConstructorProps> = ({
                                                                  notice,
+                                                                 collapsable = false,
                                                                  children,
+    className,
                                                                  ...props
                                                              }) => {
+    const [opened, setOpened] = useState(!collapsable);
+
     return (
-        <Notice variant={notice.variant} {...props}>
-            <NoticeHeading>{notice.heading}</NoticeHeading>
-            <NoticeContent>
-                {notice.notices.map((notice, index) => (
-                    <NoticeItem
-                        key={index}
-                        title={notice.title}
-                        children={notice.description}
-                    />
-                ))}
-            </NoticeContent>
-            {children}
+        <Notice variant={notice.variant} className={cn("relative", className)} {...props}>
+            <div>
+                <p className={"font-semibold text-sm"}>{notice.heading}</p>
+                {
+                    notice.subHeading && (<span className={`text-xs ${notice.subHeadingClass}`}>{notice.subHeading}</span>)
+                }
+            </div>
+            {
+                collapsable && (
+                    <Button
+                        className={"absolute top-2 right-2"}
+                        variant={"outline"}
+                        size={"sm"}
+                        onClick={() => {setOpened(!opened)}}
+                    >
+                        {opened ? "Hide" : "Show"}
+                    </Button>
+                )
+            }
+            {
+                (!collapsable || opened) && (
+                    <>
+                        <NoticeContent>
+                            {notice.notices.map((notice, index) => (
+                                <NoticeItem
+                                    key={index}
+                                    title={notice.title}
+                                    children={notice.description}
+                                />
+                            ))}
+                        </NoticeContent>
+                        {children}
+                    </>
+                )
+            }
         </Notice>
     );
 };

@@ -47,8 +47,4 @@ impl App {
     pub fn pool_ref(&self) -> &PgPool {
         &self.pool
     }
-
-    // pub fn tx_manager(&self) -> Arc<TransactionManager> {
-    //     self.tx_manager.clone()
-    // }
 }

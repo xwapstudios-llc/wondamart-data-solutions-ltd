@@ -2,7 +2,6 @@
 import { Timestamp } from "firebase/firestore";
 import { type Tx, type TxQuery } from "@common/tx";
 
-//
 //  SubTypes
 export type NetworkId = "mtn" | "telecel" | "airteltigo";
 export const networkIds: NetworkId[] = ["mtn", "telecel", "airteltigo"];
@@ -23,7 +22,7 @@ export interface TxDataBundleQuery extends TxQuery {
     phoneNumber?: string,
 }
 
-//
+
 // Database Type
 export interface DataBundle {
     id: string;

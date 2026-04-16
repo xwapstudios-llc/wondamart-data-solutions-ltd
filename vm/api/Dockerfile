@@ -11,13 +11,13 @@ RUN mkdir src && echo "fn main() {}" > src/main.rs
 # 3. Build dependencies (this layer gets cached)
 RUN cargo --version && rustc --version && cargo build --release
 
-# 4. Now copy real source code
-COPY src ./src
-
 # Set SQLX to offline mode to avoid trying to connect to the database during build
 ENV SQLX_OFFLINE=true
 COPY migrations ./migrations
 COPY .sqlx ./.sqlx
+
+# 4. Now copy real source code
+COPY src ./src
 
 # 5. Build actual app (fast rebuilds)
 RUN cargo build --release

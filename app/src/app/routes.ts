@@ -99,9 +99,11 @@ const R = {
     },
 
     utils: {
-        whatsAppGroup: "https://chat.whatsapp.com/HDhT0o5JXtO8dq5OmiEqVU",
+        whatsAppGroup: "https://chat.whatsapp.com/FnCGfrUiJnh2c2L5Ffdnl5",
         admin: "https://wa.me/+233539971202?text=Hi%20Wondamart%20Data%20Solutions.",
-        support: "https://chat.whatsapp.com/HDhT0o5JXtO8dq5OmiEqVU",
+        ernest: "https://wa.me/+233539971202?text=Hello%20I%20need%20help%20with%20my%20data%20purchase.",
+        support: "https://chat.whatsapp.com/FnCGfrUiJnh2c2L5Ffdnl5",
+        mail: "mailto:wondamartgh@gmail.com"
     }
 };
 

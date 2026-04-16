@@ -8,7 +8,7 @@ import { R } from "@/app/routes";
 import { Timestamp } from "firebase/firestore";
 import Page from "@/ui/page/Page.tsx";
 import PageContent from "@/ui/page/PageContent.tsx";
-import {StoreIcon, ClockIcon, MessageCircleMore, SearchIcon, SignalHighIcon} from "lucide-react";
+import {StoreIcon, MessageCircleMore, SearchIcon, SignalHighIcon} from "lucide-react";
 import {buttonVariants} from "@/cn/components/ui/button.tsx";
 
 function toDate(ts: Timestamp): Date {
@@ -60,30 +60,30 @@ const AgentStorePage: React.FC = () => {
     };
 
     return (
-        <Page className="pb-8 bg-violet-500">
-            <PageContent className="max-w-4xl mx-auto space-y-4 pt-4">
+        <Page className="bg-blue-800 mb-0! md:mb-0!">
+            <PageContent className="max-w-4xl mx-auto space-y-4 pt-4 pb-4">
                 <div className="rounded-xl p-6 bg-wondamart text-primary-foreground">
                     <div className={"flex items-start justify-between"}>
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="flex size-9 items-center justify-center rounded-md bg-violet-500 text-white">
+                            <div className="flex size-9 items-center justify-center rounded-md bg-blue-800 text-white">
                                 <StoreIcon className="size-4" />
                             </div>
                             <div>
                                 <p className="font-semibold">{agentStore.storeName}</p>
                                 <p className="text-sm text-primary-foreground">{agentStore.email}</p>
                             </div>
-                        </div>
-                        {
-                            storeId == "wondamart" ? (
-                                // Todo: want to change number at backend
-                                <a className="flex size-9 md:w-auto md:px-2 md:gap-2 items-center justify-center rounded-md bg-green-500 text-white" href={R.utils.admin}>
-                                    <MessageCircleMore className="size-4" />
-                                    <span className={"hidden md:inline-block"}>WhatsApp Support</span>
-                                </a>
-                            ) : (
-                                <p className="text-lg">{agentStore.phoneNumber}</p>
-                            )
-                        }
+                        </div>h
+                        {/*{*/}
+                        {/*    storeId == "wondamart" ? (*/}
+                        {/*        // Todo: want to change number at backend*/}
+                        {/*        <a className="flex size-9 md:w-auto md:px-2 md:gap-2 items-center justify-center rounded-md bg-green-500 text-white" href={R.utils.admin}>*/}
+                        {/*            <MessageCircleMore className="size-4" />*/}
+                        {/*            <span className={"hidden md:inline-block"}>WhatsApp Support</span>*/}
+                        {/*        </a>*/}
+                        {/*    ) : (*/}
+                        {/*        <p className="text-lg">{agentStore.phoneNumber}</p>*/}
+                        {/*    )*/}
+                        {/*}*/}
                     </div>
                     {/*<div className="flex items-center justify-center flex-col">*/}
                     {/*    {*/}
@@ -93,14 +93,18 @@ const AgentStorePage: React.FC = () => {
                     {/*    }*/}
                     {/*</div>*/}
                     <div className="flex gap-4 items-center justify-center mt-4">
-                        <div className="flex items-center gap-2">
-                            <ClockIcon className="size-4" />
-                            <p>Open at: {toDate(agentStore.openingTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <ClockIcon className="size-4" />
-                            <p>Close at: {toDate(agentStore.closingTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
-                        </div>
+                    {/*    <div className="flex items-center gap-2">*/}
+                    {/*        <ClockIcon className="size-4" />*/}
+                    {/*        <p>Open at: {toDate(agentStore.openingTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>*/}
+                    {/*    </div>*/}
+                    {/*    <div className="flex items-center gap-2">*/}
+                    {/*        <ClockIcon className="size-4" />*/}
+                    {/*        <p>Close at: {toDate(agentStore.closingTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>*/}
+                    {/*    </div>*/}
+                        <a className="flex px-2 py-1 md:gap-2 items-center justify-center rounded-sm bg-green-500 text-white" href={R.utils.ernest}>
+                            <MessageCircleMore className="size-4" />
+                            <span className={""}>WhatsApp Support</span>
+                        </a>
                     </div>
                 </div>
 
@@ -125,7 +129,7 @@ const AgentStorePage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 text-white">
                     <p className="text-center text-sm">
                         Already have an account?{" "}
                         <Link

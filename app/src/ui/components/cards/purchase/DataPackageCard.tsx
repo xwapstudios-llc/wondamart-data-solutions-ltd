@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import type {DataBundle} from "@common/types/data-bundle.ts";
 import {cn} from "@/cn/lib/utils.ts";
-import WondaButton from "@/ui/components/buttons/WondaButton.tsx";
 import IconText from "@/ui/components/typography/IconText.tsx";
 import {ArrowUpDownIcon, Loader2Icon, MailsIcon, PhoneCallIcon} from "lucide-react";
 import {Input} from "@/cn/components/ui/input.tsx";
@@ -68,7 +67,7 @@ const DataPackageCard: React.FC<DataPackageCardProps> = ({dataPackage, className
 
     const networkClassName = {
         mtn: "border-mtn bg-mtn/75 dark:bg-mtn/80",
-        telecel: "border-telecel bg-telecel/75 dark:bg-telecel/80",
+        telecel: "border-telecel bg-telecel dark:bg-telecel/80",
         airteltigo: "border-airteltigo bg-airteltigo/75 dark:bg-airteltigo/80",
         disabled: "bg-muted text-muted-foreground"
     };
@@ -116,111 +115,105 @@ const DataPackageCard: React.FC<DataPackageCardProps> = ({dataPackage, className
     }
 
     return (
-        <div className={cn(className, "min-w-64 h-fit drop-shadow-md")} {...props}>
-            <div className={"mx-auto w-fit h-fit z-10"}>
-                <WondaButton
-                    imgSrc={"/network/" + dataPackage.network + ".png"}
-                    size={80}
-                    className={cn("drop-shadow-lg", dataPackage.enabled ? "" : "grayscale-100 brightness-200")}
-                    onClick={handleCardClick}
-                />
-            </div>
-            <div
-                className={cn(
-                    `w-full rounded-lg p-2 border transition-[margin-top] duration-300`,
-                    dataPackage.enabled ? networkClassName[dataPackage.network] : networkClassName["disabled"],
-                    isOpen ? "-mt-20" : "-mt-14"
-                )}
-                onClick={handleCardClick}
-            >
-                <div className={"grid grid-cols-2 gap-x-12 gap-y-0.5 px-2"}>
-                    <div className={"font-semibold"}>
-                        {dataPackage.name}
-                    </div>
-                    <span className={"text-2xl place-self-end"}>₵ {dataPackage.price.toFixed(2)}</span>
-                    <div className={"text-sm"}>
-                        {
-                            dataPackage.validityPeriod == 0 ? "Non Expiry"
-                                : dataPackage.validityPeriod == 1 ? "1 day"
-                                    : `${dataPackage.validityPeriod} days`
-                        }
-                    </div>
-                    <span className={"text-sm opacity-75 place-self-end"}>
-                        ₵ {dataPackage.commission.toFixed(2)}
-                    </span>
+        <div
+            className={cn(
+                className, "min-w-64 h-fit drop-shadow-md",
+                `w-full rounded-lg p-2 border duration-300`,
+                dataPackage.enabled ? networkClassName[dataPackage.network] : networkClassName["disabled"]
+            )}
+            onClick={handleCardClick}
+            {...props}
+        >
+            {/*Amount and commission*/}
+            <div className={"grid grid-cols-2 gap-x-12 gap-y-0.5 px-2"}>
+                <div className={"font-semibold"}>
+                    {dataPackage.name}
                 </div>
-                <div className={"packages-grid mt-4"}>
-                    <IconText
+                <span className={"text-2xl place-self-end"}>₵ {dataPackage.price.toFixed(2)}</span>
+                <div className={"text-sm"}>
+                    {
+                        dataPackage.validityPeriod == 0 ? "Non Expiry"
+                            : dataPackage.validityPeriod == 1 ? "1 day"
+                                : `${dataPackage.validityPeriod} days`
+                    }
+                </div>
+                <span className={"text-sm opacity-75 place-self-end"}>
+                    ₵ {dataPackage.commission.toFixed(2)}
+                </span>
+            </div>
+            {/*Data Details*/}
+            <div className={"packages-grid mt-4"}>
+                <IconText
+                    className={"bg-background"}
+                    variant={dataPackage.network}
+                    Icon={ArrowUpDownIcon}
+                >
+                    {(dataPackage.dataPackage.data)} GB
+                </IconText>
+                {
+                    dataPackage.dataPackage.minutes && <IconText
                         className={"bg-background"}
                         variant={dataPackage.network}
-                        Icon={ArrowUpDownIcon}
+                        Icon={PhoneCallIcon}
                     >
-                        {(dataPackage.dataPackage.data)} GB
+                        {(dataPackage.dataPackage.minutes)} min
                     </IconText>
-                    {
-                        dataPackage.dataPackage.minutes && <IconText
-                            className={"bg-background"}
-                            variant={dataPackage.network}
-                            Icon={PhoneCallIcon}
-                        >
-                            {(dataPackage.dataPackage.minutes)} min
-                        </IconText>
-                    }
-                    {
-                        dataPackage.dataPackage.sms && <IconText
-                            className={"bg-background"}
-                            variant={dataPackage.network}
-                            Icon={MailsIcon}
-                        >
-                            {(dataPackage.dataPackage.sms)} units
-                        </IconText>
-                    }
-                </div>
-                <div
-                    className={cn(
-                        "transition-[opacity,max-height,margin-top] duration-300 overflow-hidden",
-                        isOpen ? "max-h-[500px] opacity-100 mt-2" : "max-h-0 opacity-0"
-                    )}
-                >
-                    <Form {...form}>
-                        <form
-                            className="space-y-2"
-                            onSubmit={form.handleSubmit(submitPurchaseRequest)}
-                        >
-                            <FormField
-                                control={form.control}
-                                name="phone"
-                                render={({field}) => (
-                                    <FormItem className="p-2 rounded-sm bg-background shadow-md">
-                                        <FormLabel>Phone Number</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder={"02XXXXXXXX"} {...field} disabled={loading}/>
-                                        </FormControl>
-                                        <FormDescription>
-                                            Phone number to receive the bundle
-                                        </FormDescription>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                            {
-                                form.formState.errors.root &&
-                                <p className="p-1 px-2 bg-red-100 rounded-sm text-destructive shadow">
-                                    {form.formState.errors.root.message}
-                                </p>
-                            }
-                            <Button className="w-full" type="submit" disabled={loading}>
-                                {loading ? (
-                                    <>
-                                        <Loader2Icon className="animate-spin"/> Loading
-                                    </>
-                                ) : (
-                                    "Buy"
-                                )}
-                            </Button>
-                        </form>
-                    </Form>
-                </div>
+                }
+                {
+                    dataPackage.dataPackage.sms && <IconText
+                        className={"bg-background"}
+                        variant={dataPackage.network}
+                        Icon={MailsIcon}
+                    >
+                        {(dataPackage.dataPackage.sms)} units
+                    </IconText>
+                }
+            </div>
+            {/*Form*/}
+            <div
+                className={cn(
+                    "transition-[opacity,max-height,margin-top] duration-300 overflow-hidden",
+                    isOpen ? "max-h-[500px] opacity-100 mt-2" : "max-h-0 opacity-0"
+                )}
+            >
+                <Form {...form}>
+                    <form
+                        className="space-y-2"
+                        onSubmit={form.handleSubmit(submitPurchaseRequest)}
+                    >
+                        <FormField
+                            control={form.control}
+                            name="phone"
+                            render={({field}) => (
+                                <FormItem className="p-2 rounded-sm bg-background shadow-md">
+                                    <FormLabel>Phone Number</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder={"02XXXXXXXX"} {...field} disabled={loading}/>
+                                    </FormControl>
+                                    <FormDescription>
+                                        Phone number to receive the bundle
+                                    </FormDescription>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                        {
+                            form.formState.errors.root &&
+                            <p className="p-1 px-2 bg-red-100 rounded-sm text-destructive shadow">
+                                {form.formState.errors.root.message}
+                            </p>
+                        }
+                        <Button className="w-full" type="submit" disabled={loading}>
+                            {loading ? (
+                                <>
+                                    <Loader2Icon className="animate-spin"/> Loading
+                                </>
+                            ) : (
+                                "Buy"
+                            )}
+                        </Button>
+                    </form>
+                </Form>
             </div>
         </div>
     )

@@ -5,7 +5,7 @@ type PageProps = React.HTMLAttributes<HTMLDivElement>;
 
 const Page: React.FC<PageProps> = ({className, children, ...props}) => {
     return (
-        <main className={cn(className, "px-3 md:px-4 mb-20 md:pb-8")} {...props}>
+        <main className={cn(className, "px-3 md:px-4")} {...props}>
             {children}
         </main>
     )

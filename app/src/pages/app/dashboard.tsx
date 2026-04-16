@@ -13,6 +13,7 @@ import ActivityHighlights from "@/ui/components/cards/dashboard/ActivityHighligh
 import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
 import PWAAction from "@/ui/components/PWAAction.tsx";
 import TxTableCardSync from "@/ui/components/TxTableCardSync.tsx";
+import WondamartFooter from "@/ui/layouts/WondamartFooter.tsx";
 
 const Dashboard: React.FC = () => {
     const {profile, wallet, claims} = useAppStore();
@@ -104,6 +105,8 @@ const Dashboard: React.FC = () => {
                     </ActivationCard>
                 )
             }
+
+            <WondamartFooter />
         </Page>
     );
 };

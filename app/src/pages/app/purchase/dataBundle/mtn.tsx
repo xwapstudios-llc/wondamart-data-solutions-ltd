@@ -8,7 +8,8 @@ import DisabledNotice from "@/ui/components/cards/DisabledNotice.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
 
 const nonExpiryNotice: NoticeData = {
-    heading: "Important Notice",
+    heading: "IMPORTANT",
+    subHeading: "Please Read Before Purchase",
     notices: [
         {
             title: "Turbonet, Broadband, Roaming & Company/Schools/Group Sim Cards",
@@ -38,7 +39,8 @@ const nonExpiryNotice: NoticeData = {
 };
 
 const expiryNotice: NoticeData = {
-    heading: "IMPORTANT: Please Read Before Purchase",
+    heading: "IMPORTANT",
+    subHeading: "Please Read Before Purchase",
     notices: [
         {
             title: "Premium Delivery",
@@ -66,13 +68,42 @@ const expiryNotice: NoticeData = {
         },
     ],
 };
+const verificationNotice: NoticeData = {
+    heading: "IMPORTANT",
+    subHeading: "Please Read Before Purchase",
+    notices: [
+        {
+            title: "Premium Delivery",
+            description:
+                "All data purchases are instant or faster than normal delivery.",
+        },
+        {
+            title: "One Time Verify",
+            description: "This bundle requires a one-time verification for new numbers. Once verified, you can buy anytime without repeating the process."
+        },
+        {
+            title: "Verified Number",
+            description: "When you see “Verified Number”, request the SMS sent to the customer."
+        },
+        {
+            title: "Tip",
+            description: "Follow the tutorial video to complete verification."
+        },
+        {
+            title: "Delivery",
+            description: "Delivery is usually faster than normal process."
+        }
+    ],
+};
 
 const DataBundleMTN: React.FC = () => {
     // Use Effect to fetch MTN data bundles from an API could be added here
     const [expiry, setExpiry] = useState<DataBundle[]>([]);
     const [nonExpiry, setNoExpiry] = useState<DataBundle[]>([]);
+    const [verification, setVerification] = useState<DataBundle[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingExpiry, setLoadingExpiry] = useState<boolean>(false);
+    const [loadingVerfiy, setLoadingVerfiy] = useState<boolean>(false);
 
     const {commonSettings} = useAppStore();
     const settings = commonSettings.dataBundles
@@ -102,6 +133,18 @@ const DataBundleMTN: React.FC = () => {
         }
     }, [settings]);
 
+    const fetchVerification = useCallback(async () => {
+        if (settings && settings.enabled && settings.mtn.enabled) {
+            setLoadingVerfiy(true);
+            const res = await DataBundles.read({
+                network: "mtn",
+                validityPeriod: -1,
+            });
+            setVerification(res);
+            setLoadingVerfiy(false);
+        }
+    }, [settings])
+
     useEffect(() => {
         const run = () => {
             fetchNonExpiry().then();
@@ -123,15 +166,22 @@ const DataBundleMTN: React.FC = () => {
                             await fetchExpiry();
                         if (tab == "non-expiry" && nonExpiry.length == 0)
                             await fetchNonExpiry();
+                        if (tab == "verification" && verification.length == 0)
+                            await fetchVerification();
                     }}
                 >
                     <TabsContent value={"non-expiry"}>
-                        <NoticeConstructor notice={nonExpiryNotice}/>
+                        <NoticeConstructor className={"p-2"} collapsable notice={nonExpiryNotice}/>
                     </TabsContent>
                     <TabsContent value={"expiry"}>
-                        <NoticeConstructor notice={expiryNotice}/>
+                        <NoticeConstructor className={"p-2"} collapsable notice={expiryNotice}/>
                     </TabsContent>
-                    <TabsList className={"w-full sticky top-16 z-10"}>
+
+                    <TabsContent value={"verification"}>
+                        <NoticeConstructor className={"p-2"} collapsable notice={verificationNotice}/>
+                    </TabsContent>
+
+                    <TabsList className={"w-full sticky top-0 z-10 shadow-xl"}>
                         <TabsTrigger
                             value={"non-expiry"}
                             className={
@@ -148,12 +198,23 @@ const DataBundleMTN: React.FC = () => {
                         >
                             Expiry
                         </TabsTrigger>
+                        <TabsTrigger
+                            value={"verification"}
+                            className={
+                                "data-[state=active]:bg-mtn dark:data-[state=active]:bg-mtn data-[state=active]:text-black dark:data-[state=active]:text-black dark:data-[state=active]:border-mtn"
+                            }
+                        >
+                            Verification
+                        </TabsTrigger>
                     </TabsList>
                     <TabsContent value={"non-expiry"}>
                         <BundlesView loading={loading} bundles={nonExpiry}/>
                     </TabsContent>
                     <TabsContent value={"expiry"}>
                         <BundlesView loading={loadingExpiry} bundles={expiry}/>
+                    </TabsContent>
+                    <TabsContent value={"verification"}>
+                        <BundlesView loading={loadingVerfiy} bundles={verification}/>
                     </TabsContent>
                 </Tabs>
             </div>

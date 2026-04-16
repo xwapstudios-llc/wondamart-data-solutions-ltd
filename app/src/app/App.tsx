@@ -4,7 +4,6 @@ import "./app.css";
 // Routes
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {R} from "@/app/routes.ts";
-// import {ThemeProvider} from "@/cn/components/theme/theme-provider.tsx";
 import {Toaster} from "@/cn/components/ui/sonner.tsx";
 import OnErrorCard from "@/ui/components/cards/OnErrorCard.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
@@ -64,7 +63,6 @@ const App = () => {
     }, []);
 
     return (<>
-
             <BrowserRouter>
                 <Suspense fallback={<PageLoader/>}>
                     <Routes>
@@ -97,8 +95,6 @@ const App = () => {
                             <Route path={R.client.track} element={<ClientTrackTxPage />} />
                         </>
 
-
-                        {/*<ThemeProvider defaultTheme="dark" storageKey="wondamart-app-ui-theme">*/}
                             {/*Routes group for user*/}
                             <Route path={R.app.index} element={<UserLayout/>}>
                                 {/* Dashboard */}
@@ -150,7 +146,6 @@ const App = () => {
                                 {/*Not found page*/}
                                 <Route path={"*"} element={<NotFoundPage/>}/>
                             </Route>
-                        {/*</ThemeProvider>*/}
 
                         {/*Not Found Page*/}
                         <Route path={"*"} element={<NotFoundPage/>}/>

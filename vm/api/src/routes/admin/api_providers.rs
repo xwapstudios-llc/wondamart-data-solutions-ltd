@@ -57,13 +57,13 @@ impl AdminApiProviderPostReq {
             .field("api_id", zod_rs::string().min(2).max(50))
             .field("name", zod_rs::string().min(2).max(255))
             .field("url", zod_rs::string().url())
-            .field("purpose", zod_rs::optional(zod_rs::string().min(2).max(255)))
+            .optional_field("purpose", zod_rs::string().min(2).max(255))
             .field("api_key", zod_rs::string().min(2).max(255))
-            .field("secret_key", zod_rs::optional(zod_rs::string().min(2).max(255)))
-            .field("webhook_url", zod_rs::optional(zod_rs::string().url()))
-            .field("is_active", zod_rs::optional(zod_rs::boolean()))
-            .field("timeout_seconds", zod_rs::optional(zod_rs::number().min(2.0).positive().int()))
-            .field("configuration", zod_rs::optional(zod_rs::object()));
+            .optional_field("secret_key", zod_rs::string().min(2).max(255))
+            .optional_field("webhook_url", zod_rs::string().url())
+            .optional_field("is_active", zod_rs::boolean())
+            .optional_field("timeout_seconds", zod_rs::number().min(2.0).positive().int())
+            .optional_field("configuration", zod_rs::object());
 
         Ok(serde_json::from_value(schemas.safe_parse(value)?)?)
     }
@@ -121,20 +121,24 @@ pub struct AdminApiProviderPutReq {
 }
 impl AdminApiProviderPutReq {
     pub fn validate_and_parse(value: &JsonValue) -> Result<Self, AppError> {
+        println!("Before creating the schemas...");
         let schemas = zod_rs::object()
             .field("api_id", zod_rs::string().min(2).max(50))
-            .field("name", zod_rs::optional(zod_rs::string().min(2).max(255)))
-            .field("url", zod_rs::optional(zod_rs::string().url()))
-            .field("purpose", zod_rs::optional(zod_rs::string().min(2).max(255)))
-            .field("api_key", zod_rs::optional(zod_rs::string().min(2).max(255)))
-            .field("secret_key", zod_rs::optional(zod_rs::string().min(2).max(255)))
-            .field("webhook_url", zod_rs::optional(zod_rs::string().url()))
-            .field("is_active", zod_rs::optional(zod_rs::boolean()))
-            .field("timeout_seconds", zod_rs::optional(zod_rs::number().min(2.0).positive().int()))
-            .field("configuration", zod_rs::optional(zod_rs::object()))
+            .optional_field("name", zod_rs::string().min(2).max(255))
+            .optional_field("url", zod_rs::string().url())
+            .optional_field("purpose", zod_rs::string().min(2).max(255))
+            .optional_field("api_key", zod_rs::string().min(2).max(255))
+            .optional_field("secret_key", zod_rs::string().min(2).max(255))
+            .optional_field("webhook_url", zod_rs::string().url())
+            .optional_field("is_active", zod_rs::boolean())
+            .optional_field("timeout_seconds", zod_rs::number().min(2.0).positive().int())
+            .optional_field("configuration", zod_rs::object())
             ;
 
-        Ok(serde_json::from_value(schemas.safe_parse(value)?)?)
+        println!("Before zod safe parse and validate...");
+        let parsed = schemas.safe_parse(value)?;
+        println!("[AdminApiProviderPutReq::validate_and_parse()] after zod parsed = {}", parsed);
+        Ok(serde_json::from_value(parsed)?)
     }
 
     async fn into_api_provider(self, pool: &sqlx::PgPool) -> Result<ApiProvider, AppError> {
@@ -173,6 +177,7 @@ pub async fn put(
         payload
     );
 
+    println!("Before parse and validate...");
     let payload = AdminApiProviderPutReq::validate_and_parse(&payload)?;
     let api_id = payload.api_id.clone();
 

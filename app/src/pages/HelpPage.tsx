@@ -37,7 +37,7 @@ const HelpPage: React.FC = () => {
             color: "bg-purple-500"
         },
         {
-            title: "Contact Administrators",
+            title: "Contact Administrator",
             description: "Reach out to our admin team for account issues",
             action: "Contact Admin",
             link: R.utils.admin,
@@ -48,7 +48,7 @@ const HelpPage: React.FC = () => {
             title: "Send Us a Mail",
             description: "Email us for detailed inquiries and feedback",
             action: "Send Email",
-            link: "mailto:support@wondamart.com",
+            link: "mailto:wondamartgh@gmail.com",
             icon: MailIcon,
             color: "bg-red-500"
         }

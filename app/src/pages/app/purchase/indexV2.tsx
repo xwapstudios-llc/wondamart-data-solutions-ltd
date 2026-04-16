@@ -54,7 +54,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             "disabled:opacity-50 disabled:pointer-events-none"
         )}
     >
-        {/* Coloured header strip */}
+        {/* Colored header strip */}
         <div className={cn("relative p-5 flex items-center gap-4", gradient)}>
             <div className={cn("flex size-12 shrink-0 items-center justify-center rounded-xl text-white", iconBg)}>
                 {icon}
