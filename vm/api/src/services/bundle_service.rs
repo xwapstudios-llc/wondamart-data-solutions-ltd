@@ -32,7 +32,7 @@ impl BundleService {
 
     pub async fn new_bundle(&self, bundle_id: String, phone: String) -> Result<(), AppError> {
         println!("[services::bundle_service::new_bundle()] An Order received...");
-        
+
         let bundle = DataBundle::from_db(&self.pool, bundle_id).await?;
 
         match bundle.api_id.as_str() {
@@ -52,7 +52,6 @@ impl BundleService {
                     recipient_phone: phone,
                     network: bundle.network.into(),
                     size_gb: bundle.data_amount as u32,
-                    oder_id: "Order-111".to_string(),
                 }).await?;
 
                 println!("Created hendy order {:?}", res);

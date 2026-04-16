@@ -43,7 +43,6 @@ pub struct SykesCreateOrderReq {
     pub recipient_phone: String,
     pub network: SykesNetworkType,
     pub size_gb: u32,
-    pub oder_id: String,
 }
 
 #[derive(Serialize, Debug)]
