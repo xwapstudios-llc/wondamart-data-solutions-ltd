@@ -10,10 +10,11 @@
 use zod_rs::Schema;
 mod register;
 mod data_bundle;
+mod afa_bundle;
 
 use crate::db_model::{DBModel, User};
 use crate::middleware;
-use axum::extract::State;
+use axum::extract::{Query, State};
 use axum::routing;
 use axum::{Json, Router};
 use sqlx::types::JsonValue;
@@ -30,6 +31,7 @@ pub fn routes(app: AppState) -> Router {
         //.layer(from_fn(middleware::firebase::firebase_auth_middleware))
         .route("/user/register", routing::post(register::post))
         .route("/user/data-bundle", routing::post(data_bundle::post))
+        .route("/user/afa-bundle", routing::post(afa_bundle::post))
         .layer(middleware::cors::user_cors())
         .with_state(app)
 }
@@ -42,11 +44,8 @@ struct UserGetReq {
 
 async fn get(
     State(app): State<AppState>,
-    Json(payload): Json<JsonValue>,
+    Query(payload): Query<UserGetReq>,
 ) -> RouteResponseJson<User> {
-    // Request
-    let payload = UserGetReq::validate_and_parse(&payload)?;
-
     // Implementation
     let user = User::from_db(app.pool_ref(), payload.uid).await?;
 

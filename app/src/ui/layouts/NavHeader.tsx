@@ -15,7 +15,7 @@ import {R} from "@/app/routes";
 import {Button} from "@/cn/components/ui/button.tsx";
 import {useSidebar} from "@/cn/components/ui/sidebar.tsx";
 
-interface NavHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+type NavHeaderProps = React.HTMLAttributes<HTMLDivElement>;
 
 const NavHeader: React.FC<NavHeaderProps> = ({className, ...props}) => {
     const location = useLocation();

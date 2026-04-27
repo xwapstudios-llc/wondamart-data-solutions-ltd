@@ -27,7 +27,7 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({className, ...props}) 
 
     return (
         <div className={cn(
-            " fixed bottom-0 left-0 right-0 flex justify-evenly z-40",
+            "bg-card dark:bg-background fixed bottom-0 left-0 right-0 flex justify-evenly z-40",
             className
         )}
              {...props}
@@ -63,6 +63,3 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({className, ...props}) 
 }
 
 export default MobileBottomNav;
-
-
-

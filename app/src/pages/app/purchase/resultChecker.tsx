@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Page from "@/ui/page/Page";
 import PageHeading from "@/ui/page/PageHeading";
 import {BookImageIcon, CheckCircleIcon, CheckIcon, FileIcon, type LucideIcon, ShieldIcon} from "lucide-react";
@@ -8,6 +8,7 @@ import {cn} from "@/cn/lib/utils.ts";
 import PageSubHeading from "@/ui/page/PageSubHeading.tsx";
 import {toCurrency} from "@/lib/icons.ts";
 import {Button} from "@/cn/components/ui/button.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 
 // Note: Ernest sait they will upload the result checkers himself.
 const ResultCheckerPurchase: React.FC = () => {
@@ -18,40 +19,40 @@ const ResultCheckerPurchase: React.FC = () => {
         <Page>
             <PageHeading className={"mt-4"}>Result Checker</PageHeading>
             <PageSubHeading>The official WAEC & BECE result checking cards</PageSubHeading>
-
-            {settings && settings.enabled ? (
-                <div className={"mt-4 grid md:grid-cols-[repeat(auto-fill,minmax(32rem,1fr))] gap-4"}>
-                    {/*<BuyResultsCheckerForm/>*/}
-
-                    <CheckerCard
-                        Icon={BookImageIcon}
-                        title={"WASSCE"}
-                        subTitle={"Results Checker"}
-                        price={commonSettings.resultChecker.unitPrice}
-                    >
-                        <p className={"opacity-75"}>
-                            West African Examinations Council (WAEC) Result Checker - Check your WASSCE results online
-                        </p>
-                    </CheckerCard>
-                    <CheckerCard
-                        Icon={BookImageIcon}
-                        title={"BECE"}
-                        subTitle={"Results Checker"}
-                        price={commonSettings.resultChecker.unitPrice}
-                        gradient={"from-orange-600 to-violet-500"}
-                    >
-                        <p className={"opacity-75"}>
-                            Basic Education Certificate Examination (BECE) Result Checker - Access your BECE results
-                            online instantly
-                        </p>
-                    </CheckerCard>
-                </div>
-            ) : (
-                <DisabledNotice className="mt-4" title="Result Checker Purchase Unavailable">
-                    Result Checker purchases are currently unavailable. Please come
-                    back later or contact administrator.
-                </DisabledNotice>
-            )}
+            <PageContent className={"mb-12"}>
+                {settings && settings.enabled ? (
+                    <div className={"mt-4 grid md:grid-cols-[repeat(auto-fill,minmax(32rem,1fr))] gap-4"}>
+                        <CheckerCard
+                            Icon={BookImageIcon}
+                            title={"WASSCE"}
+                            subTitle={"Results Checker"}
+                            price={commonSettings.resultChecker.unitPrice}
+                            gradient={"from-blue-600 to-blue-500"}
+                        >
+                            <p className={"opacity-75"}>
+                                West African Examinations Council (WAEC) Result Checker - Check your WASSCE results online
+                            </p>
+                        </CheckerCard>
+                        <CheckerCard
+                            Icon={BookImageIcon}
+                            title={"BECE"}
+                            subTitle={"Results Checker"}
+                            price={commonSettings.resultChecker.unitPrice}
+                            gradient={"from-yellow-600 to-yellow-500"}
+                        >
+                            <p className={"opacity-75"}>
+                                Basic Education Certificate Examination (BECE) Result Checker - Access your BECE results
+                                online instantly
+                            </p>
+                        </CheckerCard>
+                    </div>
+                ) : (
+                    <DisabledNotice className="mt-4" title="Result Checker Purchase Unavailable">
+                        Result Checker purchases are currently unavailable. Please come
+                        back later or contact administrator.
+                    </DisabledNotice>
+                )}
+            </PageContent>
         </Page>
     );
 };
@@ -104,7 +105,7 @@ const CheckerCard: React.FC<CheckerCardProps> = ({
     return (
         <div className={cn("max-w-2xl overflow-hidden rounded-xl shadow-lg", className)} {...props}>
             {/*Top*/}
-            <div className={cn("p-6 bg-linear-60", gradient)}>
+            <div className={cn("p-4 bg-linear-60", gradient)}>
                 <div className={"flex items-center gap-4"}>
                     <div
                         className={"flex items-center justify-center p-3 rounded-lg size-14 bg-white/20 backdrop-blur-sm"}>
@@ -117,12 +118,12 @@ const CheckerCard: React.FC<CheckerCardProps> = ({
                 </div>
             </div>
             {/*Bottom*/}
-            <div className={"space-y-4 p-6 bg-card border border-border"}>
+            <div className={"p-4 bg-card border border-border"}>
                 {children && <p className="text-foreground/80 text-sm leading-relaxed">{children}</p>}
                 <div className={"grid grid-cols-2 gap-3"}>
                     <CheckerCardItem Icon={CheckCircleIcon}>Instant delivery</CheckerCardItem>
                     <CheckerCardItem Icon={ShieldIcon}>Secure & verified</CheckerCardItem>
-                    <CheckerCardItem Icon={CheckIcon}>Valid for exams</CheckerCardItem>
+                    <CheckerCardItem Icon={CheckIcon}>Valid five attempts</CheckerCardItem>
                     <CheckerCardItem Icon={FileIcon}>One-time use</CheckerCardItem>
                 </div>
                 <div className={"border-t border-border pt-4 flex items-center gap-4 justify-between"}>
@@ -130,8 +131,31 @@ const CheckerCard: React.FC<CheckerCardProps> = ({
                         <p className={"text-xs font-medium text-foreground/60 uppercase tracking-wider"}>Price</p>
                         <p className={"text-3xl font-bold text-primary mt-2"}>{toCurrency(price)}</p>
                     </div>
-                    <Button size={"lg"} onClick={onBuy} className="font-semibold">Buy</Button>
+                    <Button size={"lg"} onClick={onBuy} className="font-semibold px-12">Buy</Button>
                 </div>
+            </div>
+        </div>
+    )
+}
+
+const CheckerForm = () => {
+    let {profile} = useAppStore();
+    const [number, setNumber] = useState(profile?.phoneNumber);
+
+    return (
+        <div className={"rounded-2xl p-4"}>
+            {/*Top*/}
+            <div>
+                <p>cost</p>
+            </div>
+
+            {/*Fields*/}
+            <p>1. SMS to go to the persons phone number</p>
+            <p>2. SMS to go to a different phone number</p>
+
+            {/*Checkouts*/}
+            <div>
+                <p>Continue</p>
             </div>
         </div>
     )

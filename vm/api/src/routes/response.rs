@@ -34,6 +34,7 @@ impl<T> RouteResponse<T> where T: Serialize {
     }
     #[inline]
     pub(crate) fn json_result(self) -> RouteResponseJson<T> {
+        println!("Sending response: {}", serde_json::to_string_pretty(&self)?);
         Ok(Json(self))
     }
 }

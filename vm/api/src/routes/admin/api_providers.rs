@@ -2,7 +2,7 @@ use crate::db_model::{ApiProvider, DBModel};
 use crate::error::AppError;
 use crate::routes::{RouteResponse, RouteResponseJson};
 use axum::Json;
-use axum::extract::State;
+use axum::extract::{Query, State};
 use serde::Deserialize;
 use sqlx::types::JsonValue;
 use zod_rs::Schema;
@@ -13,17 +13,10 @@ pub struct AdminApiProviderGetReq {
     pub api_id: String,
 }
 
-impl AdminApiProviderGetReq {
-    pub fn validate_and_parse(value: &JsonValue) -> Result<Self, AppError> {
-        let schemas = zod_rs::object().field("api_id", zod_rs::string().min(2).max(50));
-        Ok(serde_json::from_value(schemas.safe_parse(value)?)?)
-    }
-}
-
 /// Get an api provider
 pub async fn get(
     State(app): State<AppState>,
-    Json(payload): Json<JsonValue>,
+    Query(payload): Query<AdminApiProviderGetReq>,
 ) -> RouteResponseJson<ApiProvider> {
     println!("[routes::admin::api_providers::get] request...");
 
@@ -32,7 +25,6 @@ pub async fn get(
         payload
     );
 
-    let payload = AdminApiProviderGetReq::validate_and_parse(&payload)?;
     let api_provider = ApiProvider::from_db(app.pool_ref(), payload.api_id).await?;
 
     RouteResponse::new_ok(api_provider, None).json_result()
@@ -199,7 +191,7 @@ pub async fn delete(
         payload
     );
 
-    let payload = AdminApiProviderGetReq::validate_and_parse(&payload)?;
+    let payload: AdminApiProviderGetReq = serde_json::from_value(payload)?;
     ApiProvider::delete_db(app.pool_ref(), payload.api_id).await?;
 
     RouteResponse::new_ok(

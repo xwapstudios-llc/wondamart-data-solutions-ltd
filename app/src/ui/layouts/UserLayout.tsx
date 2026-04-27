@@ -59,7 +59,7 @@ const LayoutContent = () => {
                 "flex flex-1 flex-col overflow-hidden",
                 isMobile ? "mb-16" : "mb-0"
             )}>
-                <NavHeader className="sticky top-0 bg-background/75 backdrop-blur-xl z-30" />
+                <NavHeader className="sticky top-0 bg-card dark:bg-background z-30" />
                 <main className="flex-1 overflow-y-auto">
                     <Outlet/>
                 </main>

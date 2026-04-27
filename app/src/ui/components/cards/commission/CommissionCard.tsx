@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import {R} from "@/app/routes.ts";
 import CommissionObjCard from "@/ui/components/cards/commission/CommissionObjCard.tsx";
 import CommissionStats from "@/ui/components/cards/commission/CommissionStats.tsx";
+import { Timestamp } from "firebase/firestore";
 
 
 const calculateTotalCommission = (commissions: CommissionObj[] | undefined): number => {
@@ -32,7 +33,7 @@ const CommissionCard: React.FC<MyCommissionCardProps> = ({
     return (
         <div
             className={cn(
-                ` w-full max-w-md p-4 rounded-lg bg-primary dark:bg-primary/75 text text-primary-foreground`,
+                ` w-full max-w-md p-4 rounded-lg bg-wondamart dark:bg-wondamart text text-primary-foreground`,
                 `border border-foreground/10 space-y-4`,
                 className
             )}
@@ -46,7 +47,7 @@ const CommissionCard: React.FC<MyCommissionCardProps> = ({
                 </div>
                 {
                     com.payed ? (
-                        <Badge variant={"default"}>
+                        <Badge variant={"success"}>
                             <CheckCircle2Icon className="size-4"/> Paid
                         </Badge>
                     ) : (
@@ -73,8 +74,14 @@ const CommissionCard: React.FC<MyCommissionCardProps> = ({
                 />
 
                 {
-                    com.commissions && lastCommission && (
+                    com.commissions && lastCommission ? (
                         <CommissionObjCard variant={"sm"} className={"col-span-2"} obj={lastCommission} />
+            ) : (
+                <CommissionObjCard variant={"sm"} className={"col-span-2"} obj={{
+                  txID: "",
+                  commission: 0,
+                  date: Timestamp.now(),
+                }} />
                     )
                 }
             </div>

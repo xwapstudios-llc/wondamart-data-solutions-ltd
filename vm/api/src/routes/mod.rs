@@ -1,16 +1,15 @@
-mod home;
-mod user;
-mod webhooks;
 mod admin;
 mod guest;
 mod response;
+mod user;
+mod webhooks;
 
-use axum::{Router};
+use crate::app::AppState;
+use axum::Router;
 use axum::routing;
 use chrono::{DateTime, Utc};
-use serde::Serialize;
 pub use response::*;
-use crate::app::AppState;
+use serde::Serialize;
 
 pub fn routes(app: AppState) -> Router {
     println!("[routes] Setting up routes...");
@@ -23,7 +22,6 @@ pub fn routes(app: AppState) -> Router {
         .merge(admin::routes(app.clone()))
         .merge(webhooks::routes(app.clone()))
 }
-
 
 #[derive(Serialize)]
 pub struct HomeResponse {
@@ -42,6 +40,7 @@ pub async fn get() -> RouteResponseJson<HomeResponse> {
 
     RouteResponse::new_ok(
         res,
-        Some("Thanks for using Wondamart Data Solutions".to_string())
-    ).json_result()
+        Some("Thanks for using Wondamart Data Solutions".to_string()),
+    )
+    .json_result()
 }

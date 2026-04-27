@@ -16,3 +16,4 @@
 
 pub mod bundle_service;
 pub mod tx_service;
+pub mod afa_bundle_service;

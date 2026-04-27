@@ -30,6 +30,8 @@ impl From<NetworkType> for SykesNetworkType {
 
 #[derive(Deserialize, Debug)]
 enum SykesOrderStatus {
+    #[serde(rename="pending")]
+    Pending,
     #[serde(rename = "processing")]
     Processing,
     #[serde(rename = "completed")]
@@ -45,21 +47,25 @@ pub struct SykesCreateOrderReq {
     pub size_gb: u32,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SykesCreateAFAOrderReq {
     #[serde(rename="Full_Name")]
     pub full_name: String,
     #[serde(rename="Ghana_Card_Number")]
     pub ghana_card: String,
     #[serde(rename="Occupation_type")]
-    pub occupation: u32,
+    pub occupation: String,
+    #[serde(rename="Contact")]
+    pub contact: String,
+    #[serde(rename="Location")]
+    pub location: String,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct SykesCreateOrderRes {
     success: bool,
-    message: Option<String>,
-    order_id: Option<u32>,
+    message: String,
+    order_id: Option<String>,
     status: Option<String>,
     is_duplicate: Option<bool>,
 }
@@ -123,8 +129,6 @@ impl SykesApiClient {
             .send()
             .await?;
 
-        // println!("[Sykes order response -->] {:?}", res.bytes().await?);
-
         Ok(serde_json::from_value(res.json().await?)?)
     }
 
@@ -153,6 +157,8 @@ impl SykesApiClient {
             .send()
             .await?;
 
-        Ok(serde_json::from_value(res.json().await?)?)
+        let value = res.json().await?;
+        println!("{:?}", value);
+        Ok(serde_json::from_value(value)?)
     }
 }

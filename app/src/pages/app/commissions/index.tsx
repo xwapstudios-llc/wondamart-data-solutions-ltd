@@ -9,11 +9,12 @@ import PageSubHeading from "@/ui/page/PageSubHeading.tsx";
 import PageContent from "@/ui/page/PageContent.tsx";
 import CommissionCard from "@/ui/components/cards/commission/CommissionCard.tsx";
 import NoItems from "@/ui/components/cards/NoItems.tsx";
-import {CoinsIcon} from "lucide-react";
+import { CoinsIcon } from "lucide-react";
+import { testCommissions } from "./test-commission.ts";
 
 const CommissionsIndex: React.FC = () => {
     const {user, setError} = useAppStore();
-    const [commissions, setCommissions] = useState<CommissionDoc[]>([]);
+    const [commissions, setCommissions] = useState<CommissionDoc[]>(testCommissions);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -31,7 +32,7 @@ const CommissionsIndex: React.FC = () => {
     }, [user]);
 
     return (
-        <Page>
+        <Page className={"py-4"}>
             <PageHeading>Commissions</PageHeading>
             <PageSubHeading>View commission summaries.</PageSubHeading>
             <PageContent className={"bundles-grid mt-4"}>
@@ -55,4 +56,3 @@ const CommissionsIndex: React.FC = () => {
 };
 
 export default CommissionsIndex;
-

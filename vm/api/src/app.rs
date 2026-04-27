@@ -5,18 +5,15 @@ use crate::error::AppError;
 use crate::services::bundle_service::BundleService;
 
 pub async fn create_pool() -> Result<PgPool, AppError> {
-    if let Ok(db_url) = std::env::var("DATABASE_URL") {
-        let pool = PgPoolOptions::new()
-            .max_connections(5)
-            .connect(&db_url)
-            .await;
 
-        match pool {
-            Ok(pool) => Ok(pool),
-            Err(e) => Err(AppError::DbError(e))
-        }
-    } else {
-        Err(AppError::Internal("Unable to get database url var: DATABASE_URL".into()))
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect("postgres://appuser:password@localhost:5432/appdb")
+        .await;
+
+    match pool {
+        Ok(pool) => Ok(pool),
+        Err(e) => Err(AppError::DbError(e))
     }
 }
 
@@ -39,7 +36,7 @@ impl App {
     pub async fn new_arc() -> Result<Arc<Self>, AppError> {
         Ok(Arc::new(Self::new().await?))
     }
-    
+
     pub fn pool(&self) -> Arc<PgPool> {
         self.pool.clone()
     }
