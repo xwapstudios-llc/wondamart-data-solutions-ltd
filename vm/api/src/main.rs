@@ -32,5 +32,6 @@ async fn main() {
         exit(1);
     }
 
-    println!("[main] I really don't like the way docker is not using my changes...")
+    ////
+    ///// println!("[main] I really don't like the way docker is not using my changes...")
 }
