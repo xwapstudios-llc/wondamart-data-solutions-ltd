@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::types::JsonValue;
 use zod_rs::Schema;
 use crate::app::AppState;
+use crate::db_model::TransactionSource;
 use crate::error::AppError;
 use crate::routes::{RouteResponse, RouteResponseJson};
 
@@ -33,6 +34,6 @@ pub async fn post(
 ) -> RouteResponseJson<()> {
     let payload = AFABundlePostReq::validate_and_parse(&payload)?;
 
-    app.bundle_service.new_afa_bundle_service(payload.full_name, payload.ghana_card, payload.occupation, payload.contact, payload.location).await?;
+    app.bundle_service.lock().await.new_afa_bundle_service(app.tx_service.clone(), TransactionSource::Agent, 0, payload.full_name, payload.ghana_card, payload.occupation, payload.contact, payload.location).await?;
     RouteResponse::new_ok((), Some("Afa bundle created successfully...".to_string())).json_result()
 }

@@ -1,4 +1,5 @@
 extern crate alloc;
+extern crate core;
 
 mod routes;
 pub mod db_model;

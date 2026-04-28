@@ -8,12 +8,5 @@
 *   Result checker Service
 */
 
-// trait Service {
-//     fn start(&self);
-//     fn stop(&self);
-//     fn restart(&self);
-// }
-
 pub mod bundle_service;
 pub mod tx_service;
-pub mod afa_bundle_service;

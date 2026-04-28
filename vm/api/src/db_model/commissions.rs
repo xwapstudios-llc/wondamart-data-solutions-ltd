@@ -1,4 +1,5 @@
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
+use serde::ser::SerializeStruct;
 use sqlx::types::{BigDecimal, JsonValue};
 use sqlx::PgPool;
 use sqlx::Row;
@@ -90,7 +91,21 @@ impl Serialize for Commission {
     where
         S: Serializer
     {
-        todo!()
+
+        let mut state = serializer.serialize_struct("Commission", 14)?;
+        state.serialize_field("commission_id", &self.commission_id)?;
+        state.serialize_field("uid", &self.uid)?;
+        state.serialize_field("year", &self.year)?;
+        state.serialize_field("month_index", &self.month_index)?;
+        state.serialize_field("end_of_month", &self.end_of_month)?;
+        state.serialize_field("payed", &self.payed)?;
+        state.serialize_field("paid_at", &self.paid_at)?;
+        state.serialize_field("amount", &self.amount.clone().unwrap_or(BigDecimal::from(0)).to_plain_string())?;
+        state.serialize_field("commissions_detail", &self.commissions_detail)?;
+        state.serialize_field("transactions", &self.transactions)?;
+        state.serialize_field("created_at", &self.created_at)?;
+        state.serialize_field("updated_at", &self.updated_at)?;
+        state.end()
     }
 }
 impl<'de> Deserialize<'de> for Commission {
@@ -98,6 +113,38 @@ impl<'de> Deserialize<'de> for Commission {
     where
         D: Deserializer<'de>
     {
-        todo!()
+        #[derive(Deserialize)]
+        struct Raw {
+            commission_id: i32,
+            uid: i32,
+            year: i32,
+            month_index: i32,
+            end_of_month: Option<OffsetDateTime>,
+            payed: bool,
+            paid_at: Option<OffsetDateTime>,
+            amount: Option<String>,
+            commissions_detail: JsonValue,
+            transactions: JsonValue,
+            created_at: Option<OffsetDateTime>,
+            updated_at: Option<OffsetDateTime>,
+        }
+        let raw = Raw::deserialize(deserializer)?;
+        Ok(Commission {
+            commission_id: raw.commission_id,
+            uid: raw.uid,
+            year: raw.year,
+            month_index: raw.month_index,
+            end_of_month: raw.end_of_month,
+            payed: raw.payed,
+            paid_at: raw.paid_at,
+            amount: raw.amount.as_deref()
+                .map(|s| BigDecimal::parse_bytes(s.as_bytes(), 10)
+                    .ok_or_else(|| serde::de::Error::custom("invalid amount")))
+                .transpose()?,
+            commissions_detail: raw.commissions_detail,
+            transactions: raw.transactions,
+            created_at: raw.created_at,
+            updated_at: raw.updated_at,
+        })
     }
 }

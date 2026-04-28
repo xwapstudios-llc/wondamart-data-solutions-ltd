@@ -13,6 +13,7 @@ pub enum AppError {
     BadRequest(String),
     ValidationError(ValidationResult),
     Internal(String),
+    InsufficientBalance,
 }
 
 #[derive(Serialize)]
@@ -36,6 +37,7 @@ impl IntoResponse for AppError {
             AppError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg),
             AppError::ValidationError(err) => (StatusCode::BAD_REQUEST, err.to_string()),
             AppError::Internal(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
+            AppError::InsufficientBalance => (StatusCode::BAD_REQUEST, "Insufficient balance".into()),
         };
 
         let body = RouteResponse::new(status, (), Some(message)).json_result();

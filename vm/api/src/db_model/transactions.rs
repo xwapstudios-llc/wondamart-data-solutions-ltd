@@ -1,12 +1,12 @@
-use serde::{Serialize, Deserialize, Serializer, Deserializer};
-use sqlx::types::{BigDecimal, JsonValue};
-use sqlx::{Database, Decode, PgPool, Postgres, Type};
-use sqlx::error::BoxDynError;
-use sqlx::postgres::PgTypeInfo;
-use sqlx::Row;
-use time::OffsetDateTime;
 use crate::db_model::DBModel;
 use crate::error::AppError;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use sqlx::Row;
+use sqlx::error::BoxDynError;
+use sqlx::postgres::PgTypeInfo;
+use sqlx::types::{BigDecimal, JsonValue};
+use sqlx::{Database, Decode, PgPool, Postgres, Type};
+use time::OffsetDateTime;
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum TransactionType {
@@ -29,7 +29,7 @@ pub enum TransactionType {
     #[serde(rename = "refund")]
     Refund,
     #[serde(rename = "withdrawal")]
-    Withdrawal
+    Withdrawal,
 }
 impl TransactionType {
     pub fn as_str(&self) -> &'static str {
@@ -121,18 +121,23 @@ impl Decode<'_, Postgres> for TransactionStatus {
         Ok(Self::from_str(s)?)
     }
 }
+impl Default for TransactionStatus {
+    fn default() -> Self {
+        TransactionStatus::Pending
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum TransactionSource {
-    #[serde(rename="admin")]
+    #[serde(rename = "admin")]
     Admin,
-    #[serde(rename="agent")]
+    #[serde(rename = "agent")]
     Agent,
-    #[serde(rename="store")]
+    #[serde(rename = "store")]
     Store,
-    #[serde(rename="api")]
+    #[serde(rename = "api")]
     API,
-    #[serde(rename="unknown")]
+    #[serde(rename = "unknown")]
     Unknown,
 }
 impl TransactionSource {
@@ -151,7 +156,7 @@ impl TransactionSource {
             "agent" => TransactionSource::Agent,
             "store" => TransactionSource::Store,
             "api" => TransactionSource::API,
-            _ => Self::Unknown
+            _ => Self::Unknown,
         }
     }
 }
@@ -163,33 +168,115 @@ impl Type<Postgres> for TransactionSource {
 impl Decode<'_, Postgres> for TransactionSource {
     fn decode(value: <Postgres as Database>::ValueRef<'_>) -> Result<Self, BoxDynError> {
         let s = <&str as Decode<Postgres>>::decode(value)?;
-        match s {
-            "admin" => Ok(TransactionSource::Admin),
-            "agent" => Ok(TransactionSource::Agent),
-            "store" => Ok(TransactionSource::Store),
-            "api" => Ok(TransactionSource::API),
-            "unknown" => Ok(TransactionSource::Unknown),
-            _ => Err(format!("Unknown transaction source: {}", s).into()),
-        }
+        Ok(Self::from_str(s))
+    }
+}
+impl Default for TransactionSource {
+    fn default() -> Self {
+        TransactionSource::Unknown
     }
 }
 
 #[derive(Debug, Clone, sqlx::FromRow)]
 pub struct Transaction {
-    pub tx_id: Option<i32>,
+    pub tx_id: i32,
     pub agent_id: i32,
     #[sqlx(rename = "type")]
     pub tx_type: TransactionType,
     pub status: TransactionStatus,
-    pub amount: Option<BigDecimal>,
-    pub commission: Option<BigDecimal>,
-    pub balance: Option<BigDecimal>,
+    pub amount: BigDecimal,
+    pub commission: BigDecimal,
+    pub balance: BigDecimal,
     pub api_id: Option<String>,
+    pub source: TransactionSource,
     pub data: JsonValue,
     pub admin_data: Option<JsonValue>,
     pub created_at: Option<OffsetDateTime>,
     pub updated_at: Option<OffsetDateTime>,
     pub completed_at: Option<OffsetDateTime>,
+}
+
+impl Transaction {
+    pub(crate) async fn update_status(pool: &PgPool, tx_id: i32, status: TransactionStatus) -> Result<(), AppError> {
+        sqlx::query(
+            r#"
+            UPDATE transactions
+            SET status = $2, completed_at = CASE WHEN $2 = 'success' THEN NOW() ELSE completed_at END, updated_at = NOW()
+            WHERE tx_id = $1
+            "#
+        )
+        .bind(tx_id)
+        .bind(status.as_str())
+        .execute(pool)
+        .await?;
+
+        Ok(())
+    }
+
+    /// This create a stub Transaction struct
+    pub fn new(
+        agent_id: i32,
+        tx_type: TransactionType,
+        amount: BigDecimal,
+        commission: BigDecimal,
+        balance: BigDecimal,
+        api_id: Option<String>,
+        source: TransactionSource,
+        data: JsonValue,
+        admin_data: Option<JsonValue>,
+    ) -> Self {
+        Self {
+            tx_id: 0,
+            agent_id,
+            tx_type,
+            status: TransactionStatus::default(),
+            amount,
+            commission,
+            balance,
+            api_id,
+            source,
+            data,
+            admin_data,
+            created_at: None,
+            updated_at: None,
+            completed_at: None,
+        }
+    }
+    /// This creates the transaction in the database and return the id
+    pub async fn new_tx(
+        pool: &PgPool,
+        agent_id: i32,
+        tx_type: TransactionType,
+        amount: &BigDecimal,
+        commission: &BigDecimal,
+        balance: BigDecimal,
+        api_id: Option<String>,
+        source: TransactionSource,
+        data: JsonValue,
+        admin_data: Option<JsonValue>,
+    ) -> Result<i32, AppError> {
+        let row = sqlx::query(
+            "
+            INSERT INTO transactions (agent_id, type, status, amount, commission, balance, api_id, source, data, admin_data)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING tx_id
+            "
+        )
+            .bind(agent_id)
+            .bind(tx_type.as_str())
+            .bind(TransactionStatus::default().as_str())
+            .bind(amount)
+            .bind(commission)
+            .bind(balance)
+            .bind(api_id)
+            .bind(source.as_str())
+            .bind(data)
+            .bind(admin_data)
+            .fetch_one(pool)
+            .await?;
+
+        Ok(row.get::<i32, _>("tx_id"))
+    }
 }
 
 impl DBModel for Transaction {
@@ -199,7 +286,7 @@ impl DBModel for Transaction {
         let tx = sqlx::query_as!(
             Transaction,
             r#"
-            SELECT tx_id, agent_id, type as "tx_type: _", status as "status: _", amount, commission, balance, api_id, data, admin_data, created_at, updated_at, completed_at
+            SELECT tx_id, agent_id, type as "tx_type: _", status as "status: _", amount, commission, balance, api_id, source as "source: _", data, admin_data, created_at, updated_at, completed_at
             FROM transactions
             WHERE tx_id = $1
             "#,
@@ -234,8 +321,8 @@ impl DBModel for Transaction {
     async fn new_db_entry(self, pool: &PgPool) -> Result<Self::IdType, AppError> {
         let row = sqlx::query(
             r#"
-            INSERT INTO transactions (agent_id, type, status, amount, commission, balance, api_id, data, admin_data)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            INSERT INTO transactions (agent_id, type, status, amount, commission, balance, api_id, source, data, admin_data)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING tx_id
             "#
         )
@@ -246,6 +333,7 @@ impl DBModel for Transaction {
         .bind(&self.commission)
         .bind(&self.balance)
         .bind(&self.api_id)
+        .bind(&self.source.as_str())
         .bind(&self.data)
         .bind(&self.admin_data)
         .fetch_one(pool)
@@ -254,8 +342,6 @@ impl DBModel for Transaction {
         Ok(row.get::<i32, _>("tx_id"))
     }
 }
-
-
 impl Serialize for Transaction {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -267,10 +353,11 @@ impl Serialize for Transaction {
         state.serialize_field("agent_id", &self.agent_id)?;
         state.serialize_field("tx_type", &self.tx_type)?;
         state.serialize_field("status", &self.status)?;
-        state.serialize_field("amount", &self.amount.as_ref().map(|bd| bd.to_string()))?;
-        state.serialize_field("commission", &self.commission.as_ref().map(|bd| bd.to_string()))?;
-        state.serialize_field("balance", &self.balance.as_ref().map(|bd| bd.to_string()))?;
+        state.serialize_field("amount", &self.amount.to_plain_string())?;
+        state.serialize_field("commission", &self.commission.to_plain_string())?;
+        state.serialize_field("balance", &self.balance.to_plain_string())?;
         state.serialize_field("api_id", &self.api_id)?;
+        state.serialize_field("source", &self.source)?;
         state.serialize_field("data", &self.data)?;
         state.serialize_field("admin_data", &self.admin_data)?;
         state.serialize_field("created_at", &self.created_at)?;
@@ -298,6 +385,7 @@ impl<'de> Deserialize<'de> for Transaction {
             Commission,
             Balance,
             ApiId,
+            Source,
             Data,
             AdminData,
             CreatedAt,
@@ -326,6 +414,7 @@ impl<'de> Deserialize<'de> for Transaction {
                 let mut commission = None;
                 let mut balance = None;
                 let mut api_id = None;
+                let mut source = None;
                 let mut data = None;
                 let mut admin_data = None;
                 let mut created_at = None;
@@ -385,6 +474,12 @@ impl<'de> Deserialize<'de> for Transaction {
                             }
                             api_id = Some(map.next_value()?);
                         }
+                        Field::Source => {
+                            if source.is_some() {
+                                return Err(de::Error::duplicate_field("source"));
+                            }
+                            source = Some(map.next_value()?);
+                        }
                         Field::Data => {
                             if data.is_some() {
                                 return Err(de::Error::duplicate_field("data"));
@@ -422,6 +517,11 @@ impl<'de> Deserialize<'de> for Transaction {
                 let tx_type = tx_type.ok_or_else(|| de::Error::missing_field("tx_type"))?;
                 let status = status.ok_or_else(|| de::Error::missing_field("status"))?;
                 let data = data.ok_or_else(|| de::Error::missing_field("data"))?;
+                let balance = balance.unwrap_or_default();
+                let amount = amount.unwrap_or_default();
+                let commission = commission.unwrap_or_default();
+                let tx_id = tx_id.unwrap_or_default();
+                let source = source.unwrap_or_default();
 
                 Ok(Transaction {
                     tx_id,
@@ -432,6 +532,7 @@ impl<'de> Deserialize<'de> for Transaction {
                     commission,
                     balance,
                     api_id,
+                    source,
                     data,
                     admin_data,
                     created_at,
@@ -452,6 +553,7 @@ impl<'de> Deserialize<'de> for Transaction {
                 "commission",
                 "balance",
                 "api_id",
+                "source",
                 "data",
                 "admin_data",
                 "created_at",

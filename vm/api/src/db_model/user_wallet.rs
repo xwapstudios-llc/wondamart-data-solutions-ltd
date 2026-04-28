@@ -9,10 +9,26 @@ use crate::error::AppError;
 #[derive(Debug, sqlx::FromRow)]
 pub struct UserWallet {
     pub uid: Option<i32>,
-    pub amount: Option<BigDecimal>,
-    pub commission: Option<BigDecimal>,
+    pub amount: BigDecimal,
+    pub commission: BigDecimal,
     pub created_at: Option<OffsetDateTime>,
     pub updated_at: Option<OffsetDateTime>,
+}
+
+impl UserWallet {
+    pub(crate) async fn sub(self, pool: &PgPool, amount: &BigDecimal) -> Result<(), AppError> {
+        sqlx::query!(
+            r#"
+            UPDATE user_wallets
+            SET amount = $1, updated_at = NOW()
+            WHERE uid = $2
+            "#,
+            self.amount - amount,
+            self.uid
+        ).execute(pool).await?;
+
+        Ok(())
+    }
 }
 
 impl DBModel for UserWallet {

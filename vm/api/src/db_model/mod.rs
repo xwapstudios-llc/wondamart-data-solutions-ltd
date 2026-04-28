@@ -5,6 +5,7 @@ mod data_bundles;
 mod agent_stores;
 mod api_providers;
 mod user_wallet;
+mod afa_bundle;
 
 use crate::error::AppError;
 pub use self::users::*;
@@ -14,6 +15,7 @@ pub use self::data_bundles::*;
 pub use self::agent_stores::*;
 pub use self::api_providers::*;
 pub use self::user_wallet::*;
+pub use self::afa_bundle::*;
 
 
 pub trait DBModel: Sized {
