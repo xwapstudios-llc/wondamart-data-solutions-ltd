@@ -1,51 +1,78 @@
 import React, {useState} from "react";
 import Page from "@/ui/page/Page";
-import PageHeading from "@/ui/page/PageHeading";
-import {BookImageIcon, CheckCircleIcon, CheckIcon, FileIcon, type LucideIcon, ShieldIcon} from "lucide-react";
+import {BookImageIcon, CheckCircleIcon, CheckIcon, FileIcon, type LucideIcon, Loader2Icon, ShieldIcon} from "lucide-react";
 import DisabledNotice from "@/ui/components/cards/DisabledNotice";
 import {useAppStore} from "@/lib/useAppStore";
 import {cn} from "@/cn/lib/utils.ts";
-import PageSubHeading from "@/ui/page/PageSubHeading.tsx";
 import {toCurrency} from "@/lib/icons.ts";
 import {Button} from "@/cn/components/ui/button.tsx";
 import PageContent from "@/ui/page/PageContent.tsx";
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/cn/components/ui/dialog.tsx";
+import {useForm} from "react-hook-form";
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/cn/components/ui/form.tsx";
+import {Input} from "@/cn/components/ui/input.tsx";
+import {ClTxResultChecker} from "@common/client-api/tx-result-checker";
+import type {ResultCheckerType} from "@common/types/result-checker";
+import type {HTTPResponse} from "@common/types/request.ts";
+import PageHeader from "@/ui/page/PageHeader.tsx";
 
 // Note: Ernest sait they will upload the result checkers himself.
 const ResultCheckerPurchase: React.FC = () => {
     const {commonSettings} = useAppStore();
     const settings = commonSettings.resultChecker;
+    const [activeForm, setActiveForm] = useState<ResultCheckerType | null>(null);
 
     return (
         <Page>
-            <PageHeading className={"mt-4"}>Result Checker</PageHeading>
-            <PageSubHeading>The official WAEC & BECE result checking cards</PageSubHeading>
-            <PageContent className={"mb-12"}>
+            <PageHeader title={"Result Checker"} subtitle={"The official WAEC & BECE result checking cards."} />
+
+            <PageContent>
                 {settings && settings.enabled ? (
-                    <div className={"mt-4 grid md:grid-cols-[repeat(auto-fill,minmax(32rem,1fr))] gap-4"}>
-                        <CheckerCard
-                            Icon={BookImageIcon}
-                            title={"WASSCE"}
-                            subTitle={"Results Checker"}
-                            price={commonSettings.resultChecker.unitPrice}
-                            gradient={"from-blue-600 to-blue-500"}
-                        >
-                            <p className={"opacity-75"}>
-                                West African Examinations Council (WAEC) Result Checker - Check your WASSCE results online
-                            </p>
-                        </CheckerCard>
-                        <CheckerCard
-                            Icon={BookImageIcon}
-                            title={"BECE"}
-                            subTitle={"Results Checker"}
-                            price={commonSettings.resultChecker.unitPrice}
-                            gradient={"from-yellow-600 to-yellow-500"}
-                        >
-                            <p className={"opacity-75"}>
-                                Basic Education Certificate Examination (BECE) Result Checker - Access your BECE results
-                                online instantly
-                            </p>
-                        </CheckerCard>
-                    </div>
+                    <>
+                        <Dialog open={!!activeForm} onOpenChange={(open) => !open && setActiveForm(null)}>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>{activeForm} Result Checker</DialogTitle>
+                                </DialogHeader>
+                                {activeForm && (
+                                    <CheckerForm
+                                        type={activeForm}
+                                        price={settings.unitPrice}
+                                        onBack={() => setActiveForm(null)}
+                                    />
+                                )}
+                            </DialogContent>
+                        </Dialog>
+                        <div className={"mt-4 grid md:grid-cols-[repeat(auto-fill,minmax(32rem,1fr))] gap-4"}>
+                            <CheckerCard
+                                Icon={BookImageIcon}
+                                title={"WASSCE"}
+                                subTitle={"Results Checker"}
+                                price={settings.unitPrice}
+                                gradient={"from-blue-600 to-blue-500"}
+                                onBuy={() => setActiveForm("WASSCE")}
+                            >
+                                <p className={"opacity-75"}>
+                                    West African Examinations Council (WAEC) Result Checker - Check your WASSCE results online
+                                </p>
+                            </CheckerCard>
+                            <CheckerCard
+                                Icon={BookImageIcon}
+                                title={"BECE"}
+                                subTitle={"Results Checker"}
+                                price={settings.unitPrice}
+                                gradient={"from-yellow-600 to-yellow-500"}
+                                onBuy={() => setActiveForm("BECE")}
+                            >
+                                <p className={"opacity-75"}>
+                                    Basic Education Certificate Examination (BECE) Result Checker - Access your BECE results
+                                    online instantly
+                                </p>
+                            </CheckerCard>
+                        </div>
+                    </>
                 ) : (
                     <DisabledNotice className="mt-4" title="Result Checker Purchase Unavailable">
                         Result Checker purchases are currently unavailable. Please come
@@ -138,27 +165,153 @@ const CheckerCard: React.FC<CheckerCardProps> = ({
     )
 }
 
-const CheckerForm = () => {
-    let {profile} = useAppStore();
-    const [number, setNumber] = useState(profile?.phoneNumber);
+const checkerSchema = z.object({
+    units: z.coerce.number().min(1, "Must be at least 1"),
+    sendToOwn: z.boolean(),
+    phoneNumber: z.string().optional(),
+}).refine((val) => val.sendToOwn || (val.phoneNumber && /^(0|\+233|233)[25][0-9]{8}$/.test(val.phoneNumber)), {
+    message: "Enter a valid phone number",
+    path: ["phoneNumber"],
+});
+
+type CheckerFormValues = z.infer<typeof checkerSchema>;
+
+interface CheckerFormProps {
+    type: ResultCheckerType;
+    price: number;
+    onBack: () => void;
+}
+
+const CheckerForm: React.FC<CheckerFormProps> = ({type, price, onBack}) => {
+    const {profile, setError, setHTTPResponse} = useAppStore();
+    const [loading, setLoading] = useState(false);
+
+    const form = useForm<CheckerFormValues>({
+        resolver: zodResolver(checkerSchema) as never,
+        defaultValues: {
+            units: 1,
+            sendToOwn: true,
+            phoneNumber: profile?.phoneNumber ?? "",
+        },
+    });
+
+    const sendToOwn = form.watch("sendToOwn");
+    const units = form.watch("units");
+
+    const onSubmit = async (values: CheckerFormValues) => {
+        if (!profile) return;
+        setLoading(true);
+        try {
+            const response = await ClTxResultChecker.create({
+                uid: profile.id,
+                checkerType: type,
+                units: values.units,
+            });
+            form.reset();
+            setHTTPResponse(response);
+            onBack();
+        } catch (err) {
+            if (typeof err === "string") {
+                setError(err);
+            } else if (typeof err === "object") {
+                setHTTPResponse(err as HTTPResponse);
+            } else {
+                setError({title: "Error", description: JSON.stringify(err)});
+            }
+        }
+        setLoading(false);
+    };
 
     return (
-        <div className={"rounded-2xl p-4"}>
-            {/*Top*/}
-            <div>
-                <p>cost</p>
-            </div>
+        <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-4"}>
 
-            {/*Fields*/}
-            <p>1. SMS to go to the persons phone number</p>
-            <p>2. SMS to go to a different phone number</p>
+                    {/*Units*/}
+                    <FormField
+                        control={form.control}
+                        name={"units"}
+                        render={({field}) => (
+                            <FormItem>
+                                <FormLabel>Number of Units</FormLabel>
+                                <FormControl>
+                                    <Input type={"number"} min={1} placeholder={"1"} {...field} />
+                                </FormControl>
+                                <FormDescription>How many result checkers to purchase</FormDescription>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
 
-            {/*Checkouts*/}
-            <div>
-                <p>Continue</p>
-            </div>
-        </div>
-    )
+                    {/*SMS Destination*/}
+                    <FormField
+                        control={form.control}
+                        name={"sendToOwn"}
+                        render={() => (
+                            <FormItem>
+                                <FormLabel>Send SMS to</FormLabel>
+                                <FormControl>
+                                    <div className={"grid grid-cols-2 items-center"}>
+                                        <span
+                                            className={cn(
+                                                "p-2 font-semibold text-sm text-center rounded-l-md cursor-pointer border-r",
+                                                sendToOwn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+                                            )}
+                                            onClick={() => {
+                                                form.setValue("sendToOwn", true);
+                                                form.setValue("phoneNumber", profile?.phoneNumber ?? "");
+                                            }}
+                                        >
+                                            My Number
+                                        </span>
+                                        <span
+                                            className={cn(
+                                                "p-2 font-semibold text-sm text-center rounded-r-md cursor-pointer border-l",
+                                                !sendToOwn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+                                            )}
+                                            onClick={() => {
+                                                form.setValue("sendToOwn", false);
+                                                form.setValue("phoneNumber", "");
+                                            }}
+                                        >
+                                            Other Number
+                                        </span>
+                                    </div>
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+
+                    {/*Phone Number — only shown when sendToOwn is false*/}
+                    {!sendToOwn && (
+                        <FormField
+                            control={form.control}
+                            name={"phoneNumber"}
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Phone Number</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder={"02XXXXXXXX"} {...field} />
+                                    </FormControl>
+                                    <FormDescription>The number to receive the SMS checker</FormDescription>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                    )}
+
+                    {/*Total*/}
+                    <div className={"rounded-lg bg-secondary/40 p-4 flex items-center justify-between"}>
+                        <p className={"text-sm text-muted-foreground"}>Total</p>
+                        <p className={"text-xl font-bold text-primary"}>{toCurrency((units || 0) * price)}</p>
+                    </div>
+
+                    <Button type={"submit"} className={"w-full"} disabled={loading}>
+                        {loading ? <><Loader2Icon className={"animate-spin"}/> Processing...</> : "Purchase"}
+                    </Button>
+                </form>
+            </Form>
+    );
 }
 
 export default ResultCheckerPurchase;

@@ -1,11 +1,15 @@
 import React from 'react';
+import Page from "@/ui/page/Page.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 
 const NotificationsPage: React.FC = () => {
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-semibold">Notifications</h1>
-            <p className="text-sm text-muted-foreground">Your notifications will appear here.</p>
-        </div>
+        <Page>
+            <PageContent>
+                <h1 className="text-2xl font-semibold">Notifications</h1>
+                <p className="text-sm text-muted-foreground">Your notifications will appear here.</p>
+            </PageContent>
+        </Page>
     );
 };
 

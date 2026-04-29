@@ -30,7 +30,7 @@ pub fn routes(app: AppState) -> Router {
         .route("/user", routing::get(get).put(put).delete(delete))
         //.layer(from_fn(middleware::firebase::firebase_auth_middleware))
         .route("/user/register", routing::post(register::post))
-        .route("/user/data-bundle", routing::post(data_bundle::post))
+        .route("/user/data-bundle", routing::post(data_bundle::post).get(data_bundle::get))
         .route("/user/afa-bundle", routing::post(afa_bundle::post))
         .layer(middleware::cors::user_cors())
         .with_state(app)

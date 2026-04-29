@@ -28,6 +28,7 @@ impl AFABundlePostReq {
     }
 }
 
+/// Purchase a new AFA bundle
 pub async fn post(
     State(app): State<AppState>,
     Json(payload): Json<JsonValue>,

@@ -14,6 +14,7 @@ import {ChevronLeft, MenuIcon} from "lucide-react";
 import {R} from "@/app/routes";
 import {Button} from "@/cn/components/ui/button.tsx";
 import {useSidebar} from "@/cn/components/ui/sidebar.tsx";
+import PWAAction from "@/ui/components/PWAAction.tsx";
 
 type NavHeaderProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -67,38 +68,43 @@ const NavHeader: React.FC<NavHeaderProps> = ({className, ...props}) => {
                         </span>
                     </div>
                 </div>
+                <PWAAction />
                 <Button size="icon" variant="ghost" onClick={toggleSidebar}>
                     <MenuIcon className="size-5"/>
                 </Button>
             </nav>
 
             {/* Desktop */}
-            <nav className="hidden md:flex items-center gap-2 px-4">
-                <Button size="icon" variant="ghost" onClick={toggleSidebar}>
-                    <MenuIcon className="size-5"/>
-                </Button>
-                <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4"/>
-                <Breadcrumb>
-                    <BreadcrumbList className="gap-0.5">
-                        {breadCrumbs.map((value, i) => (
-                            <div key={i} className="flex items-center justify-center">
-                                <BreadcrumbItem>
-                                    {i < breadCrumbs.length - 1 ? (
-                                        <BreadcrumbLink
-                                            href={value.href}
-                                            className="hover:bg-secondary p-1 px-2 rounded-md"
-                                        >
-                                            {value.text}
-                                        </BreadcrumbLink>
-                                    ) : (
-                                        <BreadcrumbPage>{value.text}</BreadcrumbPage>
-                                    )}
-                                </BreadcrumbItem>
-                                {i < breadCrumbs.length - 1 && <BreadcrumbSeparator/>}
-                            </div>
-                        ))}
-                    </BreadcrumbList>
-                </Breadcrumb>
+            <nav className="hidden md:flex items-center gap-2 px-4 justify-between w-full">
+                <div className={"flex items-center gap-2"}>
+                    <Button size="icon" variant="ghost" onClick={toggleSidebar}>
+                        <MenuIcon className="size-5"/>
+                    </Button>
+                    <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4"/>
+                    <Breadcrumb>
+                        <BreadcrumbList className="gap-0.5">
+                            {breadCrumbs.map((value, i) => (
+                                <div key={i} className="flex items-center justify-center">
+                                    <BreadcrumbItem>
+                                        {i < breadCrumbs.length - 1 ? (
+                                            <BreadcrumbLink
+                                                href={value.href}
+                                                className="hover:bg-secondary p-1 px-2 rounded-md"
+                                            >
+                                                {value.text}
+                                            </BreadcrumbLink>
+                                        ) : (
+                                            <BreadcrumbPage>{value.text}</BreadcrumbPage>
+                                        )}
+                                    </BreadcrumbItem>
+                                    {i < breadCrumbs.length - 1 && <BreadcrumbSeparator/>}
+                                </div>
+                            ))}
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
+
+                <PWAAction />
             </nav>
         </header>
     );

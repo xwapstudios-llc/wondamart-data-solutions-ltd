@@ -2,8 +2,6 @@ import React from 'react';
 import { Zap, Clock, MessageSquare, Mail, MapPin } from 'lucide-react';
 import {R} from "@/app/routes.ts";
 
-
-
 interface ContactNode {
     icon: React.ElementType;
     label: string;
@@ -14,7 +12,7 @@ interface ContactNode {
 
 const WondamartFooter: React.FC = () => {
     const contactNodes: ContactNode[] = [
-        { icon: MessageSquare, label: 'WhatsApp', value: 'Chat with Support', href: R.utils.support, accent: 'text-emerald-500' },
+        { icon: MessageSquare, label: 'WhatsApp', value: 'Join Community', href: R.utils.support, accent: 'text-emerald-500' },
         { icon: Mail, label: 'Email', value: 'wondamartgh@gmail.com', href: R.utils.mail, accent: 'text-indigo-500' },
         { icon: MapPin, label: 'Location', value: 'Accra, Ghana', href: '#', accent: 'text-slate-500' },
     ];

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useForm } from 'react-hook-form';
 import Page from "@/ui/page/Page.tsx";
-import PageHeading from "@/ui/page/PageHeading.tsx";
 import PageContent from "@/ui/page/PageContent.tsx";
 import { Button } from '@/cn/components/ui/button';
 import { Input } from '@/cn/components/ui/input';
 import { Switch } from '@/cn/components/ui/switch';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/cn/components/ui/form';
 import {LockIcon, ShieldIcon, MonitorIcon} from "lucide-react";
+import PageHeader from "@/ui/page/PageHeader.tsx";
 
 interface PasswordChangeData {
     currentPassword: string;
@@ -34,9 +34,10 @@ const UserSettingsSecurity: React.FC = () => {
     };
 
     return (
-        <Page className="pb-8">
-            <PageHeading className="mt-4">Security</PageHeading>
-            <PageContent className="max-w-xl mx-auto space-y-4 pt-4">
+        <Page>
+            <PageHeader title={"Security"} />
+
+            <PageContent className="max-w-xl mx-auto space-y-4">
                 <div className="rounded-xl border bg-card p-4">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="flex size-9 items-center justify-center rounded-md bg-amber-500 text-white">

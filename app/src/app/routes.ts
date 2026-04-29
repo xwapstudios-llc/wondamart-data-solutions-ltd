@@ -33,9 +33,9 @@ const R = {
             // data bundle purchase
             dataBundle: {
                 index: "/app/purchase/data-bundle",
-                mtn: "/app/purchase/data-bundle/mtn",
-                telecel: "/app/purchase/data-bundle/telecel",
-                airtelTigo: "/app/purchase/data-bundle/airtel-tigo",
+                mtn: "/app/purchase/data-bundle?network=mtn",
+                telecel: "/app/purchase/data-bundle?network=telecel",
+                airtelTigo: "/app/purchase/data-bundle?network=airteltigo",
             },
 
             // AFA bundle purchase

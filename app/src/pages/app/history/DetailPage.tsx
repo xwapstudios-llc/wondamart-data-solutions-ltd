@@ -11,6 +11,8 @@ import {ClockCheckIcon, ClockPlusIcon, CoinsIcon, DollarSignIcon, type LucideIco
 import {Timestamp} from "firebase/firestore";
 import OopsView from "@/ui/components/views/OopsView.tsx";
 import { cn } from "@/cn/lib/utils.ts";
+import Page from "@/ui/page/Page.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 
 
 const formatDate = (ts: Timestamp) => {
@@ -79,10 +81,12 @@ const HistoryPurchaseDetail: React.FC = () => {
 
     if (loading) return <LoadingView />;
     if (error) return (
-        <div className="p-4">
-            <h1 className="text-2xl font-semibold">Purchase Detail</h1>
-            <p className="text-sm text-red-500">{error}</p>
-        </div>
+        <Page>
+            <PageContent>
+                <h1 className="text-2xl font-semibold">Purchase Detail</h1>
+                <p className="text-sm text-red-500">{error}</p>
+            </PageContent>
+        </Page>
     );
     if (!tx) return (
         <OopsView>
@@ -93,99 +97,65 @@ const HistoryPurchaseDetail: React.FC = () => {
     const Icon = getTxIcon[tx.type]
 
     return (
-        <div className="p-4 space-y-4">
-            <div className="flex gap-4 flex-col max-w-2xl mx-auto">
-                <div className={"flex items-center justify-center flex-row gap-4"}>
-                    <div className="p-6 w-fit rounded-full bg-primary/50 flex items-center justify-center">
-                        <Icon strokeWidth={1.5} className="size-24" />
-                    </div>
-                    <div>
-                        <p className="text-2xl font-semibold self-center mb-2">{getTxName[tx.type]}</p>
-                        <StatusBadge size={"lg"} status={tx.status} />
-                    </div>
-                </div>
-                <Button
-                    className={"mt-1.5 w-full"}
-                    variant={"outline"}
-                    onClick={() => {
-                        navigator.clipboard.writeText(getTxReportText(tx)).then(() => {
-                            toast.success("Transaction details copied to clipboard", {duration: 3000});
-                        })
-                    }}
-                >
-                    Copy details
-                </Button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <IconTitleText Icon={PencilIcon} title={"Transaction Id"} text={tx.txId} />
-                    <IconTitleText Icon={DollarSignIcon} title={"Amount"} text={toCurrency(tx.amount)} />
-                    <IconTitleText Icon={CoinsIcon} title={"Commission"} text={toCurrency(tx.commission ?? 0)} />
-                    <IconTitleText Icon={ClockPlusIcon} title={"Date"} text={formatDate(tx.time)} />
-                    <IconTitleText Icon={ClockCheckIcon} title={"Finished"} text={tx.timeCompleted ? formatDate(tx.timeCompleted) : "N/A"} />
-                </div>
-            </div>
-
-            <div className="bg-card/50 p-4 rounded-md">
-                <h2 className="text-lg font-medium mb-2">Details</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {Object.entries(tx.txData as object).map(([k, v]) => (
-
-                        <div key={k} className="p-2">
-                            <div className="text-xs text-muted-foreground">{k}</div>
-                            {
-                                typeof v == "object" ? (
-                                    <div className={"flex gap-2 justify-around border-t"}>
-                                        {
-                                            Object.entries(v).map(([k, v]) => (
-                                                <div key={k} className="p-2">
-                                                    <div className="text-xs text-muted-foreground">{k}</div>
-                                                    <div className="font-medium">{String(v)}</div>
-                                                </div>
-                                            ))
-                                        }
-                                    </div>
-                                ) : (<div className="font-medium">{String(v)}</div>)
-                            }
+        <Page>
+            <PageContent className="space-y-4">
+                <div className="flex gap-4 flex-col max-w-2xl mx-auto">
+                    <div className={"flex items-center justify-center flex-row gap-4"}>
+                        <div className="p-6 w-fit rounded-full bg-primary/50 flex items-center justify-center">
+                            <Icon strokeWidth={1.5} className="size-24" />
                         </div>
-                    ))}
+                        <div>
+                            <p className="text-2xl font-semibold self-center mb-2">{getTxName[tx.type]}</p>
+                            <StatusBadge size={"lg"} status={tx.status} />
+                        </div>
+                    </div>
+                    <Button
+                        className={"mt-1.5 w-full"}
+                        variant={"outline"}
+                        onClick={() => {
+                            navigator.clipboard.writeText(getTxReportText(tx)).then(() => {
+                                toast.success("Transaction details copied to clipboard", {duration: 3000});
+                            })
+                        }}
+                    >
+                        Copy details
+                    </Button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <IconTitleText Icon={PencilIcon} title={"Transaction Id"} text={tx.txId} />
+                        <IconTitleText Icon={DollarSignIcon} title={"Amount"} text={toCurrency(tx.amount)} />
+                        <IconTitleText Icon={CoinsIcon} title={"Commission"} text={toCurrency(tx.commission ?? 0)} />
+                        <IconTitleText Icon={ClockPlusIcon} title={"Date"} text={formatDate(tx.time)} />
+                        <IconTitleText Icon={ClockCheckIcon} title={"Finished"} text={tx.timeCompleted ? formatDate(tx.timeCompleted) : "N/A"} />
+                    </div>
                 </div>
-            </div>
 
-            {/*{tx.type === 'data-bundle' && (*/}
-            {/*    <div className="bg-card/50 p-4 rounded-md">*/}
-            {/*        <h2 className="text-lg font-medium mb-2">Bundle Details</h2>*/}
-            {/*        {bundle ? (*/}
-            {/*            <div className="grid grid-cols-2 gap-2">*/}
-            {/*                <div className="p-2">*/}
-            {/*                    <div className="text-xs text-muted-foreground">Name</div>*/}
-            {/*                    <div className="font-medium">{bundle.name ?? bundle.id}</div>*/}
-            {/*                </div>*/}
-            {/*                <div className="p-2">*/}
-            {/*                    <div className="text-xs text-muted-foreground">Network</div>*/}
-            {/*                    <div className="font-medium">{bundle.network}</div>*/}
-            {/*                </div>*/}
-            {/*                <div className="p-2">*/}
-            {/*                    <div className="text-xs text-muted-foreground">Price</div>*/}
-            {/*                    <div className="font-medium">{bundle.price}</div>*/}
-            {/*                </div>*/}
-            {/*                <div className="p-2">*/}
-            {/*                    <div className="text-xs text-muted-foreground">Data</div>*/}
-            {/*                    <div className="font-medium">{bundle.dataPackage?.data ?? ''} GB</div>*/}
-            {/*                </div>*/}
-            {/*                <div className="p-2">*/}
-            {/*                    <div className="text-xs text-muted-foreground">Minutes</div>*/}
-            {/*                    <div className="font-medium">{bundle.dataPackage?.minutes ?? ''} min</div>*/}
-            {/*                </div>*/}
-            {/*                <div className="p-2">*/}
-            {/*                    <div className="text-xs text-muted-foreground">SMS</div>*/}
-            {/*                    <div className="font-medium">{bundle.dataPackage?.sms ?? ''} units</div>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*        ) : (*/}
-            {/*            <div className="text-sm text-muted-foreground">Bundle details not available.</div>*/}
-            {/*        )}*/}
-            {/*    </div>*/}
-            {/*)}*/}
-        </div>
+                <div className="bg-card/50 p-4 rounded-md">
+                    <h2 className="text-lg font-medium mb-2">Details</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {Object.entries(tx.txData as object).map(([k, v]) => (
+
+                            <div key={k} className="p-2">
+                                <div className="text-xs text-muted-foreground">{k}</div>
+                                {
+                                    typeof v == "object" ? (
+                                        <div className={"flex gap-2 justify-around border-t"}>
+                                            {
+                                                Object.entries(v).map(([k, v]) => (
+                                                    <div key={k} className="p-2">
+                                                        <div className="text-xs text-muted-foreground">{k}</div>
+                                                        <div className="font-medium">{String(v)}</div>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                    ) : (<div className="font-medium">{String(v)}</div>)
+                                }
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </PageContent>
+        </Page>
     );
 };
 

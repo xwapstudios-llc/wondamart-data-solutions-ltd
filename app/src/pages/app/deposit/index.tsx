@@ -12,11 +12,11 @@ const Deposit: React.FC = () => {
     const { wallet } = useAppStore();
 
     return (
-        <Page className="pt-4">
-            <PageContent className="max-w-4xl mx-auto space-y-4 pt-4">
+        <Page>
+            <PageContent className="max-w-4xl mx-auto space-y-4">
 
                 {/* Balance card */}
-                <div className="rounded-xl bg-gradient-to-br from-wondamart to-primary p-5 text-white">
+                <div className="rounded-xl bg-linear-to-br from-wondamart to-primary p-5 text-white">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="flex size-9 items-center justify-center rounded-md bg-white/20">
                             <WalletIcon className="size-5" />

@@ -36,7 +36,7 @@ const UserIndex: React.FC = () => {
         : "?";
 
     return (
-        <Page className="pb-8">
+        <Page >
             <PageContent className="max-w-xl mx-auto space-y-4 pt-4">
 
                 {/* Profile header */}

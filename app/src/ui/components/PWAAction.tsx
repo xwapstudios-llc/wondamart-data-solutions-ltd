@@ -34,13 +34,13 @@ const PWAAction: React.FC<PWAActionProps> = ({className, ...props}) => {
         <div className={cn("flex items-center justify-center gap-4", className)} {...props}>
             {
                 deferAppInstallReady && (
-                    <Button onClick={() => {
+                    <Button variant={"wondamart"} onClick={() => {
                         setClicked(true);
                         installApp()
                     }}>
                         {
                             !clicked ? (
-                                <span>Install Wondamart</span>
+                                <span>Install App</span>
                             ) : (
                                 <span className={"flex gap-2"}>
                                     Click <Code>ok</Code> or <Code>install</Code>
@@ -53,14 +53,14 @@ const PWAAction: React.FC<PWAActionProps> = ({className, ...props}) => {
             }
             {
                 appNeedUpdate && (
-                    <Button onClick={async () => {
+                    <Button variant={"wondamart"} onClick={async () => {
                         await updateApp(true);
                         setAppNeedUpdate(false)
                     }}>
                         <span className={"flex gap-2 items-center"}>
                             <RotateCwIcon />
                             <span>
-                                <Code>Restart</Code> App to update Wondamart
+                                <Code>Restart</Code> App to update
                             </span>
                         </span>
                     </Button>

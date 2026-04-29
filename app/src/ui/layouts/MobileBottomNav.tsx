@@ -27,7 +27,7 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({className, ...props}) 
 
     return (
         <div className={cn(
-            "bg-card dark:bg-background fixed bottom-0 left-0 right-0 flex justify-evenly z-40",
+            "bg-wondamart text-primary-foreground dark:bg-background fixed bottom-0 left-0 right-0 flex justify-evenly z-40",
             className
         )}
              {...props}

@@ -8,5 +8,5 @@ interface HomeResponse {
 }
 
 export const home = {
-  get: async () => client.get<any, HomeResponse>({ path: "/", payload: null }),
+  get: async () => client.get<undefined, HomeResponse>({ path: "/" }),
 }

@@ -8,6 +8,7 @@ import Page from "@/ui/page/Page.tsx";
 import PageContent from "@/ui/page/PageContent.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
 import {UserIcon, InfoIcon} from "lucide-react";
+import PageHeader from "@/ui/page/PageHeader";
 
 interface UserProfileData {
     firstName: string;
@@ -40,6 +41,8 @@ const UserProfile: React.FC = () => {
 
     return (
         <Page className="pb-8">
+            <PageHeader title={"Profile"} />
+
             <PageContent className="max-w-xl mx-auto space-y-4 pt-4">
                 <div className="rounded-xl border bg-card p-4 flex flex-col items-center">
                     <Avatar className="size-20 mb-4 rounded-xl">

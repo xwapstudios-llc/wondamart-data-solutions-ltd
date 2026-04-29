@@ -17,10 +17,7 @@ const OTPPage = lazy(() => import("@/pages/auth/OTPPage.tsx"));
 const UserLayout = lazy(() => import("@/ui/layouts/UserLayout"));
 const Dashboard = lazy(() => import("@/pages/app/dashboard"));
 const PurchaseIndex = lazy(() => import("@/pages/app/purchase/indexV2"));
-const DataBundleIndex = lazy(() => import("@/pages/app/purchase/dataBundle/index"));
-const DataBundleMTN = lazy(() => import("@/pages/app/purchase/dataBundle/mtn"));
-const DataBundleTelecel = lazy(() => import("@/pages/app/purchase/dataBundle/telecel"));
-const DataBundleAirtelTigo = lazy(() => import("@/pages/app/purchase/dataBundle/airtelTigo"));
+const DataBundleIndex = lazy(() => import("@/pages/app/purchase/dataBundle.tsx"));
 const AfaBundlePurchase = lazy(() => import("@/pages/app/purchase/afaBundle"));
 const ResultCheckerPurchase = lazy(() => import("@/pages/app/purchase/resultChecker"));
 const HistoryIndex = lazy(() => import("@/pages/app/history/index"));
@@ -104,11 +101,7 @@ const App = () => {
                                 {/* Purchases */}
                                 <Route path={R.app.purchase.index} element={<PurchaseIndex/>}/>
 
-                                <Route path={R.app.purchase.dataBundle.index} element={<DataBundleIndex/>}>
-                                    <Route path={R.app.purchase.dataBundle.mtn} element={<DataBundleMTN/>}/>
-                                    <Route path={R.app.purchase.dataBundle.telecel} element={<DataBundleTelecel/>}/>
-                                    <Route path={R.app.purchase.dataBundle.airtelTigo} element={<DataBundleAirtelTigo/>}/>
-                                </Route>
+                                <Route path={R.app.purchase.dataBundle.index} element={<DataBundleIndex/>}/>
 
                                 <Route path={R.app.purchase.afaBundle} element={<AfaBundlePurchase/>}/>
                                 <Route path={R.app.purchase.resultChecker} element={<ResultCheckerPurchase/>}/>

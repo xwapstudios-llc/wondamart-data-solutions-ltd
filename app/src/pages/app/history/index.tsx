@@ -3,6 +3,7 @@ import {useAppStore} from "@/lib/useAppStore.ts";
 import type {Tx, TxQuery, TxType} from "@common/tx.ts";
 import {ClTx} from "@common/client-api/tx.ts";
 import Page from "@/ui/page/Page.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {R} from "@/app/routes.ts";
 import {cn} from "@/cn/lib/utils.ts";
@@ -138,8 +139,8 @@ const HistoryIndex: React.FC = () => {
     const activeFilter = FILTERS.find(f => f.value === activeType) ?? FILTERS[0];
 
     return (
-        <Page className="pb-8">
-            <div className="max-w-4xl mx-auto space-y-4 pt-4">
+        <Page>
+            <PageContent className="max-w-4xl mx-auto space-y-4">
 
                 {/* Page header */}
                 <div className="flex items-center gap-3">
@@ -190,7 +191,7 @@ const HistoryIndex: React.FC = () => {
                     noItemsIcon={getTxIcon["tx"]}
                 />
 
-            </div>
+            </PageContent>
         </Page>
     );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import Page from "@/ui/page/Page.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 import {useNavigate} from "react-router-dom";
 import {R} from "@/app/routes.ts";
 import {
@@ -7,10 +8,8 @@ import {
     BookOpenTextIcon,
     CompassIcon,
     PackageIcon,
-    PackageXIcon,
 } from "lucide-react";
 import {useAppStore} from "@/lib/useAppStore.ts";
-import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
 import {cn} from "@/cn/lib/utils.ts";
 import {toCurrency} from "@/lib/icons.ts";
 
@@ -88,7 +87,7 @@ const PurchaseIndexV2: React.FC = () => {
 
     return (
         <Page className="pb-8">
-            <div className="max-w-xl mx-auto space-y-4 pt-4">
+            <PageContent className="max-w-xl mx-auto space-y-4 pt-4">
 
                 {/* Page header */}
                 <div className="flex items-center gap-3 mb-2">
@@ -101,69 +100,59 @@ const PurchaseIndexV2: React.FC = () => {
                     </div>
                 </div>
 
-                {!claims.isActivated ? (
-                    <ActivationCard
-                        className="w-full"
-                        Icon={PackageXIcon}
-                        title="Account Activation"
-                        cta={{label: "Go to Activation", action: () => navigate(R.app.user.activate)}}
-                    >
-                        You are not activated to use wondamart services.
-                    </ActivationCard>
-                ) : (
-                    <div className="space-y-8 mt-8">
 
-                        {/* Data Bundles */}
-                        <ProductCard
-                            title="Data Bundles"
-                            description="Top-tier data bundles for all networks at the best prices."
-                            icon={<PackageIcon className="size-6" />}
-                            gradient="bg-gradient-to-r from-sky-500 to-blue-600"
-                            iconBg="bg-white/20"
-                            onClick={() => navigate(R.app.purchase.dataBundle.index)}
-                            disabled={!db.enabled}
-                            badges={<>
-                                <StockBadge inStock={db.enabled && db.mtn.enabled}       label="MTN" />
-                                <StockBadge inStock={db.enabled && db.telecel.enabled}   label="Telecel" />
-                                <StockBadge inStock={db.enabled && db.airteltigo.enabled} label="AirtelTigo" />
-                            </>}
-                            // meta={<span className="capitalize text-xs px-2 py-0.5 rounded-full bg-muted font-medium">via {db.provider}</span>}
-                        />
+                <div className="space-y-8 mt-8">
 
-                        {/* Result Checkers */}
-                        <ProductCard
-                            title="Result Checkers"
-                            description="Instant WASSCE & BECE result checkers at your fingertips."
-                            icon={<BookOpenTextIcon className="size-6" />}
-                            gradient="bg-gradient-to-r from-violet-500 to-purple-600"
-                            iconBg="bg-white/20"
-                            onClick={() => navigate(R.app.purchase.resultChecker)}
-                            disabled={!rc.enabled}
-                            badges={<>
-                                <StockBadge inStock={rc.enabled} label="BECE" />
-                                <StockBadge inStock={rc.enabled} label="WASSCE" />
-                            </>}
-                            meta={<>Unit price: <span className="font-semibold text-foreground">{toCurrency(rc.unitPrice)}</span></>}
-                        />
+                    {/* Data Bundles */}
+                    <ProductCard
+                        title="Data Bundles"
+                        description="Top-tier data bundles for all networks at the best prices."
+                        icon={<PackageIcon className="size-6" />}
+                        gradient="bg-gradient-to-r from-sky-500 to-blue-600"
+                        iconBg="bg-white/20"
+                        onClick={() => navigate(R.app.purchase.dataBundle.index)}
+                        disabled={!db.enabled}
+                        badges={<>
+                            <StockBadge inStock={db.enabled && db.mtn.enabled}       label="MTN" />
+                            <StockBadge inStock={db.enabled && db.telecel.enabled}   label="Telecel" />
+                            <StockBadge inStock={db.enabled && db.airteltigo.enabled} label="AirtelTigo" />
+                        </>}
+                        // meta={<span className="capitalize text-xs px-2 py-0.5 rounded-full bg-muted font-medium">via {db.provider}</span>}
+                    />
 
-                        {/* AFA Bundle */}
-                        <ProductCard
-                            title="AFA Bundle"
-                            description="Get subscribed to AFA at the most competitive price."
-                            icon={<CompassIcon className="size-6" />}
-                            gradient="bg-gradient-to-r from-emerald-500 to-teal-600"
-                            iconBg="bg-white/20"
-                            onClick={() => navigate(R.app.purchase.afaBundle)}
-                            disabled={!afa.enabled}
-                            badges={<>
-                                <StockBadge inStock={afa.enabled} label="AFA" />
-                            </>}
-                            meta={<>Unit price: <span className="font-semibold text-foreground">{toCurrency(afa.unitPrice)}</span></>}
-                        />
+                    {/* Result Checkers */}
+                    <ProductCard
+                        title="Result Checkers"
+                        description="Instant WASSCE & BECE result checkers at your fingertips."
+                        icon={<BookOpenTextIcon className="size-6" />}
+                        gradient="bg-gradient-to-r from-violet-500 to-purple-600"
+                        iconBg="bg-white/20"
+                        onClick={() => navigate(R.app.purchase.resultChecker)}
+                        disabled={!rc.enabled}
+                        badges={<>
+                            <StockBadge inStock={rc.enabled} label="BECE" />
+                            <StockBadge inStock={rc.enabled} label="WASSCE" />
+                        </>}
+                        meta={<>Unit price: <span className="font-semibold text-foreground">{toCurrency(rc.unitPrice)}</span></>}
+                    />
 
-                    </div>
-                )}
-            </div>
+                    {/* AFA Bundle */}
+                    <ProductCard
+                        title="AFA Bundle"
+                        description="Get subscribed to AFA at the most competitive price."
+                        icon={<CompassIcon className="size-6" />}
+                        gradient="bg-gradient-to-r from-emerald-500 to-teal-600"
+                        iconBg="bg-white/20"
+                        onClick={() => navigate(R.app.purchase.afaBundle)}
+                        disabled={!afa.enabled}
+                        badges={<>
+                            <StockBadge inStock={afa.enabled} label="AFA" />
+                        </>}
+                        meta={<>Unit price: <span className="font-semibold text-foreground">{toCurrency(afa.unitPrice)}</span></>}
+                    />
+
+                </div>
+            </PageContent>
         </Page>
     );
 };

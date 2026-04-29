@@ -4,13 +4,12 @@ import {ClCommission} from "@common/client-api/db-commission.ts";
 import {useAppStore} from "@/lib/useAppStore.ts";
 import LoadingView from "@/ui/components/views/LoadingView.tsx";
 import Page from "@/ui/page/Page.tsx";
-import PageHeading from "@/ui/page/PageHeading.tsx";
-import PageSubHeading from "@/ui/page/PageSubHeading.tsx";
 import PageContent from "@/ui/page/PageContent.tsx";
 import CommissionCard from "@/ui/components/cards/commission/CommissionCard.tsx";
 import NoItems from "@/ui/components/cards/NoItems.tsx";
 import { CoinsIcon } from "lucide-react";
 import { testCommissions } from "./test-commission.ts";
+import PageHeader from "@/ui/page/PageHeader.tsx";
 
 const CommissionsIndex: React.FC = () => {
     const {user, setError} = useAppStore();
@@ -32,10 +31,10 @@ const CommissionsIndex: React.FC = () => {
     }, [user]);
 
     return (
-        <Page className={"py-4"}>
-            <PageHeading>Commissions</PageHeading>
-            <PageSubHeading>View commission summaries.</PageSubHeading>
-            <PageContent className={"bundles-grid mt-4"}>
+        <Page>
+            <PageHeader title={"Commissions"} subtitle={"View commission summaries"}/>
+
+            <PageContent className={"bundles-grid"}>
                 {
                     loading ? (
                         <>

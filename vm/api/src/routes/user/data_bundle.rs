@@ -24,6 +24,7 @@ impl UserDataBundlePostReq {
     }
 }
 
+/// Purchase a new data bundle
 pub async fn post(
     State(app): State<AppState>,
     Json(payload): Json<JsonValue>,
@@ -38,6 +39,7 @@ pub async fn post(
 }
 
 
+#[derive(Deserialize)]
 pub struct UserDataBundleReq {
     network: Option<NetworkType>,
     bundle_id: Option<String>,

@@ -6,6 +6,8 @@ import LoadingView from "@/ui/components/views/LoadingView.tsx";
 import CommissionDetailsView from "@/ui/components/views/CommissionDetailsView.tsx";
 import OopsView from "@/ui/components/views/OopsView.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
+import Page from "@/ui/page/Page.tsx";
+import PageContent from "@/ui/page/PageContent.tsx";
 
 const CommissionsDetail: React.FC = () => {
     const {id} = useParams();
@@ -29,19 +31,21 @@ const CommissionsDetail: React.FC = () => {
     }, [commission, id]);
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-semibold">Commission Detail</h1>
-            {
-                loading ? <LoadingView />
-                    : commission != null ? (
-                        <CommissionDetailsView com={commission} />
-                    ) : (
-                        <OopsView>
-                            Failed to load commission details.
-                        </OopsView>
-                    )
-            }
-        </div>
+        <Page>
+            <PageContent>
+                <h1 className="text-2xl font-semibold">Commission Detail</h1>
+                {
+                    loading ? <LoadingView />
+                        : commission != null ? (
+                            <CommissionDetailsView com={commission} />
+                        ) : (
+                            <OopsView>
+                                Failed to load commission details.
+                            </OopsView>
+                        )
+                }
+            </PageContent>
+        </Page>
     );
 };
 

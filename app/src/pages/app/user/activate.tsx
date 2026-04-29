@@ -5,13 +5,13 @@ import {Loader2Icon, MailCheckIcon, MailXIcon, PackageCheckIcon, PackageXIcon} f
 import ActivationCard from "@/ui/components/cards/ActivationCard.tsx";
 import Code from "@/ui/components/typography/Code.tsx";
 import Page from "@/ui/page/Page.tsx";
-import PageHeading from "@/ui/page/PageHeading.tsx";
 import {toast} from "sonner";
 import {R} from "@/app/routes.ts";
 import {useNavigate} from "react-router-dom";
 import { sendEmailVerification } from "firebase/auth";
 import {wondamart_api_client} from "@common/lib/api-wondamart.ts";
 import PageContent from "@/ui/page/PageContent.tsx";
+import PageHeader from "@/ui/page/PageHeader.tsx";
 
 const UserActivate: React.FC = () => {
     const {fetchClaims, claims, commonSettings, wallet, user} = useAppStore()
@@ -75,8 +75,9 @@ const UserActivate: React.FC = () => {
     }
 
     return (
-        <Page className="pb-8">
-            <PageHeading className="mt-4">Activation & Verification</PageHeading>
+        <Page>
+            <PageHeader title={"Activation & Verification"} />
+
             <PageContent className="max-w-xl mx-auto space-y-4 pt-4">
                 {
                     claims?.isActivated ? (

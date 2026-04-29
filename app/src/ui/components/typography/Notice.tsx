@@ -110,25 +110,30 @@ const NoticeConstructor: React.FC<NoticeConstructorProps> = ({
     const [opened, setOpened] = useState(!collapsable);
 
     return (
-        <Notice variant={notice.variant} className={cn("relative", className)} {...props}>
-            <div>
-                <p className={"font-semibold text-sm"}>{notice.heading}</p>
+        <Notice variant={notice.variant} className={className} {...props}>
+            <div className={"flex gap-2 items-center justify-between"}>
+                <div className={"flex gap-2 items-center"}>
+                    <p className={"font-semibold text-sm"}>{notice.heading}</p>
+                    {
+                        notice.subHeading && (
+                            <>
+                                <span className={`text-xs border-l-2 pl-2 ${notice.subHeadingClass}`}>{notice.subHeading}</span>
+                            </>
+                        )
+                    }
+                </div>
                 {
-                    notice.subHeading && (<span className={`text-xs ${notice.subHeadingClass}`}>{notice.subHeading}</span>)
+                    collapsable && (
+                        <Button
+                            variant={"outline"}
+                            size={"sm"}
+                            onClick={() => {setOpened(!opened)}}
+                        >
+                            {opened ? "Hide" : "Show"}
+                        </Button>
+                    )
                 }
             </div>
-            {
-                collapsable && (
-                    <Button
-                        className={"absolute top-2 right-2"}
-                        variant={"outline"}
-                        size={"sm"}
-                        onClick={() => {setOpened(!opened)}}
-                    >
-                        {opened ? "Hide" : "Show"}
-                    </Button>
-                )
-            }
             {
                 (!collapsable || opened) && (
                     <>
