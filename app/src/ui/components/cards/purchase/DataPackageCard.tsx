@@ -22,6 +22,7 @@ import {useForm} from "react-hook-form";
 import {toast} from "sonner";
 import { R } from "@/app/routes";
 import {useNavigate} from "react-router-dom";
+import {toCurrency} from "@/lib/icons.ts";
 
 const formSchema = z
     .object({
@@ -129,7 +130,7 @@ const DataPackageCard: React.FC<DataPackageCardProps> = ({dataPackage, className
                 <div className={"font-semibold"}>
                     {dataPackage.name}
                 </div>
-                <span className={"text-2xl place-self-end"}>₵ {dataPackage.price.toFixed(2)}</span>
+                <span className={"text-2xl place-self-end"}>{toCurrency(dataPackage.price)}</span>
                 <div className={"text-sm"}>
                     {
                         dataPackage.validityPeriod == 0 ? "Non Expiry"
@@ -188,7 +189,7 @@ const DataPackageCard: React.FC<DataPackageCardProps> = ({dataPackage, className
                                 <FormItem className="p-2 rounded-sm bg-background shadow-md">
                                     <FormLabel>Phone Number</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={"02XXXXXXXX"} {...field} disabled={loading}/>
+                                        <Input className={"bg-card"} placeholder={"02XXXXXXXX"} {...field} disabled={loading}/>
                                     </FormControl>
                                     <FormDescription>
                                         Phone number to receive the bundle

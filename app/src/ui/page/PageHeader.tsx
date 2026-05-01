@@ -12,7 +12,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({title, subtitle, className, chil
     return (
         <div className={cn("px-3 md:px-4 mt-4", className)} {...props}>
             <PageHeading>{title}</PageHeading>
-            { subtitle && (<PageSubHeading>Choose a network and bundle.</PageSubHeading>) }
+            { subtitle && (<PageSubHeading>{subtitle}</PageSubHeading>) }
             {children}
         </div>
     )

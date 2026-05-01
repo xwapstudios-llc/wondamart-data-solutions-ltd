@@ -12,6 +12,7 @@ import {
 import {useAppStore} from "@/lib/useAppStore.ts";
 import {cn} from "@/cn/lib/utils.ts";
 import {toCurrency} from "@/lib/icons.ts";
+import {Button} from "@/cn/components/ui/button.tsx";
 
 // ─── Stock badge ──────────────────────────────────────────────────────────────
 
@@ -86,11 +87,10 @@ const PurchaseIndexV2: React.FC = () => {
     const afa = commonSettings.afa;
 
     return (
-        <Page className="pb-8">
-            <PageContent className="max-w-xl mx-auto space-y-4 pt-4">
-
-                {/* Page header */}
-                <div className="flex items-center gap-3 mb-2">
+        <Page>
+            {/* Page header */}
+            <div className={"flex items-center justify-between px-3 md:px-4 mt-4"}>
+                <div className={"flex items-center gap-3"}>
                     <div className="flex size-9 items-center justify-center rounded-md bg-wondamart text-white">
                         <PackageIcon className="size-5" />
                     </div>
@@ -99,10 +99,11 @@ const PurchaseIndexV2: React.FC = () => {
                         <p className="text-xs text-muted-foreground">Choose a product to get started</p>
                     </div>
                 </div>
+                {/*Todo: Implement bulk sms page...*/}
+                <Button size={"lg"} variant={"wondamart"}>Bulk SMS</Button>
+            </div>
 
-
-                <div className="space-y-8 mt-8">
-
+            <PageContent className="max-w-xl mx-auto space-y-8">
                     {/* Data Bundles */}
                     <ProductCard
                         title="Data Bundles"
@@ -117,7 +118,6 @@ const PurchaseIndexV2: React.FC = () => {
                             <StockBadge inStock={db.enabled && db.telecel.enabled}   label="Telecel" />
                             <StockBadge inStock={db.enabled && db.airteltigo.enabled} label="AirtelTigo" />
                         </>}
-                        // meta={<span className="capitalize text-xs px-2 py-0.5 rounded-full bg-muted font-medium">via {db.provider}</span>}
                     />
 
                     {/* Result Checkers */}
@@ -138,7 +138,7 @@ const PurchaseIndexV2: React.FC = () => {
 
                     {/* AFA Bundle */}
                     <ProductCard
-                        title="AFA Bundle"
+                        title="AFA Registration"
                         description="Get subscribed to AFA at the most competitive price."
                         icon={<CompassIcon className="size-6" />}
                         gradient="bg-gradient-to-r from-emerald-500 to-teal-600"
@@ -150,8 +150,6 @@ const PurchaseIndexV2: React.FC = () => {
                         </>}
                         meta={<>Unit price: <span className="font-semibold text-foreground">{toCurrency(afa.unitPrice)}</span></>}
                     />
-
-                </div>
             </PageContent>
         </Page>
     );

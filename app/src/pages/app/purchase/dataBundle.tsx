@@ -5,7 +5,6 @@ import {useNavigate, useSearchParams} from "react-router-dom";
 import WondaButton from "@/ui/components/buttons/WondaButton.tsx";
 import {R} from "@/app/routes.ts";
 import {useSidebar} from "@/cn/components/ui/sidebar.tsx";
-import PageHeader from "@/ui/page/PageHeader.tsx";
 import {NoticeConstructor, type NoticeData} from "@/ui/components/typography/Notice.tsx";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/cn/components/ui/tabs.tsx";
 import BundlesView from "@/ui/components/views/BundlesView.tsx";
@@ -13,11 +12,15 @@ import DisabledNotice from "@/ui/components/cards/DisabledNotice.tsx";
 import {useAppStore} from "@/lib/useAppStore.ts";
 import {DataBundles} from "@common/client-api/db-data-bundle.ts";
 import type {DataBundle, NetworkId} from "@common/types/data-bundle.ts";
+import {Button} from "@/cn/components/ui/button.tsx";
+import PageHeading from "@/ui/page/PageHeading.tsx";
+import PageSubHeading from "@/ui/page/PageSubHeading.tsx";
 
 // ─── Notices ────────────────────────────────────────────────────────────────
 
 const mtnNonExpiryNotice: NoticeData = {
     heading: "IMPORTANT", subHeading: "Please Read Before Purchase",
+    variant: "warning",
     notices: [
         {title: "Turbonet, Broadband, Roaming & Company/Schools/Group Sim Cards", description: "These types of SIM cards do not support non-expiry data bundles."},
         {title: "Order Intervals", description: "Intervals for placing orders for the same numbers should be 10mins."},
@@ -29,6 +32,7 @@ const mtnNonExpiryNotice: NoticeData = {
 
 const mtnExpiryNotice: NoticeData = {
     heading: "IMPORTANT", subHeading: "Please Read Before Purchase",
+    variant: "warning",
     notices: [
         {title: "Premium Delivery", description: "All data purchases are instant or faster than normal delivery."},
         {title: "Expiry", description: "This data bundle expires on midnight of the purchase duration."},
@@ -40,6 +44,7 @@ const mtnExpiryNotice: NoticeData = {
 
 const mtnVerificationNotice: NoticeData = {
     heading: "IMPORTANT", subHeading: "Please Read Before Purchase",
+    variant: "warning",
     notices: [
         {title: "Premium Delivery", description: "All data purchases are instant or faster than normal delivery."},
         {title: "One Time Verify", description: "This bundle requires a one-time verification for new numbers. Once verified, you can buy anytime without repeating the process."},
@@ -51,6 +56,7 @@ const mtnVerificationNotice: NoticeData = {
 
 const telecelNotice: NoticeData = {
     heading: "IMPORTANT", subHeading: "Please Read Before Purchase",
+    variant: "warning",
     notices: [
         {title: "Delivery", description: "Data bundle delivery is not instant. Some numbers may receive data faster while others take some time."},
         {title: "No Refunds", description: "No refunds will be issued for wrong transactions or incorrect phone numbers."},
@@ -61,6 +67,7 @@ const telecelNotice: NoticeData = {
 
 const airteltigoNotice: NoticeData = {
     heading: "IMPORTANT", subHeading: "Please Read Before Purchase",
+    variant: "warning",
     notices: [
         {title: "Premium Delivery", description: "All data purchases are either instant or faster than normal delivery."},
         {title: "No Refunds", description: "No refunds will be issued for wrong transactions or incorrect phone numbers."},
@@ -137,7 +144,6 @@ interface SimpleBundlesProps {
     network: NetworkId;
     notice: NoticeData;
 }
-
 const SimpleBundles: React.FC<SimpleBundlesProps> = ({network, notice}) => {
     const [bundles, setBundles] = useState<DataBundle[]>([]);
     const [loading, setLoading] = useState(false);
@@ -190,7 +196,14 @@ const DataBundleIndex: React.FC = () => {
 
     return (
         <Page>
-            <PageHeader title={"Data Bundles"} subtitle={"Choose a network and bundle."}/>
+            <div className={"flex gap-4 justify-between items-center px-3 md:px-4 mt-4"}>
+                <div>
+                    <PageHeading>Data Bundles</PageHeading>
+                    <PageSubHeading>Choose a network and bundle.</PageSubHeading>
+                </div>
+                {/*Todo: Implement the bulk order functionality.*/}
+                <Button size={"lg"} variant={"wondamart"}>Bulk Order</Button>
+            </div>
 
             <PageContent>
                 <div className={`flex gap-4 justify-between mb-4 ${!isMobile && "max-w-2xl"}`}>

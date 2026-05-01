@@ -11,6 +11,7 @@ import {useAppStore} from "@/lib/useAppStore";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/cn/components/ui/form.tsx";
 import {Loader2Icon} from "lucide-react";
 import type {HTTPResponse} from "@common/types/request.ts";
+import {cn} from "@/cn/lib/utils.ts";
 
 const afaSchema = z.object({
     fullName: z.string().min(3, "Full name is required"),
@@ -23,7 +24,8 @@ const afaSchema = z.object({
 
 type AfaValues = z.infer<typeof afaSchema>;
 
-const AfaBundleForm: React.FC = () => {
+type AfaBundleFormProps = React.HTMLAttributes<HTMLFormElement>;
+const AfaBundleForm: React.FC<AfaBundleFormProps> = ({className, ...props}) => {
     const {profile, setError, setHTTPResponse} = useAppStore();
     const [loading, setLoading] = useState(false);
 
@@ -68,7 +70,7 @@ const AfaBundleForm: React.FC = () => {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-4", className)} {...props}>
 
                 <FormField
                     control={form.control}
@@ -114,24 +116,6 @@ const AfaBundleForm: React.FC = () => {
                         )}
                     />
                 </div>
-
-                <FormField
-                    control={form.control}
-                    name="date_of_birth"
-                    render={({field}) => (
-                        <FormItem>
-                            <FormLabel>Date of Birth</FormLabel>
-                            <FormControl>
-                                <Input className={"bg-primary-foreground dark:bg-transparent"}
-                                    type="date"
-                                    value={field.value ? field.value.toISOString().split("T")[0] : ""}
-                                    onChange={(e) => field.onChange(new Date(e.target.value))}
-                                />
-                            </FormControl>
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
 
                 {/* Location + Occupation row */}
                 <div className={"grid grid-cols-2 gap-3"}>

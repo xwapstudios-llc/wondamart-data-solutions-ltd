@@ -1,6 +1,5 @@
 import {cn} from "@/cn/lib/utils";
 import React, {useState} from "react";
-import {Button} from "@/cn/components/ui/button.tsx";
 
 interface NoticeProps extends React.HTMLAttributes<HTMLDivElement> {
     variant?: "default" | "warning" | "info";
@@ -116,21 +115,17 @@ const NoticeConstructor: React.FC<NoticeConstructorProps> = ({
                     <p className={"font-semibold text-sm"}>{notice.heading}</p>
                     {
                         notice.subHeading && (
-                            <>
-                                <span className={`text-xs border-l-2 pl-2 ${notice.subHeadingClass}`}>{notice.subHeading}</span>
-                            </>
+                            <span className={`text-xs ${notice.subHeadingClass}`}>| {notice.subHeading}</span>
                         )
                     }
                 </div>
                 {
                     collapsable && (
-                        <Button
-                            variant={"outline"}
-                            size={"sm"}
+                        <span className={"text-xs underline mr-2"}
                             onClick={() => {setOpened(!opened)}}
                         >
                             {opened ? "Hide" : "Show"}
-                        </Button>
+                        </span>
                     )
                 }
             </div>

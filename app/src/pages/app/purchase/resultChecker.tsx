@@ -54,7 +54,7 @@ const ResultCheckerPurchase: React.FC = () => {
                                 gradient={"from-blue-600 to-blue-500"}
                                 onBuy={() => setActiveForm("WASSCE")}
                             >
-                                <p className={"opacity-75"}>
+                                <p className={"opacity-75 text-sm"}>
                                     West African Examinations Council (WAEC) Result Checker - Check your WASSCE results online
                                 </p>
                             </CheckerCard>
@@ -66,9 +66,9 @@ const ResultCheckerPurchase: React.FC = () => {
                                 gradient={"from-yellow-600 to-yellow-500"}
                                 onBuy={() => setActiveForm("BECE")}
                             >
-                                <p className={"opacity-75"}>
+                                <p className={"opacity-75 text-sm"}>
                                     Basic Education Certificate Examination (BECE) Result Checker - Access your BECE results
-                                    online instantly
+                                    online
                                 </p>
                             </CheckerCard>
                         </div>
@@ -135,11 +135,11 @@ const CheckerCard: React.FC<CheckerCardProps> = ({
             <div className={cn("p-4 bg-linear-60", gradient)}>
                 <div className={"flex items-center gap-4"}>
                     <div
-                        className={"flex items-center justify-center p-3 rounded-lg size-14 bg-white/20 backdrop-blur-sm"}>
-                        <Icon className="size-7"/>
+                        className={"flex items-center justify-center p-3 rounded-lg size-12 text-white bg-white/20 backdrop-blur-sm"}>
+                        <Icon className="size-6"/>
                     </div>
                     <div>
-                        <p className={"text-3xl font-bold text-white"}>{title}</p>
+                        <p className={"text-2xl font-bold text-white"}>{title}</p>
                         {subTitle && <p className="text-sm text-white/80 font-medium mt-1">{subTitle}</p>}
                     </div>
                 </div>
@@ -153,11 +153,8 @@ const CheckerCard: React.FC<CheckerCardProps> = ({
                     <CheckerCardItem Icon={CheckIcon}>Valid five attempts</CheckerCardItem>
                     <CheckerCardItem Icon={FileIcon}>One-time use</CheckerCardItem>
                 </div>
-                <div className={"border-t border-border pt-4 flex items-center gap-4 justify-between"}>
-                    <div>
-                        <p className={"text-xs font-medium text-foreground/60 uppercase tracking-wider"}>Price</p>
-                        <p className={"text-3xl font-bold text-primary mt-2"}>{toCurrency(price)}</p>
-                    </div>
+                <div className={"pt-2 flex items-center gap-4 justify-between"}>
+                    <p className={"text-3xl font-bold text-primary mt-2"}>{toCurrency(price)}</p>
                     <Button size={"lg"} onClick={onBuy} className="font-semibold px-12">Buy</Button>
                 </div>
             </div>
@@ -234,7 +231,7 @@ const CheckerForm: React.FC<CheckerFormProps> = ({type, price, onBack}) => {
                             <FormItem>
                                 <FormLabel>Number of Units</FormLabel>
                                 <FormControl>
-                                    <Input type={"number"} min={1} placeholder={"1"} {...field} />
+                                    <Input className={"bg-card"} type={"number"} min={1} placeholder={"1"} {...field} />
                                 </FormControl>
                                 <FormDescription>How many result checkers to purchase</FormDescription>
                                 <FormMessage/>
@@ -291,7 +288,7 @@ const CheckerForm: React.FC<CheckerFormProps> = ({type, price, onBack}) => {
                                 <FormItem>
                                     <FormLabel>Phone Number</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={"02XXXXXXXX"} {...field} />
+                                        <Input className={"bg-card"} placeholder={"02XXXXXXXX"} {...field} />
                                     </FormControl>
                                     <FormDescription>The number to receive the SMS checker</FormDescription>
                                     <FormMessage/>
@@ -301,7 +298,7 @@ const CheckerForm: React.FC<CheckerFormProps> = ({type, price, onBack}) => {
                     )}
 
                     {/*Total*/}
-                    <div className={"rounded-lg bg-secondary/40 p-4 flex items-center justify-between"}>
+                    <div className={"rounded-lg bg-card/80 p-4 flex items-center justify-between"}>
                         <p className={"text-sm text-muted-foreground"}>Total</p>
                         <p className={"text-xl font-bold text-primary"}>{toCurrency((units || 0) * price)}</p>
                     </div>
